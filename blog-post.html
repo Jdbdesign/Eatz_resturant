@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Blog Post — Eatz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --primary: #f66d09;
+      --primary-dark: #9e4300;
+      --primary-light: #ffdbcb;
+      --surface: #fbf9f9;
+      --surface-low: #f5f3f3;
+      --surface-mid: #efeded;
+      --dark: #1b1c1c;
+      --on-surface: #1b1c1c;
+      --on-surface-v: #594236;
+      --outline: #8d7164;
+      --outline-v: #e1c0b1;
+      --shadow-card: 0 4px 20px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+      --shadow-hover: 0 12px 40px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.06);
+      --shadow-brand: 0 8px 30px rgba(246,109,9,.3);
+      --ease-spring: cubic-bezier(.34,1.56,.64,1);
+      --ease-out: cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',sans-serif;background:var(--surface);color:var(--on-surface);line-height:1.6;overflow-x:hidden}
+    .skip-link{position:absolute;top:-100%;left:1rem;background:var(--primary);color:#fff;padding:.5rem 1rem;border-radius:12px;z-index:1000;transition:top 150ms ease;font-weight:600;text-decoration:none}
+    .skip-link:focus{top:1rem}
+    :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+    :focus:not(:focus-visible){outline:none}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px}
+    @media(min-width:640px){.container{padding:0 24px}}
+    @media(min-width:1024px){.container{padding:0 40px}}
+
+    /* ── NAV ── */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.06);transition:box-shadow 250ms}
+    .nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:32px}
+    .nav-logo{font-size:28px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:2px}
+    .nav-logo .accent{color:var(--primary)}
+    .nav-logo .dot{width:8px;height:8px;background:var(--primary);border-radius:50%;margin-left:2px;margin-bottom:4px;display:inline-block}
+    .nav-links{display:none;list-style:none;gap:28px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:15px;font-weight:500;transition:color 150ms;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);border-radius:2px;transition:width 250ms var(--ease-spring)}
+    .nav-links a:hover{color:#fff}
+    .nav-links a:hover::after{width:100%}
+    .nav-links a.active{color:#fff}
+    .nav-links a.active::after{width:100%}
+    .nav-actions{display:none;align-items:center;gap:12px}
+    @media(min-width:768px){.nav-actions{display:flex}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;padding:10px 20px;border-radius:8px;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out);min-height:44px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .btn-outline{background:transparent;color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25)}
+    .btn-outline:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.4)}
+    .hamburger{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    @media(min-width:768px){.hamburger{display:none}}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all 250ms var(--ease-out)}
+    .mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--dark);padding:24px 16px;border-top:1px solid rgba(255,255,255,.06);z-index:99}
+    .mobile-menu.open{display:block}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .mobile-menu ul a{display:block;color:rgba(255,255,255,.8);text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:500;transition:all 150ms}
+    .mobile-menu ul a:hover{background:rgba(255,255,255,.06);color:#fff}
+    .mobile-actions{display:flex;gap:12px}
+    .mobile-actions .btn{flex:1}
+
+    /* ── POST HERO ── */
+    .post-hero{background:var(--dark);padding-top:72px;position:relative;overflow:hidden}
+    .post-hero::before{content:'';position:absolute;inset:0;background:rgba(27,28,28,.6);pointer-events:none;z-index:0}
+    .post-breadcrumb{display:flex;align-items:center;gap:8px;padding:40px 0 0;font-size:13px;font-weight:600;color:rgba(255,255,255,.4);position:relative;z-index:1;flex-wrap:wrap}
+    .post-breadcrumb a{color:rgba(255,255,255,.4);text-decoration:none;transition:color 150ms}
+    .post-breadcrumb a:hover{color:rgba(255,255,255,.75)}
+    .post-breadcrumb-current{color:rgba(255,255,255,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+    @media(min-width:640px){.post-breadcrumb-current{max-width:480px}}
+    .post-hero-text{padding:28px 0 40px;position:relative;z-index:1;max-width:820px}
+    .post-cat-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:9999px;background:var(--primary);color:#fff;margin-bottom:18px}
+    .post-title{font-size:clamp(1.75rem,4vw + .5rem,3rem);font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1.1;margin-bottom:24px}
+    .post-excerpt{font-size:17px;color:rgba(255,255,255,.6);line-height:1.75;margin-bottom:32px;max-width:680px}
+    .post-meta-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:40px}
+    .post-author-wrap{display:flex;align-items:center;gap:10px}
+    .post-author-dot{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+    .post-author-name{font-size:14px;font-weight:700;color:#fff}
+    .post-author-date{font-size:12px;color:rgba(255,255,255,.45);margin-top:1px}
+    .post-meta-sep{width:1px;height:28px;background:rgba(255,255,255,.12)}
+    .post-meta-pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:rgba(255,255,255,.5)}
+    .post-meta-pill svg{color:var(--primary)}
+    .post-hero-img-wrap{position:relative;z-index:1}
+    .post-hero-img{width:100%;height:320px;object-fit:cover;display:block;border-radius:16px 16px 0 0}
+    @media(min-width:640px){.post-hero-img{height:400px}}
+    @media(min-width:1024px){.post-hero-img{height:500px}}
+
+    /* ── ARTICLE BODY ── */
+    .article-outer{background:#fff;padding:0}
+    .article-wrap{max-width:740px;margin:0 auto;padding:64px 0 80px}
+    @media(min-width:640px){.article-wrap{padding:72px 0 96px}}
+    .article-block{margin-bottom:52px}
+    .article-block:last-child{margin-bottom:0}
+    .article-h2{font-size:clamp(1.2rem,2vw + .2rem,1.65rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;line-height:1.25;margin-bottom:20px;padding-top:8px}
+    .article-p{font-size:17px;color:var(--on-surface-v);line-height:1.85;margin-bottom:18px}
+    .article-p:last-of-type{margin-bottom:0}
+    .article-figure{margin:36px 0 0;border-radius:16px;overflow:hidden}
+    .article-figure img{width:100%;height:auto;max-height:440px;object-fit:cover;display:block}
+    .article-divider{border:none;border-top:1px solid var(--surface-mid);margin:0 0 52px}
+
+    /* ── RELATED / KEEP EXPLORING ── */
+    .related-section{background:var(--surface-low);padding:80px 0}
+    @media(min-width:1024px){.related-section{padding:96px 0}}
+    .section-tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--primary);margin-bottom:12px}
+    .section-tag::before{content:'';display:block;width:20px;height:2px;background:var(--primary);border-radius:2px}
+    .related-title{font-size:clamp(1.4rem,2.5vw + .3rem,2rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;line-height:1.2;margin-bottom:8px}
+    .related-title span{color:var(--primary)}
+    .related-sub{font-size:15px;color:var(--on-surface-v);margin-bottom:40px;line-height:1.65}
+    .related-grid{display:grid;grid-template-columns:1fr;gap:24px}
+    @media(min-width:640px){.related-grid{grid-template-columns:repeat(3,1fr)}}
+    .rel-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-card);cursor:pointer;transition:all 250ms var(--ease-out);display:flex;flex-direction:column;text-decoration:none;color:inherit}
+    .rel-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover)}
+    .rel-card-img{position:relative;overflow:hidden;flex-shrink:0}
+    .rel-card-img img{width:100%;height:200px;object-fit:cover;display:block;transition:transform 400ms var(--ease-out)}
+    .rel-card:hover .rel-card-img img{transform:scale(1.06)}
+    .rel-card-badge{position:absolute;top:12px;left:12px;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:9999px;letter-spacing:.05em;text-transform:uppercase}
+    .rel-card-body{padding:20px;flex:1;display:flex;flex-direction:column;gap:10px}
+    .rel-card-title{font-size:15px;font-weight:700;color:var(--dark);line-height:1.35;letter-spacing:-.01em;flex:1}
+    .rel-card-meta{font-size:12px;color:var(--outline);font-weight:500;display:flex;align-items:center;gap:5px}
+
+    /* ── NEWSLETTER ── */
+    .newsletter-section{background:url('Home_images/Footer section background.png') center/cover no-repeat;position:relative;overflow:hidden;padding:80px 0}
+    .newsletter-inner{max-width:600px;margin:0;text-align:left;position:relative;z-index:1}
+    .section-tag-light{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:12px}
+    .section-tag-light::before{content:'';display:block;width:20px;height:2px;background:rgba(255,255,255,.8);border-radius:2px}
+    .newsletter-title{font-size:clamp(1.5rem,3vw + .5rem,2.2rem);font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:12px}
+    .newsletter-sub{font-size:16px;color:rgba(255,255,255,.75);margin-bottom:32px}
+    .newsletter-form{display:flex;gap:8px;max-width:480px;margin:0}
+    @media(max-width:480px){.newsletter-form{flex-direction:column}}
+    .newsletter-input{flex:1;padding:14px 20px;border-radius:12px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-family:'Manrope',sans-serif;font-size:15px;outline:none;transition:border-color 150ms;min-height:52px}
+    .newsletter-input::placeholder{color:rgba(255,255,255,.55)}
+    .newsletter-input:focus{border-color:rgba(255,255,255,.5)}
+    .newsletter-btn{background:#fff;color:var(--primary);border:none;padding:14px 28px;border-radius:12px;font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;cursor:pointer;min-height:52px;transition:all 150ms;white-space:nowrap}
+    .newsletter-btn:hover{background:var(--primary-light);transform:scale(1.02)}
+    .newsletter-btn:active{transform:scale(.98)}
+
+    /* ── FOOTER ── */
+    .footer{background:#111212;padding:64px 0 0;border-top:1px solid rgba(255,255,255,.06)}
+    .footer-grid{display:grid;grid-template-columns:1fr;gap:40px;margin-bottom:48px}
+    @media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+    .footer-brand-desc{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;max-width:300px;margin-top:16px}
+    .footer-social{display:flex;gap:12px;margin-top:20px}
+    .footer-social a{width:38px;height:38px;background:rgba(255,255,255,.06);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);text-decoration:none;transition:all 150ms}
+    .footer-social a:hover{background:rgba(246,109,9,.15);color:var(--primary)}
+    .footer-social a svg{width:16px;height:16px}
+    .footer-col-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .footer-links a{font-size:14px;color:rgba(255,255,255,.55);text-decoration:none;transition:color 150ms;font-weight:500}
+    .footer-links a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding:24px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .footer-bottom p{font-size:13px;color:rgba(255,255,255,.35)}
+    .footer-legal{display:flex;gap:20px}
+    .footer-legal a{font-size:13px;color:rgba(255,255,255,.35);text-decoration:none;transition:color 150ms}
+    .footer-legal a:hover{color:rgba(255,255,255,.7)}
+
+    /* ── REVEAL ── */
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 600ms var(--ease-out),transform 600ms var(--ease-out)}
+    body.anim .reveal.revealed{opacity:1;transform:none}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Eatz home">
+        <span class="accent">E</span>atz<span class="dot" aria-hidden="true"></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Reservation</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="blog.html" class="active" aria-current="page">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="#" class="btn btn-outline">Sign In</a>
+        <a href="menu.html" class="btn btn-primary">Order Now</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul role="list">
+      <li><a href="menu.html" onclick="closeMenu()">Menu</a></li>
+      <li><a href="reservation.html" onclick="closeMenu()">Reservation</a></li>
+      <li><a href="about.html" onclick="closeMenu()">About us</a></li>
+      <li><a href="blog.html" onclick="closeMenu()">Blog</a></li>
+      <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="#" class="btn btn-outline">Sign In</a>
+      <a href="menu.html" class="btn btn-primary">Order Now</a>
+    </div>
+  </div>
+
+  <main id="main-content">
+
+    <!-- POST HERO -->
+    <section class="post-hero" id="post-hero-section" aria-labelledby="post-title">
+      <div class="container">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb" id="post-breadcrumb"></nav>
+        <div class="post-hero-text reveal" id="post-hero-text"></div>
+      </div>
+      <div class="post-hero-img-wrap">
+        <div class="container" style="padding-left:0;padding-right:0">
+          <img id="post-hero-img" src="" alt="" class="post-hero-img" loading="eager">
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTICLE BODY -->
+    <section class="article-outer" aria-label="Article content">
+      <div class="container">
+        <div class="article-wrap" id="article-content"></div>
+      </div>
+    </section>
+
+    <!-- RELATED POSTS -->
+    <section class="related-section" aria-labelledby="related-heading">
+      <div class="container">
+        <div id="related-header" class="reveal"></div>
+        <div class="related-grid" id="related-grid"></div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter-section" aria-labelledby="nl-h2">
+      <div class="container">
+        <div class="newsletter-inner">
+          <div class="section-tag-light">Stay Updated</div>
+          <h2 class="newsletter-title" id="nl-h2">Sign Up for<br>Tasty Updates</h2>
+          <p class="newsletter-sub">Exclusive deals, new menu alerts, and chef-curated recipes straight to your inbox.</p>
+          <form class="newsletter-form" onsubmit="handleNewsletter(event)" novalidate>
+            <label for="nl-email" class="sr-only">Email address</label>
+            <input type="email" id="nl-email" name="email" class="newsletter-input" placeholder="Your email address" required aria-required="true">
+            <button type="submit" class="newsletter-btn">Subscribe <i data-lucide="send" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px"></i></button>
+          </form>
+          <p style="font-size:12px;color:rgba(255,255,255,.5);margin-top:16px">No spam, unsubscribe anytime.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="nav-logo" style="font-size:32px" aria-label="Eatz home"><span class="accent">E</span>atz<span class="dot" style="width:10px;height:10px" aria-hidden="true"></span></a>
+          <p class="footer-brand-desc">Eatz connects food lovers with the best local restaurants. Fresh ingredients, bold flavors, fast delivery — every single time.</p>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="TikTok"><i data-lucide="music-2"></i></a>
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="menu.html">Browse Menu</a></li>
+            <li><a href="reservation.html">Reserve a Table</a></li>
+            <li><a href="index.html#catering">Catering</a></li>
+            <li><a href="blog.html">Food Stories</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links">
+            <li><a href="about.html">About Eatz</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Partner With Us</a></li>
+            <li><a href="blog.html">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links">
+            <li><a href="index.html#faq">Help Center</a></li>
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Refund Policy</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Eatz. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ─────────────── POST DATA ─────────────── */
+    const POSTS = {
+      'smash-burger': {
+        title: 'The Science Behind the Perfect Smash Burger',
+        category: 'Recipe',
+        author: 'Marco Rodriguez',
+        authorInitial: 'M',
+        authorColor: '#f66d09',
+        date: 'May 28, 2026',
+        readTime: '5 min read',
+        heroImage: 'Home_images/The Science Behind the Perfect Smash Burger.jpg',
+        excerpt: 'What separates a good burger from an unforgettable one? We break down the Maillard reaction, the ideal fat ratio, and the smash technique that creates the ultimate crust.',
+        sections: [
+          {
+            heading: 'The Maillard Reaction — Your Crust\'s Best Friend',
+            body: 'When a beef patty hits a screaming-hot surface, something magical happens: hundreds of new flavour compounds form in milliseconds. This is the Maillard reaction — the chemical ballet between amino acids and reducing sugars that gives your burger its deep, caramelised crust. The key is temperature. Your pan or griddle needs to be ripping hot before the meat touches it, ideally above 180°C (350°F), so the surface moisture evaporates instantly and browning begins rather than steaming.\n\nMost home cooks make the mistake of letting the pan warm up gradually. A cast-iron skillet or a flat-top steel griddle retains heat far better than non-stick, and that retained heat is what allows you to cook multiple patties without the surface temperature dropping. Pre-heat your surface for at least 3–4 minutes on high before you start.',
+            image: null
+          },
+          {
+            heading: 'Choosing the Right Beef — Fat Is Flavour',
+            body: 'The ideal smash burger starts with an 80/20 blend — 80% lean beef to 20% fat. That fat is the source of richness, juiciness, and the sizzle you hear when the patty hits the griddle. A leaner grind, say 90/10, produces a drier, tougher patty that is harder to smash without tearing.\n\nFor the best results, ask your butcher for a coarse grind of chuck with a fat cap. Chuck has a naturally beefy flavour profile that holds up beautifully under high heat. If you are grinding at home, chill your grinder and the meat before processing — this keeps the fat from smearing and ensures a cleaner, more textured grind.',
+            image: 'Home_images/Classic Smash Burger.jpg'
+          },
+          {
+            heading: 'The Smash — Timing, Pressure, Patience',
+            body: 'The smash itself is a brief but critical moment. Roll your loose beef into a ball roughly the size of a golf ball — around 85g (3oz) — and place it directly onto your screaming-hot surface. Immediately place a sheet of parchment paper over the top and press down firmly with a heavy spatula for 10–15 seconds. You want the patty to spread to roughly 10–12cm in diameter.\n\nHere is what makes or breaks the technique: do not smash again after those first 15 seconds. The patty has already formed its crust, and a second press will squeeze out the juices you just locked in. Season generously with salt and pepper immediately after smashing. Flip only once, after about 90 seconds, and add your cheese during the last 30 seconds for a perfect melt.',
+            image: null
+          },
+          {
+            heading: 'Building the Stack — Sauce, Crunch, Balance',
+            body: 'A smash burger is as much about the build as the patty. Toast your brioche bun cut-side down on the same griddle — the residual fat from the patties will give it a golden, buttery char. For sauce, a classic smash sauce of mayo, ketchup, mustard, diced pickle, and a pinch of garlic powder hits every note: creamy, tangy, sweet, and savoury.\n\nLayer in thinly sliced white onion, iceberg lettuce for crunch, a bread-and-butter pickle slice, and your melted American or cheddar cheese. Two smashed patties stacked with cheese in between — the double smash — is the gold standard. Every bite should deliver beef, sauce, crunch, and softness all at once.',
+            image: null
+          }
+        ],
+        related: ['fresh-herbs', 'lava-cake', 'lemon-mint-tea']
+      },
+
+      'fresh-herbs': {
+        title: 'Fresh Herbs That Make Every Dish Better',
+        category: 'Cooking Tips',
+        author: 'Aisha Thompson',
+        authorInitial: 'A',
+        authorColor: '#9e4300',
+        date: 'May 20, 2026',
+        readTime: '6 min read',
+        heroImage: 'about_us_images/About us imag2.jpg',
+        excerpt: 'Unlock the power of fresh herbs — from fragrant basil to earthy thyme. A simple handful can transform any ordinary recipe into something that tastes straight from a fine-dining kitchen.',
+        sections: [
+          {
+            heading: 'Finding the Spark of Inspiration',
+            body: 'Fresh herbs are arguably the most underused tool in the home cook\'s arsenal. A sprig of thyme dropped into a pan of roasting vegetables costs almost nothing but adds a layer of savoury, woodsy depth that no spice jar can replicate. The volatile oils in fresh herbs are at their most potent right after you tear or chop them, which is why even a small amount added at the end of cooking can completely transform a dish.\n\nThe key is knowing which herbs thrive under heat and which should be kept raw. Hardy herbs like rosemary, thyme, sage, and bay leaves can withstand long cooking times and actually improve with heat exposure. Delicate herbs — basil, parsley, chives, mint, coriander — should be added off the heat, just before serving, to preserve their colour and fragrance.',
+            image: null
+          },
+          {
+            heading: 'The Art of Experimentation',
+            body: 'Once you understand the basics, the real joy is in breaking the rules. Traditional Italian cooking rarely uses coriander, but a handful scattered over a bowl of creamy polenta adds a citrusy brightness that surprises and delights. French cooking owns tarragon, but its anise-like flavour is phenomenal paired with pan-seared fish in any cuisine.\n\nA useful exercise: next time you cook a dish you know by heart — pasta, scrambled eggs, roast chicken — pick one herb you have never used in that context and add it. You might discover that dill in scrambled eggs is revelatory, or that a small amount of finely chopped rosemary in dark chocolate cookies creates an almost savoury, complex sweetness that is completely addictive.',
+            image: 'about_us_images/About us imag2.jpg'
+          },
+          {
+            heading: 'Tasting and Perfecting',
+            body: 'The best chefs taste constantly. They season, taste, adjust, and taste again. Bring this habit into your herb usage: add a small amount, taste, then decide if the dish needs more or a complementary herb to round it out. Basil and oregano together create a classic tomato-sauce depth. Mint and parsley together brighten a grain salad beyond what either could achieve alone.\n\nGrow a small pot of mixed herbs on your windowsill — basil, mint, chives, and flat-leaf parsley are the easiest to maintain. Having fresh herbs at arm\'s reach makes it effortless to snip a few leaves into whatever you\'re cooking, turning an everyday meal into something that tastes genuinely cared for.',
+            image: 'about_us_images/Aboutus image5.jpg'
+          },
+          {
+            heading: 'Sharing the Love',
+            body: 'Herbs are generous — they regrow quickly, they can be dried and gifted, and they make excellent talking points at a dinner table. Bring a bunch of fresh basil when you visit a friend who cooks. Dry a bundle of your garden thyme and keep it in a pretty jar on the counter. Let herbs become a living part of your kitchen rather than an afterthought reserved for special occasions.\n\nAt Eatz, every dish that leaves our kitchen carries at least one fresh herb. It\'s our quiet promise to you: that each plate has been thought about, tended, and finished with care. Because great food is never an accident — it\'s the result of a hundred small, deliberate choices.',
+            image: null
+          }
+        ],
+        related: ['smash-burger', 'healthy-dining', 'lava-cake']
+      },
+
+      'eatz-lifestyle': {
+        title: 'Check Out Eatz — We Bet You Can\'t Get Enough!',
+        category: 'Lifestyle',
+        author: 'Sofia Mendes',
+        authorInitial: 'S',
+        authorColor: '#635d57',
+        date: 'May 14, 2026',
+        readTime: '4 min read',
+        heroImage: 'Home_images/Classic Smash Burger.jpg',
+        excerpt: 'There\'s a reason our regulars keep coming back — and it\'s not just the food. Discover the Eatz experience: bold flavours, warm hospitality, and a community built around great meals.',
+        sections: [
+          {
+            heading: 'More Than a Meal — It\'s a Mood',
+            body: 'Walk through the doors of any Eatz location and you\'ll immediately feel it: the warmth of a kitchen that actually cares. The sizzle of a griddle, the scent of fresh herbs, the clatter of a well-run kitchen — these are not background noises, they are the soundtrack of a place where food is taken seriously and enjoyed freely.\n\nOur team obsesses over every detail, from the temperature of the plates we serve on to the way a burger is stacked so that the first bite delivers everything at once. This is the Eatz philosophy: if it\'s worth eating, it\'s worth doing properly.',
+            image: 'Home_images/Classic Smash Burger.jpg'
+          },
+          {
+            heading: 'The Community That Keeps Us Going',
+            body: 'What makes Eatz truly special is not any single dish — it\'s the people who share them. Families celebrating milestones, friends catching up over sharing platters, solo diners with a book and a bowl of ramen — they all find a home here. We\'ve watched couples return on anniversaries to the table where they had their first date. We\'ve catered graduation parties for kids who used to come in after school.\n\nEvery order tells a story, and we\'re honoured to be part of so many of them.',
+            image: null
+          },
+          {
+            heading: 'Why You Keep Coming Back',
+            body: 'Regulars tell us the same thing: they\'ve tried to recreate our dishes at home, and while their attempts are good, something is always missing. That something is partly technique — years of practice behind the pass. But it\'s also consistency: every smash burger, every taco, every lava cake that leaves our kitchen has been made to the exact same standard as the one before it.\n\nWe source the same farms, use the same suppliers, and maintain the same kitchen discipline whether it\'s a Tuesday lunch or a Saturday dinner rush. That reliability is a promise we take seriously.',
+            image: null
+          },
+          {
+            heading: 'Come Hungry, Leave Happy',
+            body: 'If you\'ve never visited an Eatz location, make this the week you do. If you\'re already a regular, bring someone new — there\'s nothing quite like watching a first-timer try a smash burger for the first time.\n\nAnd if you\'re somewhere we can\'t reach yet, follow our blog. We\'ll bring the recipes, the tips, and the stories to you — until we can bring the food.',
+            image: null
+          }
+        ],
+        related: ['feast-party', 'refreshing-drinks', 'party-platters']
+      },
+
+      'feast-party': {
+        title: 'How to Host the Ultimate Feast Party for Your Guests',
+        category: 'Catering',
+        author: 'Aisha Thompson',
+        authorInitial: 'A',
+        authorColor: '#9e4300',
+        date: 'May 8, 2026',
+        readTime: '7 min read',
+        heroImage: 'Home_images/Corporate Events.jpg',
+        excerpt: 'Hosting a feast is an art form. From planning the menu to setting the scene, we walk you through everything you need to throw a dinner party your guests will talk about for months.',
+        sections: [
+          {
+            heading: 'Start With a Menu That Tells a Story',
+            body: 'The best dinner parties have a culinary theme — not a rigid one, but a thread that runs through every course and makes the meal feel considered. Whatever you choose, build your menu so that each dish complements the one before it: a light, acidic starter opens the palate for a rich main, and a refreshing dessert closes the loop.\n\nAim for variety in texture and temperature: something crunchy alongside something creamy, something warm alongside something chilled. This contrast is what keeps guests excited from the first bite to the last.',
+            image: 'Home_images/Corporate Events.jpg'
+          },
+          {
+            heading: 'Prepare Everything You Can the Day Before',
+            body: 'The secret weapon of every experienced host is mise en place — having everything prepared, measured, and ready before cooking begins. For a feast party, this extends to the day before: marinate proteins overnight, make sauces and dressings in advance, prep vegetables so they just need a final roast or sauté on the day.\n\nThis approach lets you actually enjoy the party. There is nothing worse than being trapped in the kitchen while your guests are having fun without you. With 90% of the work done, you can be present at the table, glass in hand, soaking it all in.',
+            image: null
+          },
+          {
+            heading: 'Setting the Scene — Ambience Is Everything',
+            body: 'Great food in a bland setting only goes so far. Invest a little time in the table: candles, a simple centrepiece, cloth napkins, and enough room between place settings so guests don\'t feel crammed together. Low, warm lighting makes food look more appetising and people feel more relaxed.\n\nCreate a playlist before the party — something upbeat during drinks and starters, then something more relaxed as the meal progresses. Music at the right volume fills the silence without competing with conversation.',
+            image: 'Home_images/Weddings & Galas.jpg'
+          },
+          {
+            heading: 'The One Rule of Hosting',
+            body: 'There is only one rule that truly matters when hosting: make your guests feel welcome from the moment they arrive. Offer a drink before they\'ve even sat down. Introduce people who don\'t know each other. Check in during the meal without hovering.\n\nAnd at the end of the night, send them home with a small takeaway — a jar of the sauce from dinner, a slice of leftover cake, a handwritten recipe card. These gestures cost almost nothing but are remembered for years.',
+            image: null
+          }
+        ],
+        related: ['party-platters', 'catering-mistakes', 'eatz-lifestyle']
+      },
+
+      'lemon-mint-tea': {
+        title: 'The Perfect Lemon Mint Iced Tea Recipe for Hot Days',
+        category: 'Recipe',
+        author: 'Marco Rodriguez',
+        authorInitial: 'M',
+        authorColor: '#f66d09',
+        date: 'May 2, 2026',
+        readTime: '4 min read',
+        heroImage: 'Home_images/Spicy Tuna Roll.jpg',
+        excerpt: 'Cool down with this crowd-pleasing lemon mint iced tea — naturally refreshing, perfectly balanced, and ready in under 20 minutes. It\'s summer in a glass.',
+        sections: [
+          {
+            heading: 'Why This Recipe Works',
+            body: 'Most iced teas suffer from one of two problems: they\'re either too bitter because the tea has been steeped in water that\'s too hot, or they\'re too sweet, drowning the natural flavour in syrup. This recipe solves both issues with a two-step approach: cold-brew the tea overnight for a smooth, never-bitter base, then balance it with a homemade mint simple syrup.\n\nThe lemon adds brightness that ties everything together — not just as garnish, but as a core component of the flavour profile. Freshly squeezed only; bottled lemon juice lacks the volatile oils that make fresh citrus so alive.',
+            image: null
+          },
+          {
+            heading: 'The Cold-Brew Method',
+            body: 'Place four English Breakfast or Darjeeling tea bags in a large jug with one litre of cold, filtered water. Cover and refrigerate for 8–12 hours. Cold brewing extracts the flavour compounds slowly, resulting in a remarkably smooth, clear tea without any of the tannin bitterness that hot brewing can produce.\n\nOnce brewed, remove the tea bags without squeezing them — squeezing releases bitter compounds back into the liquid. Your cold brew should be a deep amber, clean and clear.',
+            image: 'Home_images/Spicy Tuna Roll.jpg'
+          },
+          {
+            heading: 'Making the Mint Simple Syrup',
+            body: 'Combine equal parts water and sugar (100g each) in a small saucepan over medium heat. Stir until the sugar dissolves — about two minutes. Remove from heat, add a generous handful of fresh mint leaves (roughly 20–25 leaves), and let them steep in the warm syrup for 15 minutes. Strain out the mint and allow the syrup to cool completely.\n\nThis syrup can be made up to a week in advance and stored in a sealed jar in the refrigerator. It\'s also excellent in sparkling water, cocktails, or drizzled over a fruit salad.',
+            image: null
+          },
+          {
+            heading: 'Assembly and Serving',
+            body: 'Combine the cold-brewed tea with the mint syrup to taste — start with 50ml of syrup per litre of tea and adjust from there. Squeeze in the juice of two lemons and stir well. Serve over plenty of ice in tall glasses, garnished with a sprig of fresh mint, a thin lemon wheel, and optionally a pinch of flaky sea salt on the rim.\n\nFor a party, make a double batch and serve from a large glass jug or dispenser — it looks beautiful and people appreciate being able to help themselves.',
+            image: null
+          }
+        ],
+        related: ['refreshing-drinks', 'smash-burger', 'fresh-herbs']
+      },
+
+      'sushi-guide': {
+        title: 'Your Complete Guide to Ordering Sushi Like a Pro',
+        category: 'Food Guide',
+        author: 'Kenji Watanabe',
+        authorInitial: 'K',
+        authorColor: '#635d57',
+        date: 'May 1, 2026',
+        readTime: '7 min read',
+        heroImage: 'Home_images/Your Complete Guide to Ordering Sushi Like a Pro.jpg',
+        excerpt: 'New to sushi? We cover everything from nigiri to omakase so your next order is a confident, delicious one — no confusion, no intimidation.',
+        sections: [
+          {
+            heading: 'Understanding the Menu — Types of Sushi',
+            body: 'Sushi menus can feel overwhelming at first, but the categories are quite simple once you understand them. Nigiri is the purest form: a hand-pressed mound of vinegared rice with a slice of fish or seafood on top. Sashimi is just the fish alone, no rice — ideal for appreciating the raw ingredient at its finest. Maki refers to rolls: fish and fillings wrapped in rice and nori (seaweed), then sliced into rounds.\n\nThen there are uramaki (inside-out rolls, where the rice is on the outside), temaki (hand rolls served in a cone of nori), and gunkan (boat-shaped sushi, usually for soft toppings like sea urchin or salmon roe). Knowing these terms means you can navigate any menu with confidence.',
+            image: 'Home_images/Your Complete Guide to Ordering Sushi Like a Pro.jpg'
+          },
+          {
+            heading: 'How to Order — Building a Balanced Spread',
+            body: 'A well-ordered sushi meal progresses from lighter to richer flavours. Start with simpler, cleaner pieces: white fish nigiri like flounder or sea bream, or a delicate cucumber maki. As your palate warms up, move to richer, fattier options: salmon belly, tuna, or sea urchin.\n\nFor a group, order a mix of individual pieces and rolls. A good rule of thumb: two to three nigiri pieces per person as a starter, one or two rolls to share, and individual sashimi for anyone who wants to focus purely on the fish.',
+            image: 'Home_images/Spicy Tuna Roll.jpg'
+          },
+          {
+            heading: 'Etiquette — The Unwritten Rules',
+            body: 'You can eat nigiri with your fingers — this is actually the traditional method and is perfectly acceptable in Japanese sushi culture. When dipping nigiri in soy sauce, dip the fish side, not the rice side — rice absorbs too much soy and can cause the piece to fall apart, while fish-side dipping seasons the ingredient you\'re tasting.\n\nNever mix wasabi into the soy sauce dish. In quality sushi restaurants, the chef will have already applied the appropriate amount of wasabi between the fish and rice. Apply wasabi directly to the fish if you want extra heat.',
+            image: null
+          },
+          {
+            heading: 'What Is Omakase — And Should You Try It?',
+            body: 'Omakase means "I leave it up to you" — you surrender the menu to the chef and trust them to bring you the best of what\'s fresh and available that day. It\'s typically a multi-course experience, starting light and building in richness, with the chef explaining each piece as they present it.\n\nOmakase is ideal for anyone who wants to experience a sushi chef\'s full repertoire and seasonal sensibility. It\'s usually more expensive, but the experience of having a meal curated entirely for you — with pieces timed, portioned, and explained — is unlike anything else in fine dining. If the opportunity arises, say yes.',
+            image: null
+          }
+        ],
+        related: ['fresh-herbs', 'healthy-dining', 'lava-cake']
+      },
+
+      'catering-mistakes': {
+        title: '7 Catering Mistakes to Avoid at Your Next Big Event',
+        category: 'Catering',
+        author: 'Aisha Thompson',
+        authorInitial: 'A',
+        authorColor: '#9e4300',
+        date: 'Apr 25, 2026',
+        readTime: '6 min read',
+        heroImage: 'Home_images/7 Catering Mistakes to Avoid at Your Next Big Event.jpg',
+        excerpt: 'Don\'t let logistics ruin your celebration. Our catering pros share the most common pitfalls — and exactly how to dodge every one of them.',
+        sections: [
+          {
+            heading: 'Mistakes 1–3: Planning and Portions',
+            body: 'The first mistake is underestimating quantities. Guests always eat more at events than they would at home — the excitement of a celebration, the variety of options, and the social atmosphere all contribute to increased appetite. A safe rule: plan for 20% more food than you think you need. Running out is a catering catastrophe; a little extra is always appreciated or can be packed up as take-home boxes.\n\nMistake two is ignoring dietary requirements until the last minute. Ask guests for dietary needs directly when invitations go out. Compile the list well before the event and brief your caterer thoroughly. Vegan, gluten-free, and nut-free requirements are not niche anymore — they\'re the norm at most gatherings.\n\nThird: booking a caterer without tasting the food first. Always request a tasting before signing a contract. Menus on paper can sound wonderful; the proof is in the actual dish.',
+            image: 'Home_images/7 Catering Mistakes to Avoid at Your Next Big Event.jpg'
+          },
+          {
+            heading: 'Mistakes 4–5: Logistics and Timing',
+            body: 'Mistake four is not having a clear service timeline. Catering without a schedule is a recipe for chaos. Work with your caterer to map out exactly when canapés will be served, when the main service starts, and when the kitchen needs to pack down. Share this timeline with your event coordinator and venue manager — everyone must be on the same page.\n\nMistake five is neglecting the food holding situation. If food is prepared off-site and transported, it needs proper warming equipment at the venue. Ask your caterer specifically how they plan to keep hot food hot and cold food cold. Chafing dishes, insulated containers, and refrigerated transport are non-negotiable for food safety and quality.',
+            image: null
+          },
+          {
+            heading: 'Mistakes 6–7: Presentation and Communication',
+            body: 'Mistake six is underinvesting in presentation. Guests eat with their eyes first. Beautifully arranged platters and thoughtfully decorated stations elevate the entire perceived quality of the food. Ask your caterer how they approach table presentation and whether they provide tablecloths, risers, and decorative elements.\n\nFinally, mistake seven: poor communication between host and caterer on the day. Designate one person — ideally your event coordinator — as the single point of contact for the catering team. Multiple people giving instructions leads to confusion. A clear chain of communication means your catering team can execute efficiently without interrupting you during your own celebration.',
+            image: 'Home_images/Corporate Events.jpg'
+          },
+          {
+            heading: 'One Last Tip — Trust the Professionals',
+            body: 'You\'ve hired catering professionals for a reason. Once you\'ve briefed them thoroughly, communicated your expectations, and agreed on a detailed plan — let them do their job. Micromanaging a catering team on the day introduces anxiety into an already high-pressure environment and rarely improves outcomes.\n\nAt Eatz Catering, we\'ve delivered hundreds of events, from intimate garden parties to large corporate galas. Our promise is simple: we take care of the food so you can take care of your guests.',
+            image: null
+          }
+        ],
+        related: ['feast-party', 'party-platters', 'eatz-lifestyle']
+      },
+
+      'lava-cake': {
+        title: 'How to Make a Flawless Chocolate Lava Cake at Home',
+        category: 'Recipe',
+        author: 'Aisha Thompson',
+        authorInitial: 'A',
+        authorColor: '#9e4300',
+        date: 'Apr 18, 2026',
+        readTime: '8 min read',
+        heroImage: 'Home_images/Chocolate Lava Cake.jpg',
+        excerpt: 'Warm molten centre, crisp shell — this step-by-step guide takes all the mystery out of the fan-favourite dessert. Spoiler: it\'s easier than you think.',
+        sections: [
+          {
+            heading: 'The Science of the Molten Centre',
+            body: 'A chocolate lava cake is an exercise in precise timing. The goal is to bake the outside firmly while keeping the centre liquid enough to flow when the cake is cut open. The temperature differential between the cooked shell and the molten core is achieved by using the right amount of egg, the right oven temperature, and — critically — the right baking time.\n\nThe key variables are oven temperature (high and consistent, around 200°C / 400°F) and timing (usually 10–12 minutes). Even 60 seconds too long can take you from lava cake to over-baked brownie. Every oven is different, so the first time you make this recipe, bake a test cake before the real ones.',
+            image: 'Home_images/Chocolate Lava Cake.jpg'
+          },
+          {
+            heading: 'The Ingredients — Quality Above All',
+            body: 'This is a recipe where ingredient quality makes a profound difference. Use the best dark chocolate you can find — at least 70% cocoa solids, ideally from a single-origin bar with pronounced flavour notes. The chocolate is the star of the show; a bland, low-quality chocolate will produce a bland cake no matter how perfectly it\'s timed.\n\nFor the butter, use unsalted European-style with a higher fat content. The eggs should be at room temperature before you begin — cold eggs mixed into warm chocolate can cause the mixture to seize. Use both whole eggs and extra yolks: the yolks add richness and contribute to the molten texture, while the whole eggs provide structure to the shell.',
+            image: null
+          },
+          {
+            heading: 'Preparation — The Secret Is Getting Ahead',
+            body: 'One of the greatest things about this dessert is that the batter can be prepared completely, poured into greased ramekins, and refrigerated for up to 24 hours before baking. This makes it ideal for dinner parties — you can prepare everything in the afternoon and simply slide the ramekins into the oven 12 minutes before you\'re ready to serve dessert.\n\nGrease your ramekins generously with butter, then dust with cocoa powder (not flour — cocoa gives a richer exterior and the dark colour matches the cake). Tap out any excess. This coating is what allows the cake to release cleanly.',
+            image: null
+          },
+          {
+            heading: 'The Critical Bake — And the Reveal',
+            body: 'Bake at 200°C (fan/convection) for 10–11 minutes. The edges should be set and the top should look matte and barely firm to the touch. The centre will still look slightly underdone — that\'s exactly right. Remove from the oven and let the cakes rest in their ramekins for exactly 60 seconds.\n\nRun a thin knife around the edge of each ramekin, place your serving plate on top, and flip in one confident, swift motion. Lift the ramekin slowly — the cake should slide out cleanly. Dust with icing sugar, add a quenelle of vanilla ice cream, and serve immediately. The moment your guest cuts through the shell and the molten chocolate flows out is one of the most satisfying moments in cooking.',
+            image: null
+          }
+        ],
+        related: ['smash-burger', 'fresh-herbs', 'refreshing-drinks']
+      },
+
+      'refreshing-drinks': {
+        title: 'Refreshing Drinks to Beat the Summer Heat',
+        category: 'Lifestyle',
+        author: 'Marco Rodriguez',
+        authorInitial: 'M',
+        authorColor: '#f66d09',
+        date: 'Apr 12, 2026',
+        readTime: '4 min read',
+        heroImage: "Home_images/Chef's Special.jpg",
+        excerpt: 'Beat the heat with these crowd-pleasing beverages our chefs swear by — from herb-infused lemonades to chilled mocktails that look as good as they taste.',
+        sections: [
+          {
+            heading: 'Why Hydration Deserves More Creativity',
+            body: 'Water is essential, but when the temperature climbs, plain water can feel like a chore. The good news is that staying hydrated doesn\'t have to be boring. A few simple additions — fresh fruit, herbs, a splash of citrus, a light fizz — transform a glass of water into something genuinely exciting.\n\nOur kitchen team drinks constantly throughout a service, and over the years we\'ve developed a short list of house favourites that genuinely refresh rather than just quench. These are the ones we make at home too.',
+            image: "Home_images/Chef's Special.jpg"
+          },
+          {
+            heading: 'Cucumber, Basil & Lime Water',
+            body: 'Slice half a cucumber into thin rounds and add them to a large jug of cold water with the juice of two limes and a small handful of torn fresh basil. Refrigerate for at least two hours. The cucumber adds a clean, cool flavour; the basil provides a subtle savoury note; the lime gives it a bright, citrusy lift.\n\nThis is our number one recommendation for hot days: it\'s hydrating, it tastes sophisticated without being complicated, and a jug on the table makes any lunch feel like a restaurant experience.',
+            image: null
+          },
+          {
+            heading: 'Watermelon Mint Slush',
+            body: 'Blend 600g of seedless watermelon with the juice of one lime and a handful of mint leaves until completely smooth. Pass through a fine sieve for a clean, brilliant red juice. Pour over crushed ice and top with a splash of sparkling water for a light fizz.\n\nThis takes about five minutes to make and is genuinely one of the most refreshing things you can drink on a hot day. Watermelon is 92% water, naturally sweet, and full of electrolytes — it\'s practically a sports drink.',
+            image: null
+          },
+          {
+            heading: 'Our Signature Iced Hibiscus Lemonade',
+            body: 'Brew two tablespoons of dried hibiscus flowers in 500ml of just-boiled water for 10 minutes. Strain, sweeten lightly with honey while still warm, then chill completely. Mix with freshly squeezed lemon juice and cold water to taste, and serve over ice with a slice of lemon and a sprig of mint.\n\nThe colour alone is breathtaking — a deep magenta that turns heads at any table. The flavour is tart, floral, and complex: somewhere between cranberry and hibiscus tea, with the honey adding just enough warmth. It\'s our most-requested non-alcoholic drink at catering events.',
+            image: null
+          }
+        ],
+        related: ['lemon-mint-tea', 'eatz-lifestyle', 'healthy-dining']
+      },
+
+      'party-platters': {
+        title: 'Easy Party Platters That Will Wow Every Single Guest',
+        category: 'Catering',
+        author: 'Sofia Mendes',
+        authorInitial: 'S',
+        authorColor: '#635d57',
+        date: 'Apr 5, 2026',
+        readTime: '5 min read',
+        heroImage: 'Home_images/Weddings & Galas.jpg',
+        excerpt: 'Show-stopping platters that come together in under 30 minutes and look like a professional caterer spent all day on them. Entertaining just got a whole lot easier.',
+        sections: [
+          {
+            heading: 'The Art of the Charcuterie Board',
+            body: 'A well-built charcuterie board is one of the most impressive things you can put on a table, and it requires zero cooking. The foundation is variety: two or three types of cured meat (prosciutto, salami, bresaola), two or three cheeses of different textures (a hard aged cheddar, a soft brie, a crumbly blue), and an array of accompaniments.\n\nFor the accompaniments, think in contrasts: something sweet (honeycomb, fig jam, dried apricots), something pickled (cornichons, cocktail onions), something crunchy (crackers, breadsticks, walnut halves), and something fresh (grapes, sliced apple, fresh figs). Arrange the meats in loose, flowing folds rather than flat stacks — volume and movement make the board look abundant.',
+            image: 'Home_images/Weddings & Galas.jpg'
+          },
+          {
+            heading: 'The Mezze Spread',
+            body: 'Middle Eastern mezze is perhaps the most naturally party-friendly food style in the world: a dozen small dishes, each delicious on its own, each even better when combined and shared. Start with store-bought hummus and baba ganoush and elevate them: swirl good olive oil over the hummus, scatter sumac and a few chickpeas, and add a pinch of smoked paprika to the baba ganoush.\n\nSurround these with warm flatbreads, tabbouleh, stuffed vine leaves, marinated olives, and a simple fattoush salad. The whole spread can be assembled in 20–25 minutes if the components are bought and simply dressed.',
+            image: null
+          },
+          {
+            heading: 'The Sharing Platter Mindset',
+            body: 'What makes a sharing platter successful is not the individual components — it\'s the intention behind how they\'re arranged. Fill every gap. Use small bowls and ramekins to add height. Use herbs as decoration: a few sprigs of rosemary tucked between the meats, a scattering of microgreens over a mezze spread.\n\nColour is your friend: aim for a range of tones — deep reds, creamy whites, vivid greens, golden browns. A platter that looks vibrant signals freshness and care, even before a single bite is taken.',
+            image: null
+          },
+          {
+            heading: 'Timing and Temperature',
+            body: 'Most party platter components are best served at room temperature, not straight from the refrigerator. Take cheese out 45 minutes before serving to allow it to come to temperature — cold cheese is harder and less flavourful than cheese at room temp. Similarly, cured meats develop more aroma when slightly warmed.\n\nAssemble platters no more than 20 minutes before guests arrive to keep everything looking fresh. If you need to prepare further in advance, cover tightly with cling film and refrigerate, then uncover and allow to come to room temperature before serving.',
+            image: null
+          }
+        ],
+        related: ['feast-party', 'catering-mistakes', 'eatz-lifestyle']
+      },
+
+      'healthy-dining': {
+        title: 'Healthy Dining Made Easy and Genuinely Delicious',
+        category: 'Food Guide',
+        author: 'Marco Rodriguez',
+        authorInitial: 'M',
+        authorColor: '#f66d09',
+        date: 'Mar 29, 2026',
+        readTime: '6 min read',
+        heroImage: 'about_us_images/Aboutus image5.jpg',
+        excerpt: 'Eating well doesn\'t mean sacrificing flavour. Discover our top tips for building balanced, satisfying meals that nourish your body and your taste buds.',
+        sections: [
+          {
+            heading: 'Rethinking "Healthy" Food',
+            body: 'The word "healthy" has been so thoroughly colonised by diet culture that it has almost lost its meaning. For many people it conjures images of sad salads and flavourless rice cakes. But cooking nutritiously does not require deprivation — it requires understanding how to build flavour using ingredients that also happen to be good for you.\n\nFresh herbs, quality olive oil, citrus, garlic, spices, and seasonal vegetables are some of the most flavourful ingredients on the planet. Building meals around these — with protein and whole grains as supporting players — naturally produces food that is both nourishing and genuinely satisfying.',
+            image: 'about_us_images/Aboutus image5.jpg'
+          },
+          {
+            heading: 'The Plate Method — Simple and Effective',
+            body: 'One of the most practical frameworks for balanced eating is the plate method: fill half your plate with non-starchy vegetables, a quarter with lean protein, and a quarter with whole grains or complex carbohydrates. This is not a diet — it\'s a proportion guide that automatically creates nutritional balance without any tracking or calculation.\n\nThe vegetables half of the plate is where flavour lives: roasted at high heat until caramelised, dressed with a punchy vinaigrette, or tossed with garlic and olive oil and finished with lemon zest. Give vegetables the same attention and seasoning you\'d give a protein and they will never feel like an afterthought.',
+            image: 'about_us_images/About us imag2.jpg'
+          },
+          {
+            heading: 'Smart Swaps That Don\'t Feel Like Sacrifices',
+            body: 'A few simple swaps can significantly improve the nutritional profile of favourite dishes without compromising on enjoyment. Use Greek yoghurt instead of sour cream — it has more protein, less fat, and the same creamy tang. Replace white rice with cauliflower rice (or try a 50/50 blend) for a dish that\'s lighter but still satisfying.\n\nThese are not tricks or punishments. They\'re just ways to explore new textures and flavours while inadvertently eating better. Done right, you won\'t miss what\'s been swapped out.',
+            image: null
+          },
+          {
+            heading: 'Cooking at Home Is the Single Biggest Win',
+            body: 'Every study on this subject points to the same conclusion: people who cook at home more often eat more nutritiously than those who rely on restaurants and takeaway. Not because home cooking is inherently better, but because it puts you in control of every ingredient, portion, and preparation method.\n\nStart with one extra home-cooked meal per week. Learn one new vegetable-centred recipe per month. Build the habit slowly, and before long, cooking well will feel effortless — and eating well will feel like the natural, joyful thing it was always meant to be.',
+            image: null
+          }
+        ],
+        related: ['fresh-herbs', 'sushi-guide', 'refreshing-drinks']
+      }
+    };
+
+    /* ─────────────── RENDER ─────────────── */
+    function renderPost(slug) {
+      const post = POSTS[slug];
+      document.title = post.title + ' — Eatz Blog';
+
+      /* Breadcrumb */
+      document.getElementById('post-breadcrumb').innerHTML =
+        '<a href="blog.html">Blog</a>' +
+        '<i data-lucide="chevron-right" style="width:14px;height:14px;flex-shrink:0"></i>' +
+        '<span class="post-breadcrumb-current">' + post.category + ' · ' + post.title + '</span>';
+
+      /* Hero text */
+      document.getElementById('post-hero-text').innerHTML =
+        '<span class="post-cat-badge">' + post.category + '</span>' +
+        '<h1 class="post-title" id="post-title">' + post.title + '</h1>' +
+        '<p class="post-excerpt">' + post.excerpt + '</p>' +
+        '<div class="post-meta-row">' +
+          '<div class="post-author-wrap">' +
+            '<div class="post-author-dot" style="background:' + post.authorColor + '">' + post.authorInitial + '</div>' +
+            '<div>' +
+              '<div class="post-author-name">' + post.author + '</div>' +
+              '<div class="post-author-date">' + post.date + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="post-meta-sep"></div>' +
+          '<span class="post-meta-pill"><i data-lucide="clock" style="width:14px;height:14px"></i>' + post.readTime + '</span>' +
+        '</div>';
+
+      /* Hero image */
+      const img = document.getElementById('post-hero-img');
+      img.src = post.heroImage;
+      img.alt = post.title;
+
+      /* Article sections */
+      const sectionsHTML = post.sections.map(function(section, idx) {
+        const paragraphs = section.body.split('\n\n').map(function(p) {
+          return '<p class="article-p">' + p + '</p>';
+        }).join('');
+        const figure = section.image
+          ? '<figure class="article-figure"><img src="' + section.image + '" alt="' + section.heading + '" loading="lazy"></figure>'
+          : '';
+        const divider = idx > 0 ? '<hr class="article-divider">' : '';
+        return divider +
+          '<div class="article-block reveal">' +
+            '<h2 class="article-h2">' + section.heading + '</h2>' +
+            paragraphs +
+            figure +
+          '</div>';
+      }).join('');
+      document.getElementById('article-content').innerHTML = sectionsHTML;
+
+      /* Related posts */
+      document.getElementById('related-header').innerHTML =
+        '<div class="section-tag">Keep Exploring</div>' +
+        '<h2 class="related-title" id="related-heading">More Stories <span>You\'ll Love</span></h2>' +
+        '<p class="related-sub">Handpicked from our kitchen — more great reads to keep your inspiration going.</p>';
+
+      const relatedHTML = post.related.map(function(relSlug) {
+        const rel = POSTS[relSlug];
+        if (!rel) return '';
+        return '<a href="blog-post.html?post=' + relSlug + '" class="rel-card reveal">' +
+          '<div class="rel-card-img">' +
+            '<img src="' + rel.heroImage + '" alt="' + rel.title + '" loading="lazy">' +
+            '<span class="rel-card-badge">' + rel.category + '</span>' +
+          '</div>' +
+          '<div class="rel-card-body">' +
+            '<div class="rel-card-title">' + rel.title + '</div>' +
+            '<div class="rel-card-meta"><i data-lucide="clock" style="width:12px;height:12px"></i>' + rel.readTime + '</div>' +
+          '</div>' +
+        '</a>';
+      }).join('');
+      document.getElementById('related-grid').innerHTML = relatedHTML;
+
+      /* Init icons + reveal */
+      requestAnimationFrame(function() {
+        lucide.createIcons();
+        document.body.classList.add('anim');
+        document.querySelectorAll('.reveal').forEach(function(el, i) {
+          setTimeout(function() { el.classList.add('revealed'); }, 60 + i * 50);
+        });
+      });
+    }
+
+    /* ─────────────── INIT ─────────────── */
+    (function() {
+      var slug = new URLSearchParams(window.location.search).get('post');
+      if (!slug || !POSTS[slug]) {
+        window.location.href = 'blog.html';
+        return;
+      }
+      renderPost(slug);
+    })();
+
+    /* Nav scroll */
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function() {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    /* Scroll reveal for in-view elements */
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); revealObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+
+    /* Mobile menu */
+    var hamburger = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen = false;
+    hamburger.addEventListener('click', function() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', String(menuOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!menuOpen));
+    });
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && menuOpen) closeMenu(); });
+
+    /* Newsletter */
+    function handleNewsletter(e) {
+      e.preventDefault();
+      var btn = e.target.querySelector('button');
+      btn.innerHTML = '&#10003; Subscribed!';
+      e.target.querySelector('input').value = '';
+      setTimeout(function() {
+        btn.innerHTML = 'Subscribe <i data-lucide="send" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px"></i>';
+        lucide.createIcons({ nodes: [btn] });
+      }, 3000);
+    }
+  </script>
+  <script src="cart.js"></script>
+</body>
+</html>
