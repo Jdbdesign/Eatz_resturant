@@ -94,13 +94,24 @@
     body.anim .reveal.revealed{opacity:1;transform:none}
 
     /* ── HERO ── */
-    .blog-hero{background:var(--dark);min-height:480px;display:flex;align-items:center;padding-top:72px;position:relative;overflow:hidden}
+    .blog-hero{background:var(--dark);min-height:540px;display:flex;align-items:center;padding-top:72px;position:relative;overflow:hidden}
     .blog-hero::before{content:'';position:absolute;inset:0;background:url('Home_images/The Science Behind the Perfect Smash Burger.jpg') center/cover no-repeat;opacity:.14;pointer-events:none}
     .blog-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(27,28,28,.97) 40%,rgba(27,28,28,.55) 100%);pointer-events:none}
-    .blog-hero-inner{position:relative;z-index:1;padding:80px 0;display:flex;align-items:center;gap:48px}
+    /* mobile: generous vertical breathing room, extra horizontal inset */
+    .blog-hero-inner{position:relative;z-index:1;padding:56px 8px;display:flex;align-items:center;gap:48px}
     .blog-hero-text{flex:1;min-width:0}
     .blog-hero-img-wrap{flex-shrink:0;width:500px;display:none;position:relative}
-    @media(min-width:1024px){.blog-hero-img-wrap{display:block}}
+    /* tablet: taller section, more vertical padding, no image */
+    @media(min-width:640px){
+      .blog-hero{min-height:560px}
+      .blog-hero-inner{padding:72px 0}
+    }
+    /* desktop: full two-column layout with image */
+    @media(min-width:1024px){
+      .blog-hero{min-height:600px}
+      .blog-hero-inner{padding:96px 0}
+      .blog-hero-img-wrap{display:block}
+    }
     .blog-hero-img{width:100%;height:auto;display:block;object-fit:contain}
     .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(246,109,9,.12);border:1px solid rgba(246,109,9,.25);color:var(--primary);padding:6px 14px;border-radius:9999px;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:24px}
     .hero-badge::before{content:'';width:6px;height:6px;background:var(--primary);border-radius:50%;animation:pulse 2s infinite}
