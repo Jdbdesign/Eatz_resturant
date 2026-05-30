@@ -91,7 +91,7 @@
     .hero-stat-num{font-size:24px;font-weight:800;color:#fff;letter-spacing:-.02em}
     .hero-stat-num .accent{color:var(--primary)}
     .hero-stat-label{font-size:13px;color:rgba(255,255,255,.5);font-weight:500}
-    .hero-img-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+    .hero-img-wrap{position:relative;display:flex;align-items:center;justify-content:flex-end}
     .hero-glow{position:absolute;width:85%;height:85%;background:radial-gradient(ellipse,rgba(246,109,9,.25) 0%,transparent 70%);border-radius:50%;filter:blur(40px)}
     .hero-img{width:100%;max-width:540px;aspect-ratio:1/1;object-fit:cover;border-radius:24px;position:relative;box-shadow:0 32px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05)}
     .float-card{position:absolute;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:var(--shadow-hover);display:flex;align-items:center;gap:10px}
@@ -124,8 +124,8 @@
     .cat-card{background:#fff;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all 250ms var(--ease-out);box-shadow:var(--shadow-card);border:2px solid transparent;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:12px}
     .cat-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover);border-color:var(--outline-v)}
     .cat-card.active{border-color:var(--primary);background:rgba(246,109,9,.04)}
-    .cat-icon{width:64px;height:64px;border-radius:16px;background:var(--surface-low);display:flex;align-items:center;justify-content:center;font-size:32px;transition:background 150ms}
-    .cat-card:hover .cat-icon,.cat-card.active .cat-icon{background:rgba(246,109,9,.1)}
+    .cat-img{width:80px;height:80px;object-fit:contain;transition:transform 250ms var(--ease-out);display:block}
+    .cat-card:hover .cat-img{transform:scale(1.1)}
     .cat-name{font-size:14px;font-weight:700;color:var(--dark)}
     .cat-count{font-size:12px;color:var(--outline);font-weight:500}
 
@@ -325,8 +325,6 @@
     .food-wish.liked .wish-svg{fill:#ef4444;stroke:#ef4444}
     .food-wish:hover .wish-svg{transform:scale(1.15)}
     .faq-icon .lucide{width:14px;height:14px;display:block}
-    .cat-icon [data-lucide],.cat-icon .lucide{width:36px;height:36px;color:var(--on-surface-v);transition:color 150ms}
-    .cat-card:hover .cat-icon .lucide,.cat-card.active .cat-icon .lucide{color:var(--primary)}
     .chef-social a .lucide{width:15px;height:15px;display:block;color:var(--on-surface-v);transition:color 150ms}
     .chef-social a:hover .lucide{color:#fff}
     .footer-social a .lucide{width:18px;height:18px;display:block;color:rgba(255,255,255,.65);transition:color 150ms}
@@ -450,12 +448,12 @@
           <a href="#" class="btn btn-ghost">View All →</a>
         </div>
         <div class="cats-grid reveal" role="list" aria-label="Food categories">
-          <a href="#" class="cat-card active" role="listitem"><div class="cat-icon" aria-hidden="true"><i data-lucide="sandwich"></i></div><div class="cat-name">Burgers</div><div class="cat-count">42 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><div class="cat-icon" aria-hidden="true"><i data-lucide="pizza"></i></div><div class="cat-name">Pizza</div><div class="cat-count">38 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><div class="cat-icon" aria-hidden="true"><i data-lucide="fish"></i></div><div class="cat-name">Sushi</div><div class="cat-count">29 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><div class="cat-icon" aria-hidden="true"><i data-lucide="utensils"></i></div><div class="cat-name">Pasta</div><div class="cat-count">24 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><div class="cat-icon" aria-hidden="true"><i data-lucide="salad"></i></div><div class="cat-name">Salads</div><div class="cat-count">18 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><div class="cat-icon" aria-hidden="true"><i data-lucide="cake-slice"></i></div><div class="cat-name">Desserts</div><div class="cat-count">31 items</div></a>
+          <a href="#" class="cat-card active" role="listitem"><img class="cat-img" src="Burger.png" alt="Burgers"><div class="cat-name">Burgers</div><div class="cat-count">42 items</div></a>
+          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="pizza.png" alt="Pizza"><div class="cat-name">Pizza</div><div class="cat-count">38 items</div></a>
+          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Sushi.png" alt="Sushi"><div class="cat-name">Sushi</div><div class="cat-count">29 items</div></a>
+          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Pasta.png" alt="Pasta"><div class="cat-name">Pasta</div><div class="cat-count">24 items</div></a>
+          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="salad.png" alt="Salads"><div class="cat-name">Salads</div><div class="cat-count">18 items</div></a>
+          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Desserts.png" alt="Desserts"><div class="cat-name">Desserts</div><div class="cat-count">31 items</div></a>
         </div>
         <div class="food-grid" style="margin-top:48px">
           <article class="food-card reveal">
