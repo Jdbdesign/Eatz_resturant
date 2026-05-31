@@ -1068,6 +1068,41 @@
       });
     });
 
+    // Apply category filter arriving via URL param (e.g. from homepage category cards)
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var cat = params.get('category');
+      if (!cat || cat === 'all') return;
+
+      // Reveal batch-2 cards for this category so they appear in results
+      document.querySelectorAll('.food-card[data-batch="2"][data-category="' + cat + '"]').forEach(function (c) {
+        c.style.display = '';
+        if (!allCards.includes(c)) allCards.push(c);
+      });
+
+      activeFilter = cat;
+
+      // Sync category card active state
+      document.querySelectorAll('.cat-card').forEach(function (c) {
+        var match = c.dataset.cat === cat;
+        c.classList.toggle('active', match);
+        c.setAttribute('aria-pressed', String(match));
+      });
+
+      // Sync filter pill active state
+      document.querySelectorAll('.filter-pill').forEach(function (p) {
+        p.classList.toggle('active', p.dataset.filter === cat);
+      });
+
+      applyFilters();
+
+      // Scroll down to the menu grid after a short delay for the page to settle
+      setTimeout(function () {
+        var target = document.getElementById('menu-items');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 350);
+    }());
+
     // Search
     function doSearch() {
       activeSearch = document.getElementById('menu-search').value.trim().toLowerCase();

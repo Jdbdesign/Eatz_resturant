@@ -451,15 +451,15 @@
             <div class="section-tag">Browse</div>
             <h2 class="section-title" id="cats-h2">Discover Our<br>Food Categories</h2>
           </div>
-          <a href="#" class="btn btn-ghost">View All →</a>
+          <a href="menu.html" class="btn btn-ghost">View All →</a>
         </div>
         <div class="cats-grid reveal" role="list" aria-label="Food categories">
-          <a href="#" class="cat-card active" role="listitem"><img class="cat-img" src="Home_images/Burger.png" alt="Burgers"><div class="cat-name">Burgers</div><div class="cat-count">42 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/pizza.png" alt="Pizza"><div class="cat-name">Pizza</div><div class="cat-count">38 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/Sushi.png" alt="Sushi"><div class="cat-name">Sushi</div><div class="cat-count">29 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/Pasta.png" alt="Pasta"><div class="cat-name">Pasta</div><div class="cat-count">24 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/salad.png" alt="Salads"><div class="cat-name">Salads</div><div class="cat-count">18 items</div></a>
-          <a href="#" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/Desserts.png" alt="Desserts"><div class="cat-name">Desserts</div><div class="cat-count">31 items</div></a>
+          <a href="menu.html?category=burgers" class="cat-card active" role="listitem"><img class="cat-img" src="Home_images/Burger.png" alt="Burgers"><div class="cat-name">Burgers</div><div class="cat-count">42 items</div></a>
+          <a href="menu.html?category=pizza" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/pizza.png" alt="Pizza"><div class="cat-name">Pizza</div><div class="cat-count">38 items</div></a>
+          <a href="menu.html?category=sushi" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/Sushi.png" alt="Sushi"><div class="cat-name">Sushi</div><div class="cat-count">29 items</div></a>
+          <a href="menu.html?category=pasta" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/Pasta.png" alt="Pasta"><div class="cat-name">Pasta</div><div class="cat-count">24 items</div></a>
+          <a href="menu.html?category=salads" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/salad.png" alt="Salads"><div class="cat-name">Salads</div><div class="cat-count">18 items</div></a>
+          <a href="menu.html?category=desserts" class="cat-card" role="listitem"><img class="cat-img" src="Home_images/Desserts.png" alt="Desserts"><div class="cat-name">Desserts</div><div class="cat-count">31 items</div></a>
         </div>
         <div class="food-grid" style="margin-top:48px">
           <article class="food-card reveal">
@@ -964,10 +964,9 @@
     const initOpen = document.querySelector('.faq-item.open .faq-a');
     if (initOpen) initOpen.style.display = 'block';
 
-    // Category selection
+    // Category selection — active flash before navigation
     document.querySelectorAll('.cat-card').forEach(c => {
-      c.addEventListener('click', e => {
-        e.preventDefault();
+      c.addEventListener('click', () => {
         document.querySelectorAll('.cat-card').forEach(x => x.classList.remove('active'));
         c.classList.add('active');
       });
