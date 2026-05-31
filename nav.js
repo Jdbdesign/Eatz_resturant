@@ -151,7 +151,7 @@
             ddLink(IC.account,  'My Account', '#') +
             ddLink(IC.orders,   'Orders',     'orders.html') +
             ddLink(IC.inbox,    'Inbox',       '#') +
-            ddLink(IC.wishlist, 'Wishlist',    '#') +
+            ddLink(IC.wishlist, 'Wishlist',    'wishlist.html') +
             ddLink(IC.voucher,  'Voucher',     '#') +
             '<div class="nav-dd-divider" aria-hidden="true"></div>' +
             '<button class="nav-dd-item nav-dd-logout" role="menuitem" onclick="eatzSignOut()">' +
@@ -222,7 +222,7 @@
       list.appendChild(divLi);
 
       // Auth link items
-      [['My Account','#'],['Orders','orders.html'],['Inbox','#'],['Wishlist','#'],['Voucher','#']].forEach(function (pair) {
+      [['My Account','#'],['Orders','orders.html'],['Inbox','#'],['Wishlist','wishlist.html'],['Voucher','#']].forEach(function (pair) {
         var al = document.createElement('li');
         al.setAttribute('data-mob-nav', '');
         al.innerHTML = '<a href="' + esc(pair[1]) + '">' + esc(pair[0]) + '</a>';

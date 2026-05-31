@@ -892,13 +892,6 @@
       setTimeout(function() { toast.classList.remove('show'); }, 3000);
     }
 
-    // ── Wishlist toggle ───────────────────────────────────────────
-    document.getElementById('detail-wish').addEventListener('click', function() {
-      var liked = this.dataset.liked === 'true';
-      this.dataset.liked = liked ? 'false' : 'true';
-      this.classList.toggle('liked', !liked);
-    });
-
     // ── Nav scroll ────────────────────────────────────────────────
     var nav = document.getElementById('nav');
     window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 20); }, { passive: true });
@@ -928,6 +921,7 @@
     lucide.createIcons();
   </script>
 
+  <script src="wishlist.js"></script>
   <script src="cart.js"></script>
   <script src="nav.js"></script>
 </body>

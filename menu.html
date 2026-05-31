@@ -1123,25 +1123,6 @@
       });
     }
 
-    // Wishlist toggle — requires sign-in
-    function eatzGetUser() {
-      try { return JSON.parse(localStorage.getItem('eatz_user')) || null; } catch(e) { return null; }
-    }
-    function toggleWish(btn) {
-      if (!eatzGetUser()) {
-        window.location.href = 'signin.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
-        return;
-      }
-      const liked = btn.dataset.liked === 'true';
-      btn.dataset.liked = liked ? 'false' : 'true';
-      btn.classList.toggle('liked', !liked);
-    }
-    document.querySelectorAll('.food-wish').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        toggleWish(btn);
-      });
-    });
 
 
     // Load More — 4 cards per click
@@ -1163,13 +1144,6 @@
           card.style.transitionDelay = (i * 60) + 'ms';
           setTimeout(function() { card.classList.add('revealed'); }, 30);
           allCards.push(card);
-          var wishBtn = card.querySelector('.food-wish');
-          if (wishBtn) {
-            wishBtn.addEventListener('click', function(e) {
-              e.stopPropagation();
-              toggleWish(wishBtn);
-            });
-          }
           var addBtn = card.querySelector('.food-add');
           if (addBtn) {
             addBtn.addEventListener('click', function(e) {
@@ -1244,6 +1218,7 @@
       new MutationObserver(function() { hookCardClicks(); }).observe(menuGrid2, { childList: true });
     }
   </script>
+  <script src="wishlist.js"></script>
   <script src="cart.js"></script>
   <script src="nav.js"></script>
 </body>
