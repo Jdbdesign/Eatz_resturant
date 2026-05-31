@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Detail — Eatz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{
+      --primary:#f66d09;--primary-dark:#9e4300;--primary-light:#ffdbcb;
+      --surface:#fbf9f9;--surface-low:#f5f3f3;--surface-mid:#efeded;
+      --dark:#1b1c1c;--on-surface:#1b1c1c;--on-surface-v:#594236;
+      --outline:#8d7164;--outline-v:#e1c0b1;
+      --shadow-card:0 4px 20px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+      --shadow-hover:0 12px 40px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.06);
+      --shadow-brand:0 8px 30px rgba(246,109,9,.3);
+      --ease-spring:cubic-bezier(.34,1.56,.64,1);
+      --ease-out:cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',sans-serif;background:var(--surface);color:var(--on-surface);line-height:1.6;overflow-x:hidden}
+    .skip-link{position:absolute;top:-100%;left:1rem;background:var(--primary);color:#fff;padding:.5rem 1rem;border-radius:12px;z-index:1000;transition:top 150ms ease;font-weight:600;text-decoration:none}
+    .skip-link:focus{top:1rem}
+    :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+    :focus:not(:focus-visible){outline:none}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px}
+    @media(min-width:1024px){.container{padding:0 40px}}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.06);transition:box-shadow 250ms}
+    .nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:32px}
+    .nav-logo{font-size:28px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:2px}
+    .nav-logo .accent{color:var(--primary)}
+    .nav-logo .dot{width:8px;height:8px;background:var(--primary);border-radius:50%;margin-left:2px;margin-bottom:4px;display:inline-block}
+    .nav-links{display:none;list-style:none;gap:32px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:15px;font-weight:500;transition:color 150ms;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);border-radius:2px;transition:width 250ms var(--ease-spring)}
+    .nav-links a:hover{color:#fff}
+    .nav-links a:hover::after{width:100%}
+    .nav-actions{display:none;align-items:center;gap:12px}
+    @media(min-width:768px){.nav-actions{display:flex}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;padding:10px 20px;border-radius:8px;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out);min-height:44px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .btn-outline{background:transparent;color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25)}
+    .btn-outline:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.4)}
+    .btn-ghost{background:transparent;color:var(--dark);border-color:var(--outline-v)}
+    .btn-ghost:hover{background:var(--surface-mid);border-color:var(--outline)}
+    .btn-lg{font-size:16px;padding:14px 32px;border-radius:12px;min-height:52px}
+    .hamburger{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    @media(min-width:768px){.hamburger{display:none}}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all 250ms var(--ease-out)}
+    .mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--dark);padding:24px 16px;border-top:1px solid rgba(255,255,255,.06);z-index:99}
+    .mobile-menu.open{display:block}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .mobile-menu ul a{display:block;color:rgba(255,255,255,.8);text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:500;transition:all 150ms}
+    .mobile-menu ul a:hover{background:rgba(255,255,255,.06);color:#fff}
+    .mobile-actions{display:flex;gap:12px}
+    .mobile-actions .btn{flex:1}
+
+    /* PAGE */
+    .page-wrap{padding-top:72px;min-height:100vh}
+
+    /* BREADCRUMB */
+    .breadcrumb-bar{background:var(--dark);padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5)}
+    .breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none;transition:color 150ms}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb-sep{color:rgba(255,255,255,.25)}
+    .breadcrumb-current{color:#fff;font-weight:600}
+    .back-btn{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);transition:all 150ms;cursor:pointer;font-family:'Manrope',sans-serif}
+    .back-btn:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
+
+    /* DETAIL LAYOUT */
+    .detail-section{padding:48px 0 80px}
+    .detail-grid{display:grid;grid-template-columns:1fr;gap:40px;align-items:start}
+    @media(min-width:1024px){.detail-grid{grid-template-columns:1fr 480px;gap:56px}}
+
+    /* LEFT — Food Info */
+    .food-detail-img-wrap{position:relative;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.15)}
+    .food-detail-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+    .food-detail-badge{position:absolute;top:20px;left:20px;background:var(--primary);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:9999px;letter-spacing:.04em;text-transform:uppercase}
+    .food-detail-wish{position:absolute;top:20px;right:20px;width:44px;height:44px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-card);cursor:pointer;border:none;transition:all 150ms}
+    .food-detail-wish:hover{transform:scale(1.1)}
+    .food-detail-wish.liked .wish-svg{fill:#ef4444;stroke:#ef4444}
+
+    .food-detail-info{margin-top:32px}
+    .food-detail-meta{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .food-detail-cat{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--primary);background:rgba(246,109,9,.08);padding:4px 12px;border-radius:9999px;border:1px solid rgba(246,109,9,.2)}
+    .food-detail-rating{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--dark)}
+    .food-detail-rating .stars{color:#f59e0b}
+    .food-detail-name{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;line-height:1.15;margin-bottom:12px}
+    .food-detail-desc{font-size:15px;color:var(--on-surface-v);line-height:1.7;margin-bottom:24px}
+
+    .food-detail-tags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+    .detail-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 14px;border-radius:9999px;background:var(--surface-mid);color:var(--on-surface-v);border:1px solid var(--outline-v)}
+
+    .food-detail-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px;background:#fff;border-radius:16px;box-shadow:var(--shadow-card);margin-bottom:28px}
+    .detail-stat-val{font-size:20px;font-weight:800;color:var(--dark);letter-spacing:-.02em}
+    .detail-stat-label{font-size:12px;color:var(--outline);font-weight:500;margin-top:3px}
+
+    /* QTY for main item */
+    .main-qty-row{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:#fff;border-radius:16px;box-shadow:var(--shadow-card);margin-bottom:8px}
+    .main-qty-label{font-size:15px;font-weight:700;color:var(--dark)}
+    .main-price-label{font-size:22px;font-weight:800;color:var(--primary);letter-spacing:-.02em}
+    .qty-stepper{display:flex;align-items:center;gap:0;border:2px solid var(--outline-v);border-radius:10px;overflow:hidden}
+    .qty-btn{width:40px;height:40px;background:var(--surface-low);border:none;cursor:pointer;font-size:20px;font-weight:700;color:var(--dark);display:flex;align-items:center;justify-content:center;transition:background 150ms;font-family:'Manrope',sans-serif;flex-shrink:0}
+    .qty-btn:hover{background:var(--surface-mid)}
+    .qty-btn:disabled{opacity:.35;cursor:not-allowed}
+    .qty-val{min-width:40px;text-align:center;font-size:16px;font-weight:700;color:var(--dark);font-family:'Manrope',sans-serif;background:#fff;padding:0 4px}
+
+    /* RIGHT — Group Order Panel */
+    .group-panel{background:#fff;border-radius:24px;box-shadow:var(--shadow-card);overflow:hidden;position:sticky;top:96px}
+    .group-panel-header{background:var(--dark);padding:24px;display:flex;align-items:center;gap:12px}
+    .group-panel-icon{width:44px;height:44px;background:rgba(246,109,9,.15);border:1px solid rgba(246,109,9,.3);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .group-panel-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.02em}
+    .group-panel-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:2px}
+
+    .group-panel-body{padding:0 24px}
+
+    /* Add-on group */
+    .addon-group{padding:20px 0;border-bottom:1px solid var(--surface-mid)}
+    .addon-group:last-child{border-bottom:none}
+    .addon-group-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .addon-group-icon{font-size:20px}
+    .addon-group-label{font-size:14px;font-weight:700;color:var(--dark);letter-spacing:.01em}
+    .addon-group-optional{font-size:11px;font-weight:600;color:var(--outline);background:var(--surface-mid);padding:2px 8px;border-radius:9999px;margin-left:auto}
+
+    .addon-item{display:flex;align-items:center;gap:12px;padding:10px 0}
+    .addon-item:not(:last-child){border-bottom:1px solid var(--surface-low)}
+    .addon-info{flex:1;min-width:0}
+    .addon-name{font-size:14px;font-weight:600;color:var(--dark)}
+    .addon-desc{font-size:12px;color:var(--outline);margin-top:1px}
+    .addon-price{font-size:14px;font-weight:700;color:var(--on-surface-v);white-space:nowrap;margin-right:12px}
+    .addon-price.free{color:#22c55e}
+    .addon-stepper{display:flex;align-items:center;gap:0;border:1.5px solid var(--outline-v);border-radius:8px;overflow:hidden;flex-shrink:0}
+    .addon-btn{width:32px;height:32px;background:var(--surface-low);border:none;cursor:pointer;font-size:18px;font-weight:700;color:var(--dark);display:flex;align-items:center;justify-content:center;transition:background 150ms;line-height:1}
+    .addon-btn:hover:not(:disabled){background:var(--surface-mid)}
+    .addon-btn.add-btn{background:var(--primary);color:#fff}
+    .addon-btn.add-btn:hover{background:var(--primary-dark)}
+    .addon-count{min-width:32px;text-align:center;font-size:13px;font-weight:700;color:var(--dark);font-family:'Manrope',sans-serif;background:#fff;display:none}
+    .addon-count.visible{display:block}
+    .addon-btn.sub-btn{display:none}
+    .addon-btn.sub-btn.visible{display:flex}
+
+    /* Order Summary */
+    .order-summary{background:var(--surface-low);padding:20px 24px;margin:0 -0px}
+    .summary-title{font-size:14px;font-weight:700;color:var(--dark);letter-spacing:.03em;text-transform:uppercase;margin-bottom:14px}
+    .summary-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+    .summary-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .summary-row-label{font-size:13px;color:var(--on-surface-v);font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .summary-row-label .qty-tag{background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9999px;margin-left:6px}
+    .summary-row-price{font-size:13px;font-weight:700;color:var(--dark);flex-shrink:0}
+    .summary-divider{height:1px;background:var(--surface-mid);margin:12px 0}
+    .summary-total-row{display:flex;align-items:center;justify-content:space-between}
+    .summary-total-label{font-size:15px;font-weight:700;color:var(--dark)}
+    .summary-total-price{font-size:24px;font-weight:800;color:var(--primary);letter-spacing:-.02em}
+    .summary-empty{font-size:13px;color:var(--outline);text-align:center;padding:8px 0}
+
+    .group-panel-footer{padding:20px 24px}
+    .add-group-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:14px;padding:16px;font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 150ms;min-height:56px;letter-spacing:.01em;display:flex;align-items:center;justify-content:center;gap:10px}
+    .add-group-btn:hover{background:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .add-group-btn:active{transform:scale(.98)}
+
+    /* LUCIDE */
+    [data-lucide]{display:inline-block;vertical-align:middle;flex-shrink:0}
+    .lucide{display:inline-block;vertical-align:middle;flex-shrink:0}
+    .wish-svg{display:block;transition:all 150ms}
+    .food-detail-wish:hover .wish-svg{transform:scale(1.15)}
+
+    /* FOOTER */
+    .footer{background:var(--dark);color:rgba(255,255,255,.6);padding:64px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:1fr;gap:48px;margin-bottom:48px}
+    @media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+    .footer-brand-desc{font-size:14px;line-height:1.7;max-width:300px;margin:16px 0 24px}
+    .footer-social{display:flex;gap:10px}
+    .footer-social a{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;transition:all 150ms;border:1px solid rgba(255,255,255,.08)}
+    .footer-social a:hover{background:var(--primary);border-color:var(--primary)}
+    .footer-col-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:color 150ms}
+    .footer-links a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:13px}
+    .footer-legal{display:flex;gap:20px}
+    .footer-legal a{color:rgba(255,255,255,.4);text-decoration:none;transition:color 150ms}
+    .footer-legal a:hover{color:rgba(255,255,255,.7)}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:110px;right:32px;background:var(--dark);color:#fff;padding:14px 20px;border-radius:12px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.3);z-index:400;transform:translateY(20px);opacity:0;transition:all 300ms var(--ease-out);pointer-events:none;font-family:'Manrope',sans-serif}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast-icon{width:28px;height:28px;background:#22c55e;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Eatz home">
+        <span class="accent">E</span>atz<span class="dot" aria-hidden="true"></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Reservation</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="#" class="btn btn-outline">Sign In</a>
+        <a href="#" class="btn btn-primary">Order Now</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul role="list">
+      <li><a href="menu.html" onclick="closeMenu()">Menu</a></li>
+      <li><a href="reservation.html" onclick="closeMenu()">Reservation</a></li>
+      <li><a href="about.html" onclick="closeMenu()">About us</a></li>
+      <li><a href="blog.html" onclick="closeMenu()">Blog</a></li>
+      <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="#" class="btn btn-outline">Sign In</a>
+      <a href="#" class="btn btn-primary">Order Now</a>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-bar">
+      <div class="container">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html">Home</a>
+            <span class="breadcrumb-sep" aria-hidden="true">›</span>
+            <a href="menu.html">Menu</a>
+            <span class="breadcrumb-sep" aria-hidden="true">›</span>
+            <span class="breadcrumb-current" id="bc-name">Item</span>
+          </nav>
+          <button class="back-btn" onclick="history.back()" aria-label="Go back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL -->
+    <section class="detail-section">
+      <div class="container">
+        <div class="detail-grid">
+
+          <!-- LEFT: Item Info -->
+          <div>
+            <div class="food-detail-img-wrap">
+              <img id="detail-img" class="food-detail-img" src="" alt="" loading="lazy">
+              <span id="detail-badge" class="food-detail-badge" style="display:none"></span>
+              <button id="detail-wish" class="food-detail-wish" data-liked="false" aria-label="Save item">
+                <svg class="wish-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+            </div>
+
+            <div class="food-detail-info">
+              <div class="food-detail-meta">
+                <span id="detail-cat" class="food-detail-cat"></span>
+                <span class="food-detail-rating">
+                  <span class="stars">★</span>
+                  <span id="detail-rating"></span>
+                  <span id="detail-reviews" style="color:var(--outline);font-weight:500"></span>
+                </span>
+              </div>
+              <h1 id="detail-name" class="food-detail-name"></h1>
+              <p id="detail-desc" class="food-detail-desc"></p>
+
+              <div class="food-detail-tags">
+                <span class="detail-tag"><i data-lucide="clock" style="width:13px;height:13px"></i> 20–30 min delivery</span>
+                <span class="detail-tag"><i data-lucide="leaf" style="width:13px;height:13px"></i> Fresh ingredients</span>
+                <span class="detail-tag"><i data-lucide="shield-check" style="width:13px;height:13px"></i> Hygiene certified</span>
+              </div>
+
+              <div class="food-detail-stats">
+                <div>
+                  <div class="detail-stat-val">⚡ 25m</div>
+                  <div class="detail-stat-label">Avg. Delivery</div>
+                </div>
+                <div>
+                  <div class="detail-stat-val" id="detail-cals">~650</div>
+                  <div class="detail-stat-label">Calories</div>
+                </div>
+                <div>
+                  <div class="detail-stat-val">1–2</div>
+                  <div class="detail-stat-label">Serves</div>
+                </div>
+              </div>
+
+              <!-- Main item quantity -->
+              <div class="main-qty-row">
+                <div>
+                  <div class="main-qty-label">Base Price</div>
+                  <div id="detail-price" class="main-price-label"></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:16px">
+                  <span style="font-size:13px;color:var(--outline);font-weight:600">Qty</span>
+                  <div class="qty-stepper" role="group" aria-label="Quantity">
+                    <button class="qty-btn" id="main-dec" aria-label="Decrease quantity" onclick="changeMainQty(-1)" disabled>−</button>
+                    <span class="qty-val" id="main-qty" aria-live="polite">1</span>
+                    <button class="qty-btn" id="main-inc" aria-label="Increase quantity" onclick="changeMainQty(1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Group Delivery Panel -->
+          <div class="group-panel" role="complementary" aria-label="Group delivery add-ons">
+            <div class="group-panel-header">
+              <div class="group-panel-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f66d09" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h6l2 4v4h-8V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <div>
+                <div class="group-panel-title">Group Delivery</div>
+                <div class="group-panel-sub">Add extras to bundle with your order</div>
+              </div>
+            </div>
+
+            <div class="group-panel-body">
+
+              <!-- DRINKS -->
+              <div class="addon-group">
+                <div class="addon-group-header">
+                  <span class="addon-group-icon" aria-hidden="true">🥤</span>
+                  <span class="addon-group-label">Drinks</span>
+                  <span class="addon-group-optional">Optional</span>
+                </div>
+                <div class="addon-items" data-group="drinks">
+                  <div class="addon-item" data-addon-name="Mineral Water" data-addon-price="1.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Mineral Water</div>
+                      <div class="addon-desc">Still or sparkling, 500ml</div>
+                    </div>
+                    <div class="addon-price">+$1.50</div>
+                    <div class="addon-stepper" aria-label="Mineral Water quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Mineral Water">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Coca-Cola" data-addon-price="2.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Coca-Cola</div>
+                      <div class="addon-desc">Ice-cold, 330ml can</div>
+                    </div>
+                    <div class="addon-price">+$2.50</div>
+                    <div class="addon-stepper" aria-label="Coca-Cola quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Coca-Cola">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Sprite" data-addon-price="2.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Sprite</div>
+                      <div class="addon-desc">Lemon-lime, 330ml can</div>
+                    </div>
+                    <div class="addon-price">+$2.50</div>
+                    <div class="addon-stepper" aria-label="Sprite quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Sprite">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Fresh Orange Juice" data-addon-price="3.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Fresh Orange Juice</div>
+                      <div class="addon-desc">Freshly squeezed, 400ml</div>
+                    </div>
+                    <div class="addon-price">+$3.50</div>
+                    <div class="addon-stepper" aria-label="Orange Juice quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Orange Juice">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Mango Smoothie" data-addon-price="4.00">
+                    <div class="addon-info">
+                      <div class="addon-name">Mango Smoothie</div>
+                      <div class="addon-desc">Real fruit blend, 400ml</div>
+                    </div>
+                    <div class="addon-price">+$4.00</div>
+                    <div class="addon-stepper" aria-label="Mango Smoothie quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Mango Smoothie">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SIDES -->
+              <div class="addon-group">
+                <div class="addon-group-header">
+                  <span class="addon-group-icon" aria-hidden="true">🍟</span>
+                  <span class="addon-group-label">Sides</span>
+                  <span class="addon-group-optional">Optional</span>
+                </div>
+                <div class="addon-items" data-group="sides">
+                  <div class="addon-item" data-addon-name="Crispy French Fries" data-addon-price="3.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Crispy French Fries</div>
+                      <div class="addon-desc">Salted, served hot</div>
+                    </div>
+                    <div class="addon-price">+$3.50</div>
+                    <div class="addon-stepper" aria-label="French Fries quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add French Fries">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Onion Rings" data-addon-price="3.00">
+                    <div class="addon-info">
+                      <div class="addon-name">Onion Rings</div>
+                      <div class="addon-desc">Beer-battered, crispy</div>
+                    </div>
+                    <div class="addon-price">+$3.00</div>
+                    <div class="addon-stepper" aria-label="Onion Rings quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Onion Rings">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Garden Salad" data-addon-price="4.00">
+                    <div class="addon-info">
+                      <div class="addon-name">Garden Salad</div>
+                      <div class="addon-desc">Mixed greens, house dressing</div>
+                    </div>
+                    <div class="addon-price">+$4.00</div>
+                    <div class="addon-stepper" aria-label="Garden Salad quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Garden Salad">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Garlic Bread" data-addon-price="2.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Garlic Bread</div>
+                      <div class="addon-desc">Toasted, herb butter</div>
+                    </div>
+                    <div class="addon-price">+$2.50</div>
+                    <div class="addon-stepper" aria-label="Garlic Bread quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Garlic Bread">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PACKAGING -->
+              <div class="addon-group">
+                <div class="addon-group-header">
+                  <span class="addon-group-icon" aria-hidden="true">📦</span>
+                  <span class="addon-group-label">Packaging</span>
+                  <span class="addon-group-optional">Optional</span>
+                </div>
+                <div class="addon-items" data-group="packaging">
+                  <div class="addon-item" data-addon-name="Eco-Friendly Wrap" data-addon-price="0.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Eco-Friendly Wrap</div>
+                      <div class="addon-desc">Biodegradable packaging</div>
+                    </div>
+                    <div class="addon-price">+$0.50</div>
+                    <div class="addon-stepper" aria-label="Eco Wrap quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Eco Wrap">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Premium Gift Box" data-addon-price="1.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Premium Gift Box</div>
+                      <div class="addon-desc">Ideal for gifting or events</div>
+                    </div>
+                    <div class="addon-price">+$1.50</div>
+                    <div class="addon-stepper" aria-label="Gift Box quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Gift Box">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Cutlery & Napkins Set" data-addon-price="0">
+                    <div class="addon-info">
+                      <div class="addon-name">Cutlery &amp; Napkins Set</div>
+                      <div class="addon-desc">Fork, knife, spoon + napkins</div>
+                    </div>
+                    <div class="addon-price free">FREE</div>
+                    <div class="addon-stepper" aria-label="Cutlery quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Cutlery">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- EXTRAS -->
+              <div class="addon-group" style="border-bottom:none">
+                <div class="addon-group-header">
+                  <span class="addon-group-icon" aria-hidden="true">✨</span>
+                  <span class="addon-group-label">Extras</span>
+                  <span class="addon-group-optional">Optional</span>
+                </div>
+                <div class="addon-items" data-group="extras">
+                  <div class="addon-item" data-addon-name="Extra Sauce" data-addon-price="1.00">
+                    <div class="addon-info">
+                      <div class="addon-name">Extra Sauce</div>
+                      <div class="addon-desc">Choose at checkout: ketchup, mayo, BBQ, sriracha</div>
+                    </div>
+                    <div class="addon-price">+$1.00</div>
+                    <div class="addon-stepper" aria-label="Extra Sauce quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Extra Sauce">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Extra Cheese" data-addon-price="1.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Extra Cheese</div>
+                      <div class="addon-desc">Melted cheddar or mozzarella</div>
+                    </div>
+                    <div class="addon-price">+$1.50</div>
+                    <div class="addon-stepper" aria-label="Extra Cheese quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Extra Cheese">+</button>
+                    </div>
+                  </div>
+                  <div class="addon-item" data-addon-name="Chilli Flakes" data-addon-price="0.50">
+                    <div class="addon-info">
+                      <div class="addon-name">Chilli Flakes</div>
+                      <div class="addon-desc">Extra heat for spice lovers</div>
+                    </div>
+                    <div class="addon-price">+$0.50</div>
+                    <div class="addon-stepper" aria-label="Chilli Flakes quantity">
+                      <button class="addon-btn sub-btn" aria-label="Remove one">−</button>
+                      <span class="addon-count" aria-live="polite">0</span>
+                      <button class="addon-btn add-btn" aria-label="Add Chilli Flakes">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /group-panel-body -->
+
+            <!-- ORDER SUMMARY -->
+            <div class="order-summary">
+              <div class="summary-title">Order Summary</div>
+              <div id="summary-rows" class="summary-rows">
+                <div class="summary-empty" id="summary-empty">Select quantity above to begin</div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-total-row">
+                <div class="summary-total-label">Group Total</div>
+                <div id="summary-total" class="summary-total-price">$0.00</div>
+              </div>
+            </div>
+
+            <div class="group-panel-footer">
+              <button class="add-group-btn" id="add-group-btn" onclick="addGroupToCart()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                Add Group to Cart
+              </button>
+              <p style="text-align:center;font-size:12px;color:var(--outline);margin-top:10px">Main item always included • Extras are optional</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /page-wrap -->
+
+  <!-- TOAST -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <div class="toast-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <span id="toast-msg">Added to cart!</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="nav-logo" style="font-size:32px" aria-label="Eatz home"><span class="accent">E</span>atz<span class="dot" style="width:10px;height:10px" aria-hidden="true"></span></a>
+          <p class="footer-brand-desc">Eatz connects food lovers with the best local restaurants. Fresh ingredients, bold flavors, fast delivery — every single time.</p>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="TikTok"><i data-lucide="music-2"></i></a>
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links"><li><a href="menu.html">Browse Menu</a></li><li><a href="index.html#featured">Today's Specials</a></li><li><a href="index.html#catering">Catering</a></li><li><a href="blog.html">Food Stories</a></li><li><a href="index.html#app">Get the App</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links"><li><a href="about.html">About Eatz</a></li><li><a href="#">Careers</a></li><li><a href="#">Partner With Us</a></li><li><a href="#">Press</a></li><li><a href="blog.html">Blog</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links"><li><a href="index.html#faq">Help Center</a></li><li><a href="#">Track Order</a></li><li><a href="#">Refund Policy</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Accessibility</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Eatz. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── URL param helpers ─────────────────────────────────────────
+    function getParam(key) {
+      return new URLSearchParams(window.location.search).get(key) || '';
+    }
+
+    // ── Populate item info from URL params ────────────────────────
+    var itemName  = getParam('name')   || 'Menu Item';
+    var itemPrice = parseFloat(getParam('price')) || 0;
+    var itemCat   = getParam('cat')    || 'Food';
+    var itemImg   = getParam('img')    || '';
+    var itemBadge = getParam('badge')  || '';
+    var itemRating= getParam('rating') || '4.8';
+    var itemRev   = getParam('reviews')|| '';
+    var itemDesc  = getParam('desc')   || 'A delicious dish crafted with the finest fresh ingredients.';
+
+    document.title = itemName + ' — Eatz';
+    document.getElementById('bc-name').textContent = itemName;
+    document.getElementById('detail-name').textContent = itemName;
+    document.getElementById('detail-cat').textContent = itemCat;
+    document.getElementById('detail-desc').textContent = itemDesc;
+    document.getElementById('detail-rating').textContent = itemRating;
+    document.getElementById('detail-reviews').textContent = itemRev ? '(' + itemRev + ')' : '';
+    document.getElementById('detail-price').textContent = '$' + itemPrice.toFixed(2);
+
+    var imgEl = document.getElementById('detail-img');
+    imgEl.src = itemImg;
+    imgEl.alt = itemName;
+
+    var badgeEl = document.getElementById('detail-badge');
+    if (itemBadge) { badgeEl.textContent = itemBadge; badgeEl.style.display = ''; }
+
+    // ── Main item qty state ───────────────────────────────────────
+    var mainQty = 1;
+
+    function changeMainQty(delta) {
+      mainQty = Math.max(1, mainQty + delta);
+      document.getElementById('main-qty').textContent = mainQty;
+      document.getElementById('main-dec').disabled = mainQty <= 1;
+      updateSummary();
+    }
+
+    // ── Add-on state ──────────────────────────────────────────────
+    // { name: { price, qty } }
+    var addonState = {};
+
+    document.querySelectorAll('.addon-item').forEach(function(item) {
+      var name  = item.dataset.addonName;
+      var price = parseFloat(item.dataset.addonPrice) || 0;
+      addonState[name] = { price: price, qty: 0 };
+
+      var addBtn = item.querySelector('.add-btn');
+      var subBtn = item.querySelector('.sub-btn');
+      var countEl= item.querySelector('.addon-count');
+
+      addBtn.addEventListener('click', function() {
+        addonState[name].qty++;
+        countEl.textContent = addonState[name].qty;
+        countEl.classList.add('visible');
+        subBtn.classList.add('visible');
+        updateSummary();
+      });
+
+      subBtn.addEventListener('click', function() {
+        addonState[name].qty = Math.max(0, addonState[name].qty - 1);
+        countEl.textContent = addonState[name].qty;
+        if (addonState[name].qty === 0) {
+          countEl.classList.remove('visible');
+          subBtn.classList.remove('visible');
+        }
+        updateSummary();
+      });
+    });
+
+    // ── Summary ───────────────────────────────────────────────────
+    function updateSummary() {
+      var rows = document.getElementById('summary-rows');
+      var emptyEl = document.getElementById('summary-empty');
+      var totalEl = document.getElementById('summary-total');
+
+      var mainTotal = itemPrice * mainQty;
+      var addonTotal = 0;
+      var selected = [];
+
+      Object.keys(addonState).forEach(function(key) {
+        var s = addonState[key];
+        if (s.qty > 0) {
+          addonTotal += s.price * s.qty;
+          selected.push({ name: key, price: s.price, qty: s.qty });
+        }
+      });
+
+      var grandTotal = mainTotal + addonTotal;
+      totalEl.textContent = '$' + grandTotal.toFixed(2);
+
+      // Build rows HTML
+      var html = '';
+
+      // Main item row
+      html += '<div class="summary-row">' +
+        '<span class="summary-row-label">' + esc(itemName) +
+          (mainQty > 1 ? '<span class="qty-tag">×' + mainQty + '</span>' : '') +
+        '</span>' +
+        '<span class="summary-row-price">$' + mainTotal.toFixed(2) + '</span>' +
+      '</div>';
+
+      // Add-on rows
+      selected.forEach(function(a) {
+        var lineTotal = a.price * a.qty;
+        html += '<div class="summary-row">' +
+          '<span class="summary-row-label">' + esc(a.name) +
+            (a.qty > 1 ? '<span class="qty-tag">×' + a.qty + '</span>' : '') +
+          '</span>' +
+          '<span class="summary-row-price">' + (lineTotal === 0 ? 'FREE' : '$' + lineTotal.toFixed(2)) + '</span>' +
+        '</div>';
+      });
+
+      rows.innerHTML = html;
+      if (emptyEl) emptyEl.style.display = 'none';
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // ── Add group to cart ─────────────────────────────────────────
+    function addGroupToCart() {
+      // Use cart.js's addItem function if available
+      function cartAdd(name, price) {
+        if (typeof window.__eatzCartAdd === 'function') {
+          window.__eatzCartAdd(name, price);
+        }
+      }
+
+      // Main item
+      cartAdd(itemName, itemPrice);
+      // Bump qty if more than 1
+      for (var i = 1; i < mainQty; i++) cartAdd(itemName, itemPrice);
+
+      // Add-ons
+      Object.keys(addonState).forEach(function(key) {
+        var s = addonState[key];
+        for (var j = 0; j < s.qty; j++) {
+          cartAdd(key, s.price);
+        }
+      });
+
+      // Animate button
+      var btn = document.getElementById('add-group-btn');
+      btn.style.background = '#22c55e';
+      btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Added to Cart!';
+      setTimeout(function() {
+        btn.style.background = '';
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Add Group to Cart';
+      }, 2000);
+
+      // Show toast
+      showToast('Group added to cart!');
+    }
+
+    function showToast(msg) {
+      var toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+    }
+
+    // ── Wishlist toggle ───────────────────────────────────────────
+    document.getElementById('detail-wish').addEventListener('click', function() {
+      var liked = this.dataset.liked === 'true';
+      this.dataset.liked = liked ? 'false' : 'true';
+      this.classList.toggle('liked', !liked);
+    });
+
+    // ── Nav scroll ────────────────────────────────────────────────
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 20); }, { passive: true });
+
+    // ── Mobile menu ───────────────────────────────────────────────
+    var hamburger = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen = false;
+    hamburger.addEventListener('click', function() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', String(menuOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!menuOpen));
+    });
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && menuOpen) closeMenu(); });
+
+    // Init summary
+    updateSummary();
+    lucide.createIcons();
+  </script>
+
+  <script src="cart.js"></script>
+  <script>
+    // Expose cart addItem to detail page after cart.js loads
+    // cart.js is an IIFE, so we hook it via the food-add button approach
+    // Instead, we intercept by re-exporting addItem via a hidden button trick
+    (function() {
+      function waitForCart() {
+        var fab = document.getElementById('cart-fab');
+        if (!fab) { setTimeout(waitForCart, 50); return; }
+        // cart.js is loaded; hook addItem by simulating food card clicks
+        // We'll use a hidden dummy food card approach
+        window.__eatzCartAdd = function(name, price) {
+          // Inject a temporary food card, click its add button, then remove it
+          var dummy = document.createElement('article');
+          dummy.className = 'food-card';
+          dummy.style.display = 'none';
+          dummy.innerHTML =
+            '<div class="food-body">' +
+              '<h3 class="food-name">' + name + '</h3>' +
+              '<div class="food-price">$' + price.toFixed(2) + '</div>' +
+              '<button class="food-add">+</button>' +
+            '</div>';
+          document.body.appendChild(dummy);
+          // hook fires on next RAF
+          requestAnimationFrame(function() {
+            dummy.querySelector('.food-add').click();
+            document.body.removeChild(dummy);
+          });
+        };
+      }
+      waitForCart();
+    })();
+  </script>
+</body>
+</html>

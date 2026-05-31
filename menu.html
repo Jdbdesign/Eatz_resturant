@@ -1205,6 +1205,36 @@
 
     // Init Lucide icons
     lucide.createIcons();
+
+    // Food card → detail page navigation
+    function hookCardClicks(scope) {
+      (scope || document).querySelectorAll('.food-card:not([data-detail-hooked])').forEach(function(card) {
+        card.dataset.detailHooked = '1';
+        card.addEventListener('click', function(e) {
+          if (e.target.closest('.food-wish') || e.target.closest('.food-add')) return;
+          var name     = (card.querySelector('.food-name')  || {}).textContent || '';
+          var priceRaw = (card.querySelector('.food-price') || {}).textContent || '0';
+          var price    = parseFloat(priceRaw.replace(/[^\d.]/g, '')) || 0;
+          var cat      = (card.querySelector('.food-cat')   || {}).textContent || '';
+          var desc     = (card.querySelector('.food-desc')  || {}).textContent || '';
+          var badge    = (card.querySelector('.food-badge') || {}).textContent || '';
+          var rating   = (card.querySelector('.food-rating') || {}).textContent || '';
+          var ratingNum = (rating.match(/([\d.]+)/) || [])[1] || '4.8';
+          var reviews   = (rating.match(/\((.*?)\)/) || [])[1] || '';
+          var imgEl    = card.querySelector('.food-img-wrap img');
+          var img      = imgEl ? imgEl.getAttribute('src') : '';
+          var params   = new URLSearchParams({ name: name, price: price, cat: cat, desc: desc, badge: badge, rating: ratingNum, reviews: reviews, img: img });
+          window.location.href = 'food-detail.html?' + params.toString();
+        });
+      });
+    }
+    hookCardClicks();
+
+    // Re-hook cards loaded by loadMore
+    var menuGrid2 = document.getElementById('menu-grid');
+    if (menuGrid2) {
+      new MutationObserver(function() { hookCardClicks(); }).observe(menuGrid2, { childList: true });
+    }
   </script>
   <script src="cart.js"></script>
 </body>
