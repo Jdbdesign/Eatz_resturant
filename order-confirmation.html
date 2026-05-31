@@ -283,7 +283,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download Receipt
             </button>
-            <button class="action-btn action-btn-outline" onclick="openTrackModal()">
+            <button class="action-btn action-btn-outline" id="track-order-btn" onclick="goToOrderDetail()">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Track Order
             </button>
@@ -297,22 +297,6 @@
         </div>
       </div>
     </section>
-  </div>
-
-  <!-- TRACK ORDER MODAL -->
-  <div class="modal-overlay" id="track-modal" role="dialog" aria-modal="true" aria-label="Track order" aria-hidden="true">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeTrackModal()" aria-label="Close">×</button>
-      <div class="modal-icon" aria-hidden="true">🔒</div>
-      <h2 class="modal-title">Sign In to Track Your Order</h2>
-      <p class="modal-body">
-        To track your delivery in real time, view your order history, and manage your account — you'll need to be signed in to Eatz.
-      </p>
-      <div class="modal-actions">
-        <button class="modal-btn-primary" onclick="closeTrackModal()">Got it</button>
-        <p class="modal-coming-soon">Account &amp; order tracking features coming soon!</p>
-      </div>
-    </div>
   </div>
 
   <!-- FOOTER -->
@@ -517,28 +501,15 @@
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
-    // ── Track order modal ─────────────────────────────────────────
-    function openTrackModal() {
-      var modal = document.getElementById('track-modal');
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+    // ── Track order ───────────────────────────────────────────────
+    function goToOrderDetail() {
+      var order = getOrder();
+      if (order && order.number) {
+        window.location.href = 'order-detail.html?id=' + encodeURIComponent(order.number);
+      } else {
+        window.location.href = 'orders.html';
+      }
     }
-
-    function closeTrackModal() {
-      var modal = document.getElementById('track-modal');
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-    }
-
-    document.getElementById('track-modal').addEventListener('click', function(e) {
-      if (e.target === this) closeTrackModal();
-    });
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeTrackModal();
-    });
 
     // ── Nav scroll ────────────────────────────────────────────────
     var nav = document.getElementById('nav');

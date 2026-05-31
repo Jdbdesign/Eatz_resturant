@@ -149,7 +149,7 @@
               (email ? '<div class="nav-dd-email">' + email + '</div>' : '') +
             '</div>' +
             ddLink(IC.account,  'My Account', '#') +
-            ddLink(IC.orders,   'Orders',     '#') +
+            ddLink(IC.orders,   'Orders',     'orders.html') +
             ddLink(IC.inbox,    'Inbox',       '#') +
             ddLink(IC.wishlist, 'Wishlist',    '#') +
             ddLink(IC.voucher,  'Voucher',     '#') +
@@ -222,7 +222,7 @@
       list.appendChild(divLi);
 
       // Auth link items
-      [['My Account','#'],['Orders','#'],['Inbox','#'],['Wishlist','#'],['Voucher','#']].forEach(function (pair) {
+      [['My Account','#'],['Orders','orders.html'],['Inbox','#'],['Wishlist','#'],['Voucher','#']].forEach(function (pair) {
         var al = document.createElement('li');
         al.setAttribute('data-mob-nav', '');
         al.innerHTML = '<a href="' + esc(pair[1]) + '">' + esc(pair[0]) + '</a>';

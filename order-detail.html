@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details — Eatz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{
+      --primary:#f66d09;--primary-dark:#9e4300;--primary-light:#ffdbcb;
+      --surface:#fbf9f9;--surface-low:#f5f3f3;--surface-mid:#efeded;
+      --dark:#1b1c1c;--on-surface:#1b1c1c;--on-surface-v:#594236;
+      --outline:#8d7164;--outline-v:#e1c0b1;
+      --shadow-card:0 4px 20px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+      --shadow-brand:0 8px 30px rgba(246,109,9,.3);
+      --ease-spring:cubic-bezier(.34,1.56,.64,1);
+      --ease-out:cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',sans-serif;background:var(--surface);color:var(--on-surface);line-height:1.6;overflow-x:hidden}
+    .skip-link{position:absolute;top:-100%;left:1rem;background:var(--primary);color:#fff;padding:.5rem 1rem;border-radius:12px;z-index:1000;transition:top 150ms;font-weight:600;text-decoration:none}
+    .skip-link:focus{top:1rem}
+    :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+    :focus:not(:focus-visible){outline:none}
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px}
+    @media(min-width:1024px){.container{padding:0 40px}}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.06);transition:box-shadow 250ms}
+    .nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:32px}
+    .nav-logo{font-size:28px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:2px}
+    .nav-logo .accent{color:var(--primary)}
+    .nav-logo .dot{width:8px;height:8px;background:var(--primary);border-radius:50%;margin-left:2px;margin-bottom:4px;display:inline-block}
+    .nav-links{display:none;list-style:none;gap:32px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:15px;font-weight:500;transition:color 150ms;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);border-radius:2px;transition:width 250ms var(--ease-spring)}
+    .nav-links a:hover{color:#fff}
+    .nav-links a:hover::after{width:100%}
+    .nav-actions{display:none;align-items:center;gap:12px}
+    @media(min-width:768px){.nav-actions{display:flex}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;padding:10px 20px;border-radius:8px;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out);min-height:44px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .btn-outline{background:transparent;color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25)}
+    .btn-outline:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.4)}
+    .hamburger{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    @media(min-width:768px){.hamburger{display:none}}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all 250ms var(--ease-out)}
+    .mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--dark);padding:24px 16px;border-top:1px solid rgba(255,255,255,.06);z-index:99}
+    .mobile-menu.open{display:block}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .mobile-menu ul a{display:block;color:rgba(255,255,255,.8);text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:500;transition:all 150ms}
+    .mobile-menu ul a:hover{background:rgba(255,255,255,.06);color:#fff}
+    .mobile-actions{display:flex;gap:12px}
+    .mobile-actions .btn{flex:1}
+
+    /* PAGE */
+    .page-wrap{padding-top:72px;min-height:100vh}
+
+    /* BREADCRUMB */
+    .breadcrumb-bar{background:var(--dark);padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5)}
+    .breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none;transition:color 150ms}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb-sep{color:rgba(255,255,255,.25)}
+    .breadcrumb-current{color:#fff;font-weight:600}
+
+    /* DETAIL SECTION */
+    .detail-section{padding:40px 0 80px}
+    .detail-wrap{max-width:960px;margin:0 auto}
+
+    /* BACK BUTTON */
+    .back-btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--outline);text-decoration:none;transition:color 150ms;padding:4px 0;margin-bottom:24px}
+    .back-btn:hover{color:var(--primary)}
+    .back-btn svg{transition:transform 150ms}
+    .back-btn:hover svg{transform:translateX(-3px)}
+
+    /* ORDER PAGE HEADER */
+    .order-pg-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+    .order-pg-num{font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;margin-bottom:5px}
+    .order-pg-meta{font-size:14px;color:var(--outline);font-weight:500}
+
+    /* STATUS BADGE */
+    .status-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:700;letter-spacing:.01em}
+    .status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .s-pending{background:#fef3c7;color:#92400e}
+    .s-pending .status-dot{background:#f59e0b}
+    .s-confirmed{background:#dbeafe;color:#1e40af}
+    .s-confirmed .status-dot{background:#3b82f6}
+    .s-preparing{background:#ede9fe;color:#5b21b6}
+    .s-preparing .status-dot{background:#8b5cf6}
+    .s-out_for_delivery{background:rgba(246,109,9,.1);color:#9a3412}
+    .s-out_for_delivery .status-dot{background:#f66d09}
+    .s-delivered{background:#dcfce7;color:#14532d}
+    .s-delivered .status-dot{background:#22c55e}
+
+    /* TRACKING CARD */
+    .tracking-card{background:#fff;border-radius:20px;box-shadow:var(--shadow-card);border:1px solid var(--outline-v);overflow:hidden;margin-bottom:24px}
+    .tracking-card-header{background:var(--dark);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .tracking-card-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#fff;letter-spacing:.03em;text-transform:uppercase}
+    .tracking-eta{font-size:13px;font-weight:600;color:rgba(255,255,255,.6)}
+    .tracking-eta span{color:var(--primary);font-weight:700}
+    .tracking-body{padding:32px 28px 28px}
+
+    /* STEPS */
+    .steps-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+    .steps-track{display:flex;align-items:flex-start;min-width:480px;padding:0 4px}
+    .step-item{display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative}
+    .step-circle{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--outline-v);background:#fff;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;flex-shrink:0;transition:all 250ms var(--ease-out)}
+    .step-item.done .step-circle{background:var(--primary);border-color:var(--primary)}
+    .step-item.active .step-circle{background:var(--primary);border-color:var(--primary);box-shadow:0 0 0 7px rgba(246,109,9,.15)}
+    .step-label{font-size:11px;font-weight:600;text-align:center;margin-top:10px;color:var(--outline);line-height:1.4;padding:0 4px;transition:color 200ms}
+    .step-item.done .step-label,.step-item.active .step-label{color:var(--dark);font-weight:700}
+    .step-connector{flex:1;height:2.5px;background:var(--outline-v);margin-top:18.5px;flex-shrink:0;transition:background 300ms}
+    .step-connector.done{background:var(--primary)}
+    @keyframes pulse-ring{
+      0%{transform:scale(1);opacity:.7}
+      70%{transform:scale(1.6);opacity:0}
+      100%{transform:scale(1.6);opacity:0}
+    }
+    .step-item.active .step-circle::after{
+      content:'';position:absolute;width:100%;height:100%;border-radius:50%;
+      border:2px solid rgba(246,109,9,.5);
+      animation:pulse-ring 2s ease-out infinite
+    }
+
+    /* TRACKING MESSAGE */
+    .tracking-message{margin-top:20px;padding:14px 18px;background:var(--surface-low);border-radius:12px;border-left:3px solid var(--primary);font-size:14px;font-weight:600;color:var(--on-surface-v);line-height:1.5}
+
+    /* DETAIL GRID */
+    .detail-grid{display:grid;grid-template-columns:1fr;gap:20px;align-items:start}
+    @media(min-width:768px){.detail-grid{grid-template-columns:1fr 300px}}
+    @media(min-width:1024px){.detail-grid{grid-template-columns:1fr 320px}}
+
+    /* DETAIL CARDS */
+    .detail-card{background:#fff;border-radius:20px;box-shadow:var(--shadow-card);border:1px solid var(--outline-v);overflow:hidden;margin-bottom:20px}
+    .detail-card:last-child{margin-bottom:0}
+    .detail-card-header{background:var(--dark);padding:16px 24px;display:flex;align-items:center;gap:10px}
+    .detail-card-title{font-size:13px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase}
+    .detail-card-body{padding:8px 24px}
+
+    /* ORDER ITEMS */
+    .order-line{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--surface-mid)}
+    .order-line:last-child{border-bottom:none}
+    .order-line-name{font-size:14px;font-weight:600;color:var(--dark);flex:1;min-width:0}
+    .order-line-qty{font-size:12px;color:var(--outline);font-weight:500;margin-top:2px}
+    .order-line-price{font-size:14px;font-weight:700;color:var(--dark);flex-shrink:0}
+    .order-totals{background:var(--surface-low);padding:16px 24px;border-top:1px solid var(--outline-v)}
+    .tot-row{display:flex;justify-content:space-between;font-size:14px;color:var(--on-surface-v);font-weight:500;margin-bottom:7px}
+    .tot-row:last-child{margin-bottom:0}
+    .tot-divider{height:1px;background:var(--outline-v);margin:10px 0}
+    .tot-grand{display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:var(--dark)}
+    .tot-grand-amount{color:var(--primary)}
+
+    /* DELIVERY INFO */
+    .delivery-info{padding:20px 24px;display:flex;flex-direction:column;gap:4px}
+    .delivery-name{font-size:16px;font-weight:700;color:var(--dark)}
+    .delivery-line{font-size:14px;color:var(--on-surface-v);font-weight:500}
+    .delivery-note{font-size:13px;color:var(--outline);font-style:italic;margin-top:4px}
+    .pay-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:5px 13px;border-radius:9999px;font-size:12px;font-weight:700}
+    .pay-badge-card{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#15803d}
+    .pay-badge-cash{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#92400e}
+
+    /* RIDER CARD */
+    .rider-card{background:#fff;border-radius:20px;box-shadow:var(--shadow-card);border:1px solid var(--outline-v);overflow:hidden}
+    @media(min-width:768px){.rider-card{position:sticky;top:96px}}
+    .rider-card-header{background:linear-gradient(135deg,#1b1c1c 0%,#2d2e2e 100%);padding:20px 24px;display:flex;align-items:center;gap:10px}
+    .rider-card-title{font-size:13px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase}
+    .rider-card-body{padding:24px}
+    .rider-avatar-wrap{display:flex;justify-content:center;margin-bottom:16px;position:relative}
+    .rider-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;border:3px solid #fff;box-shadow:0 4px 16px rgba(246,109,9,.3)}
+    .rider-online-dot{position:absolute;bottom:2px;right:calc(50% - 46px);width:14px;height:14px;background:#22c55e;border-radius:50%;border:2.5px solid #fff}
+    .rider-name{text-align:center;font-size:17px;font-weight:800;color:var(--dark);margin-bottom:3px}
+    .rider-role{text-align:center;font-size:13px;color:var(--outline);font-weight:500;margin-bottom:14px}
+    .rider-stats{display:flex;justify-content:center;gap:20px;padding:14px 0;border-top:1px solid var(--surface-mid);border-bottom:1px solid var(--surface-mid);margin-bottom:16px}
+    .rider-stat{text-align:center}
+    .rider-stat-value{font-size:16px;font-weight:800;color:var(--dark)}
+    .rider-stat-label{font-size:11px;color:var(--outline);font-weight:600;text-transform:uppercase;letter-spacing:.03em;margin-top:1px}
+    .rider-vehicle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--on-surface-v);font-weight:600;margin-bottom:16px;justify-content:center}
+    .rider-vehicle svg{color:var(--outline);flex-shrink:0}
+    .rider-phone-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;background:var(--surface-low);border:1.5px solid var(--outline-v);border-radius:12px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;color:var(--dark);cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out)}
+    .rider-phone-btn:hover{background:rgba(246,109,9,.06);border-color:rgba(246,109,9,.3);color:var(--primary)}
+    .rider-status-note{text-align:center;font-size:12px;color:var(--outline);font-weight:500;margin-top:12px;line-height:1.5}
+    .rider-status-note strong{color:var(--primary)}
+
+    /* ERROR STATE */
+    .error-state{text-align:center;padding:80px 24px;max-width:420px;margin:0 auto}
+    .error-state-icon{font-size:56px;margin-bottom:16px;line-height:1}
+    .error-state h2{font-size:22px;font-weight:800;color:var(--dark);margin-bottom:10px;letter-spacing:-.02em}
+    .error-state p{color:var(--outline);font-size:15px;margin-bottom:28px}
+
+    /* FOOTER */
+    .footer{background:var(--dark);color:rgba(255,255,255,.6);padding:64px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:1fr;gap:48px;margin-bottom:48px}
+    @media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+    .footer-brand-desc{font-size:14px;line-height:1.7;max-width:300px;margin:16px 0 24px}
+    .footer-social{display:flex;gap:10px}
+    .footer-social a{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 150ms;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+    .footer-social a:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+    .footer-col-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:color 150ms}
+    .footer-links a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:13px}
+    .footer-legal{display:flex;gap:20px}
+    .footer-legal a{color:rgba(255,255,255,.4);text-decoration:none;transition:color 150ms}
+    .footer-legal a:hover{color:rgba(255,255,255,.7)}
+
+    [data-lucide]{display:inline-block;vertical-align:middle;flex-shrink:0}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Eatz home">
+        <span class="accent">E</span>atz<span class="dot" aria-hidden="true"></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Reservation</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="signin.html" class="btn btn-outline">Sign In</a>
+        <a href="menu.html" class="btn btn-primary">Order Now</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul role="list">
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="about.html">About us</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="signin.html" class="btn btn-outline">Sign In</a>
+      <a href="menu.html" class="btn btn-primary">Order Now</a>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-bar">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">›</span>
+          <a href="orders.html">My Orders</a>
+          <span class="breadcrumb-sep" aria-hidden="true">›</span>
+          <span class="breadcrumb-current" id="breadcrumb-num">Order Details</span>
+        </nav>
+      </div>
+    </div>
+
+    <!-- DETAIL -->
+    <section class="detail-section">
+      <div class="container">
+
+        <!-- ERROR STATE -->
+        <div id="error-state" style="display:none">
+          <div class="error-state">
+            <div class="error-state-icon" aria-hidden="true">📦</div>
+            <h2>Order not found</h2>
+            <p>We couldn't find the order you're looking for. It may have been cleared from your browser.</p>
+            <a href="orders.html" class="btn btn-primary" style="font-size:15px;padding:13px 28px;border-radius:12px">Back to My Orders</a>
+          </div>
+        </div>
+
+        <!-- ORDER DETAIL CONTENT -->
+        <div id="detail-content" class="detail-wrap" style="display:none">
+
+          <!-- BACK -->
+          <a href="orders.html" class="back-btn" aria-label="Back to all orders">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to My Orders
+          </a>
+
+          <!-- PAGE HEADER -->
+          <div class="order-pg-header">
+            <div>
+              <h1 class="order-pg-num" id="pg-order-num">Order #EZ---------</h1>
+              <p class="order-pg-meta" id="pg-order-meta"></p>
+            </div>
+            <div id="pg-status-badge"></div>
+          </div>
+
+          <!-- TRACKING CARD -->
+          <div class="tracking-card" aria-label="Order tracking">
+            <div class="tracking-card-header">
+              <div class="tracking-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f66d09" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Order Tracking
+              </div>
+              <div class="tracking-eta" id="tracking-eta"></div>
+            </div>
+            <div class="tracking-body">
+              <div class="steps-scroll" role="list" aria-label="Delivery steps">
+                <div class="steps-track" id="steps-track"></div>
+              </div>
+              <p class="tracking-message" id="tracking-message" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <!-- TWO COLUMN GRID -->
+          <div class="detail-grid">
+
+            <!-- LEFT: Items + Delivery -->
+            <div>
+
+              <!-- ORDER ITEMS -->
+              <div class="detail-card">
+                <div class="detail-card-header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f66d09" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                  <span class="detail-card-title">Order Items</span>
+                </div>
+                <div class="detail-card-body" id="order-items" role="list"></div>
+                <div class="order-totals">
+                  <div class="tot-row"><span>Subtotal</span><span id="det-subtotal">$0.00</span></div>
+                  <div class="tot-row"><span>Delivery Fee</span><span id="det-delivery-fee">$3.99</span></div>
+                  <div class="tot-divider" aria-hidden="true"></div>
+                  <div class="tot-grand">
+                    <span>Total</span>
+                    <span class="tot-grand-amount" id="det-total">$0.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DELIVERY INFO -->
+              <div class="detail-card">
+                <div class="detail-card-header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f66d09" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span class="detail-card-title">Delivering To</span>
+                </div>
+                <div class="delivery-info" id="delivery-info"></div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT: Rider Card -->
+            <div>
+              <div class="rider-card" aria-label="Your delivery rider">
+                <div class="rider-card-header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f66d09" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                  <span class="rider-card-title">Your Rider</span>
+                </div>
+                <div class="rider-card-body" id="rider-card-body"></div>
+              </div>
+            </div>
+
+          </div><!-- /detail-grid -->
+
+        </div><!-- /detail-content -->
+
+      </div>
+    </section>
+
+  </div><!-- /page-wrap -->
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="nav-logo" style="font-size:32px" aria-label="Eatz home"><span class="accent">E</span>atz<span class="dot" style="width:10px;height:10px" aria-hidden="true"></span></a>
+          <p class="footer-brand-desc">Eatz connects food lovers with the best local restaurants. Fresh ingredients, bold flavors, fast delivery — every single time.</p>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="TikTok"><i data-lucide="music-2"></i></a>
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links"><li><a href="menu.html">Browse Menu</a></li><li><a href="index.html#featured">Today's Specials</a></li><li><a href="index.html#catering">Catering</a></li><li><a href="blog.html">Food Stories</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links"><li><a href="about.html">About Eatz</a></li><li><a href="#">Careers</a></li><li><a href="#">Partner With Us</a></li><li><a href="blog.html">Blog</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links"><li><a href="index.html#faq">Help Center</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">Accessibility</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Eatz. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    var ORDERS_KEY = 'eatz_orders';
+    var USER_KEY   = 'eatz_user';
+
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem(USER_KEY)) || null; } catch(e) { return null; }
+    }
+    function getOrderById(id) {
+      try {
+        var all = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+        return all.find(function(o) { return o.number === id; }) || null;
+      } catch(e) { return null; }
+    }
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // ── Status engine ─────────────────────────────────────────────
+    var STEPS_CONFIG = [
+      { key: 'pending',          label: 'Order\nPlaced' },
+      { key: 'confirmed',        label: 'Restaurant\nConfirmed' },
+      { key: 'preparing',        label: 'Preparing\nFood' },
+      { key: 'out_for_delivery', label: 'Out for\nDelivery' },
+      { key: 'delivered',        label: 'Delivered' }
+    ];
+
+    var STATUS_META = {
+      pending:          { step: 0, label: 'Order Placed',      message: 'Your order has been placed! The restaurant is reviewing it now.' },
+      confirmed:        { step: 1, label: 'Confirmed',          message: 'Great news — the restaurant has confirmed your order and is getting started.' },
+      preparing:        { step: 2, label: 'Preparing',          message: 'The kitchen is busy preparing your food. Almost ready!' },
+      out_for_delivery: { step: 3, label: 'Out for Delivery',   message: 'Your rider has picked up the order and is on the way to you!' },
+      delivered:        { step: 4, label: 'Delivered',          message: 'Your order has been delivered. Enjoy your meal!' }
+    };
+
+    function computeStatus(order) {
+      var elapsed = (Date.now() - new Date(order.timestamp).getTime()) / 60000;
+      if (elapsed < 2)  return 'pending';
+      if (elapsed < 6)  return 'confirmed';
+      if (elapsed < 16) return 'preparing';
+      if (elapsed < 35) return 'out_for_delivery';
+      return 'delivered';
+    }
+
+    function formatDate(isoStr) {
+      var d = new Date(isoStr);
+      return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) +
+        ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ── Render tracking stepper ───────────────────────────────────
+    function renderSteps(status) {
+      var currentStep = STATUS_META[status].step;
+      var html = '';
+
+      STEPS_CONFIG.forEach(function(step, i) {
+        var isDone   = i < currentStep;
+        var isActive = i === currentStep;
+        var cls = isDone ? 'done' : isActive ? 'active' : '';
+
+        // Connector before each step (except first)
+        if (i > 0) {
+          html += '<div class="step-connector' + (isDone ? ' done' : '') + '" aria-hidden="true"></div>';
+        }
+
+        html += '<div class="step-item ' + cls + '" role="listitem" aria-label="' + esc(step.key === 'out_for_delivery' ? 'Out for Delivery' : step.label.replace('\n', ' ')) + (isActive ? ' (current)' : isDone ? ' (done)' : '') + '">';
+        html += '<div class="step-circle" aria-hidden="true">';
+
+        if (isDone) {
+          html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+        } else if (isActive) {
+          // Active: inner white dot shown via CSS, pulse ring via ::after
+          html += '<div style="width:10px;height:10px;background:#fff;border-radius:50%"></div>';
+        }
+
+        html += '</div>';
+
+        var labelText = step.label.replace('\n', '<br>');
+        html += '<div class="step-label">' + labelText + '</div>';
+        html += '</div>';
+      });
+
+      return html;
+    }
+
+    // ── Render rider card ────────────────────────────────────────
+    function renderRider(rider, status) {
+      var isOnTheWay = status === 'out_for_delivery';
+      var isDelivered = status === 'delivered';
+
+      var noteText = isDelivered
+        ? 'Order delivered by <strong>' + esc(rider.name) + '</strong>'
+        : isOnTheWay
+          ? '<strong>' + esc(rider.name) + '</strong> is on the way to you'
+          : 'Your rider has been assigned and will pick up your order soon';
+
+      var stars = '';
+      var r = Math.round(rider.rating * 2) / 2;
+      for (var i = 0; i < 5; i++) {
+        var fill = i < Math.floor(r) ? '#f59e0b' : 'none';
+        stars += '<svg width="13" height="13" viewBox="0 0 24 24" fill="' + fill + '" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+      }
+
+      return '<div class="rider-avatar-wrap">' +
+          '<div class="rider-avatar" aria-hidden="true">' + esc(rider.initials) + '</div>' +
+          (isOnTheWay ? '<div class="rider-online-dot" aria-label="Online"></div>' : '') +
+        '</div>' +
+        '<div class="rider-name">' + esc(rider.name) + '</div>' +
+        '<div class="rider-role">Delivery Rider</div>' +
+        '<div class="rider-stats">' +
+          '<div class="rider-stat">' +
+            '<div class="rider-stat-value">' + rider.rating.toFixed(1) + '</div>' +
+            '<div class="rider-stat-label">Rating</div>' +
+          '</div>' +
+          '<div class="rider-stat">' +
+            '<div class="rider-stat-value">' + rider.reviews + '</div>' +
+            '<div class="rider-stat-label">Reviews</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rider-vehicle">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9.5 6.5 8 17H5l-2-4 3.5-4h8l3 4.5-1 1.5h-2"/><path d="m14 6.5 1 4h4"/></svg>' +
+          '<span>' + esc(rider.vehicle) + '</span>' +
+        '</div>' +
+        '<a href="tel:' + esc(rider.phone.replace(/\s/g,'')) + '" class="rider-phone-btn" aria-label="Call ' + esc(rider.name) + ' at ' + esc(rider.phone) + '">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.08 6.08l1.9-1.9a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' +
+          esc(rider.phone) +
+        '</a>' +
+        '<p class="rider-status-note">' + noteText + '</p>';
+    }
+
+    // ── Main render ───────────────────────────────────────────────
+    function init() {
+      var user = getUser();
+      if (!user) {
+        var params = new URLSearchParams(window.location.search);
+        var id = params.get('id') || '';
+        window.location.href = 'signin.html?redirect=' + encodeURIComponent('order-detail.html?id=' + id);
+        return;
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var orderId = params.get('id');
+
+      if (!orderId) {
+        document.getElementById('error-state').style.display = 'block';
+        return;
+      }
+
+      var order = getOrderById(orderId);
+      if (!order) {
+        document.getElementById('error-state').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('detail-content').style.display = 'block';
+
+      var status = computeStatus(order);
+      var meta   = STATUS_META[status];
+
+      // Breadcrumb
+      document.getElementById('breadcrumb-num').textContent = order.number;
+
+      // Header
+      document.getElementById('pg-order-num').textContent = 'Order ' + order.number;
+      document.getElementById('pg-order-meta').textContent = 'Placed ' + formatDate(order.timestamp);
+      document.getElementById('pg-status-badge').innerHTML =
+        '<span class="status-badge s-' + esc(status) + '">' +
+          '<span class="status-dot" aria-hidden="true"></span>' +
+          esc(meta.label) +
+        '</span>';
+
+      // Tracking stepper
+      document.getElementById('steps-track').innerHTML = renderSteps(status);
+
+      // ETA
+      if (status !== 'delivered') {
+        var placed = new Date(order.timestamp);
+        var eta = new Date(placed.getTime() + 35 * 60000);
+        var etaStr = eta.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('tracking-eta').innerHTML = 'Est. delivery <span>' + esc(etaStr) + '</span>';
+      } else {
+        document.getElementById('tracking-eta').innerHTML = '<span>Delivered</span>';
+      }
+
+      // Tracking message
+      document.getElementById('tracking-message').textContent = meta.message;
+
+      // Order items
+      var itemsHtml = '';
+      order.items.forEach(function(item) {
+        itemsHtml +=
+          '<div class="order-line" role="listitem">' +
+            '<div>' +
+              '<div class="order-line-name">' + esc(item.name) + '</div>' +
+              (item.qty > 1 ? '<div class="order-line-qty">× ' + item.qty + '</div>' : '') +
+            '</div>' +
+            '<div class="order-line-price">$' + (item.price * item.qty).toFixed(2) + '</div>' +
+          '</div>';
+      });
+      document.getElementById('order-items').innerHTML = itemsHtml;
+
+      document.getElementById('det-subtotal').textContent    = '$' + order.subtotal.toFixed(2);
+      document.getElementById('det-delivery-fee').textContent = '$' + order.deliveryFee.toFixed(2);
+      document.getElementById('det-total').textContent       = '$' + order.total.toFixed(2);
+
+      // Delivery info
+      var dl = order.delivery;
+      var payBadgeClass = order.paymentMethod === 'cash' ? 'pay-badge-cash' : 'pay-badge-card';
+      var payText = order.paymentMethod === 'cash' ? '💵  Cash on delivery' : '💳  Paid by card';
+      document.getElementById('delivery-info').innerHTML =
+        '<div class="delivery-name">' + esc(dl.name) + '</div>' +
+        '<div class="delivery-line">' + esc(dl.address) + '</div>' +
+        '<div class="delivery-line">' + esc(dl.city) + ', ' + esc(dl.postal) + '</div>' +
+        '<div class="delivery-line">' + esc(dl.phone) + '</div>' +
+        (dl.instructions ? '<div class="delivery-note">Note: ' + esc(dl.instructions) + '</div>' : '') +
+        '<span class="pay-badge ' + payBadgeClass + '">' + payText + '</span>';
+
+      // Rider card
+      if (order.rider) {
+        document.getElementById('rider-card-body').innerHTML = renderRider(order.rider, status);
+      }
+
+      // Update page title
+      document.title = 'Order ' + order.number + ' — Eatz';
+    }
+
+    // Nav scroll
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 20); }, { passive: true });
+
+    // Mobile menu
+    var hamburger  = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen   = false;
+    hamburger.addEventListener('click', function() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', String(menuOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!menuOpen));
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && menuOpen) {
+        menuOpen = false;
+        mobileMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    init();
+    lucide.createIcons();
+  </script>
+  <script src="nav.js"></script>
+</body>
+</html>

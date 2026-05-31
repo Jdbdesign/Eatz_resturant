@@ -443,8 +443,17 @@
   <script>
     var CART_KEY   = 'eatz_cart';
     var ORDER_KEY  = 'eatz_last_order';
+    var ORDERS_KEY = 'eatz_orders';
     var DELIVERY_FEE = 3.99;
     var selectedPayment = 'card';
+
+    var RIDERS_POOL = [
+      { name: 'Marcus Johnson',  initials: 'MJ', phone: '+1 (555) 219-4501', rating: 4.9, reviews: 312, vehicle: 'Honda CB500F'     },
+      { name: 'Aisha Patel',     initials: 'AP', phone: '+1 (555) 312-8870', rating: 4.8, reviews: 247, vehicle: 'Yamaha MT-07'     },
+      { name: 'Carlos Rivera',   initials: 'CR', phone: '+1 (555) 477-3219', rating: 4.7, reviews: 189, vehicle: 'Kawasaki Z400'    },
+      { name: 'Zoe Thompson',    initials: 'ZT', phone: '+1 (555) 594-1122', rating: 4.9, reviews: 418, vehicle: 'Suzuki GSX-S750'  },
+      { name: 'Daniel Kim',      initials: 'DK', phone: '+1 (555) 601-9934', rating: 4.8, reviews: 276, vehicle: 'Honda CBR650R'    }
+    ];
 
     // ── Cart helpers ──────────────────────────────────────────────
     function getCart() {
@@ -625,7 +634,19 @@
           paymentMethod: selectedPayment
         };
 
+        // Assign a random rider
+        order.rider = RIDERS_POOL[Math.floor(Math.random() * RIDERS_POOL.length)];
+        order.status = 'pending';
+
         try { localStorage.setItem(ORDER_KEY, JSON.stringify(order)); } catch(e) {}
+
+        // Save to orders history (newest first)
+        try {
+          var history = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+          history.unshift(order);
+          localStorage.setItem(ORDERS_KEY, JSON.stringify(history));
+        } catch(e) {}
+
         try { localStorage.removeItem(CART_KEY); } catch(e) {}
 
         window.location.href = 'order-confirmation.html';
