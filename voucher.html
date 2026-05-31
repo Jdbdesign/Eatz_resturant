@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vouchers — Eatz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{
+      --primary:#f66d09;--primary-dark:#9e4300;--primary-light:#ffdbcb;
+      --surface:#fbf9f9;--surface-low:#f5f3f3;--surface-mid:#efeded;
+      --dark:#1b1c1c;--on-surface:#1b1c1c;--on-surface-v:#594236;
+      --outline:#8d7164;--outline-v:#e1c0b1;
+      --shadow-card:0 4px 20px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+      --shadow-brand:0 8px 30px rgba(246,109,9,.3);
+      --ease-spring:cubic-bezier(.34,1.56,.64,1);
+      --ease-out:cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',sans-serif;background:var(--surface);color:var(--on-surface);line-height:1.6;overflow-x:hidden}
+    .skip-link{position:absolute;top:-100%;left:1rem;background:var(--primary);color:#fff;padding:.5rem 1rem;border-radius:12px;z-index:1000;transition:top 150ms;font-weight:600;text-decoration:none}
+    .skip-link:focus{top:1rem}
+    :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+    :focus:not(:focus-visible){outline:none}
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px}
+    @media(min-width:1024px){.container{padding:0 40px}}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.06);transition:box-shadow 250ms}
+    .nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:32px}
+    .nav-logo{font-size:28px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:2px}
+    .nav-logo .accent{color:var(--primary)}
+    .nav-logo .dot{width:8px;height:8px;background:var(--primary);border-radius:50%;margin-left:2px;margin-bottom:4px;display:inline-block}
+    .nav-links{display:none;list-style:none;gap:32px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:15px;font-weight:500;transition:color 150ms;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);border-radius:2px;transition:width 250ms var(--ease-spring)}
+    .nav-links a:hover{color:#fff}
+    .nav-links a:hover::after{width:100%}
+    .nav-actions{display:none;align-items:center;gap:12px}
+    @media(min-width:768px){.nav-actions{display:flex}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;padding:10px 20px;border-radius:8px;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out);min-height:44px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .btn-outline{background:transparent;color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25)}
+    .btn-outline:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.4)}
+    .hamburger{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    @media(min-width:768px){.hamburger{display:none}}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all 250ms var(--ease-out)}
+    .mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--dark);padding:24px 16px;border-top:1px solid rgba(255,255,255,.06);z-index:99}
+    .mobile-menu.open{display:block}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .mobile-menu ul a{display:block;color:rgba(255,255,255,.8);text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:500;transition:all 150ms}
+    .mobile-menu ul a:hover{background:rgba(255,255,255,.06);color:#fff}
+    .mobile-actions{display:flex;gap:12px}
+    .mobile-actions .btn{flex:1}
+
+    /* PAGE */
+    .page-wrap{padding-top:72px;min-height:100vh}
+
+    /* BREADCRUMB */
+    .breadcrumb-bar{background:var(--dark);padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5)}
+    .breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none;transition:color 150ms}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb-sep{color:rgba(255,255,255,.25)}
+    .breadcrumb-current{color:#fff;font-weight:600}
+
+    /* VOUCHER SECTION */
+    .voucher-section{padding:48px 0 80px}
+    .voucher-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+    .voucher-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;margin-bottom:4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .voucher-count-badge{font-size:13px;font-weight:800;background:var(--primary);color:#fff;padding:3px 10px;border-radius:9999px;letter-spacing:0}
+    .voucher-sub{font-size:15px;color:var(--outline);font-weight:500}
+
+    /* TABS */
+    .voucher-tabs{display:flex;gap:4px;margin-bottom:28px;flex-wrap:wrap;background:var(--surface-low);border-radius:12px;padding:4px}
+    .voucher-tab{background:transparent;border:none;padding:9px 18px;border-radius:9px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;color:var(--outline);cursor:pointer;transition:all 150ms;white-space:nowrap;display:flex;align-items:center;gap:7px}
+    .voucher-tab:hover{background:rgba(246,109,9,.08);color:var(--primary)}
+    .voucher-tab.active{background:#fff;color:var(--dark);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    .voucher-tab-count{font-size:11px;font-weight:800;background:var(--surface-mid);color:var(--outline);padding:1px 7px;border-radius:9999px;line-height:1.6;transition:all 150ms}
+    .voucher-tab.active .voucher-tab-count{background:rgba(246,109,9,.12);color:var(--primary)}
+
+    /* VOUCHER GRID */
+    .voucher-grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:700px){.voucher-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1100px){.voucher-grid{grid-template-columns:repeat(3,1fr)}}
+
+    /* VOUCHER CARD */
+    .voucher-card{background:#fff;border-radius:18px;border:1.5px solid var(--outline-v);box-shadow:var(--shadow-card);overflow:hidden;transition:all 200ms var(--ease-out);display:flex;flex-direction:column}
+    .voucher-card:hover{border-color:rgba(246,109,9,.3);box-shadow:0 8px 32px rgba(0,0,0,.1);transform:translateY(-3px)}
+    .voucher-card.expired{opacity:.6;filter:grayscale(.4)}
+    .voucher-card.expired:hover{transform:none;box-shadow:var(--shadow-card);border-color:var(--outline-v)}
+
+    /* Card top accent strip */
+    .voucher-card-top{height:6px;width:100%;border-radius:0}
+    .voucher-card-top.active-top{background:linear-gradient(90deg,#16a34a,#22c55e)}
+    .voucher-card-top.soon-top{background:linear-gradient(90deg,#f66d09,#fb923c)}
+    .voucher-card-top.expired-top{background:linear-gradient(90deg,#9ca3af,#d1d5db)}
+
+    /* Card body */
+    .voucher-card-body{padding:20px 20px 0}
+    .voucher-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .voucher-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid transparent}
+    .voucher-icon-wrap.active-icon{background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.2);color:#16a34a}
+    .voucher-icon-wrap.soon-icon{background:rgba(246,109,9,.1);border-color:rgba(246,109,9,.2);color:var(--primary)}
+    .voucher-icon-wrap.expired-icon{background:var(--surface-low);border-color:var(--outline-v);color:var(--outline)}
+    .voucher-status{font-size:11px;font-weight:800;padding:4px 10px;border-radius:9999px;letter-spacing:.02em;white-space:nowrap;line-height:1.5}
+    .voucher-status.active-badge{background:rgba(22,163,74,.12);color:#15803d}
+    .voucher-status.soon-badge{background:rgba(246,109,9,.12);color:#c2410c}
+    .voucher-status.expired-badge{background:var(--surface-mid);color:var(--outline)}
+
+    .voucher-discount{font-size:26px;font-weight:800;color:var(--dark);letter-spacing:-.03em;line-height:1.1;margin-bottom:4px}
+    .voucher-card.expired .voucher-discount{color:var(--outline)}
+    .voucher-name{font-size:13px;font-weight:600;color:var(--on-surface-v);margin-bottom:14px}
+
+    /* Dashed divider */
+    .voucher-divider{position:relative;height:1px;background:none;margin:0 -20px 14px;overflow:visible}
+    .voucher-divider::before{content:'';position:absolute;top:50%;left:0;right:0;border-top:1.5px dashed var(--outline-v);transform:translateY(-50%)}
+    .voucher-divider::after{content:'';position:absolute;top:50%;left:-10px;right:-10px;height:20px;border-radius:50%;background:var(--surface-low);transform:translateY(-50%);clip-path:polygon(0 0,10px 0,10px 100%,0 100%) }
+
+    /* Code row */
+    .voucher-code-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .voucher-code-label{font-size:11px;font-weight:700;color:var(--outline);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+    .voucher-code{font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:800;color:var(--dark);letter-spacing:.12em;background:var(--surface-low);padding:6px 12px;border-radius:8px;border:1.5px dashed var(--outline-v);flex:1;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .voucher-card.expired .voucher-code{color:var(--outline)}
+    .copy-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 150ms;white-space:nowrap;flex-shrink:0}
+    .copy-btn:hover{background:var(--primary-dark);box-shadow:0 4px 12px rgba(246,109,9,.3)}
+    .copy-btn:active{transform:scale(.95)}
+    .copy-btn.copied{background:#16a34a}
+    .voucher-card.expired .copy-btn{background:var(--outline);cursor:not-allowed;opacity:.7}
+    .voucher-card.expired .copy-btn:hover{background:var(--outline);box-shadow:none}
+
+    /* Footer meta */
+    .voucher-card-footer{padding:12px 20px 18px;display:flex;flex-direction:column;gap:5px;margin-top:auto}
+    .voucher-meta-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--outline);font-weight:500}
+    .voucher-meta-row svg{flex-shrink:0;color:var(--outline-v)}
+    .voucher-meta-row.expiring-soon-text{color:#c2410c;font-weight:700}
+    .voucher-meta-row.expiring-soon-text svg{color:#f66d09}
+
+    /* EMPTY STATE */
+    .voucher-empty{text-align:center;padding:72px 24px;max-width:420px;margin:0 auto}
+    .voucher-empty-icon{width:88px;height:88px;background:var(--surface-low);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;border:1px solid var(--outline-v);color:var(--outline)}
+    .voucher-empty h2{font-size:22px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:10px}
+    .voucher-empty p{color:var(--outline);font-size:15px;line-height:1.65}
+    .voucher-empty .btn{margin-top:20px}
+
+    /* TOAST */
+    .copy-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;transition:transform 300ms var(--ease-spring),opacity 300ms;opacity:0;white-space:nowrap;pointer-events:none;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+    .copy-toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    /* FOOTER */
+    .footer{background:var(--dark);color:rgba(255,255,255,.6);padding:64px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:1fr;gap:48px;margin-bottom:48px}
+    @media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+    .footer-brand-desc{font-size:14px;line-height:1.7;max-width:300px;margin:16px 0 24px}
+    .footer-social{display:flex;gap:10px}
+    .footer-social a{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 150ms;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+    .footer-social a:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+    .footer-col-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:color 150ms}
+    .footer-links a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:13px}
+    .footer-legal{display:flex;gap:20px}
+    .footer-legal a{color:rgba(255,255,255,.4);text-decoration:none;transition:color 150ms}
+    .footer-legal a:hover{color:rgba(255,255,255,.7)}
+
+    [data-lucide]{display:inline-block;vertical-align:middle;flex-shrink:0}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Eatz home">
+        <span class="accent">E</span>atz<span class="dot" aria-hidden="true"></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Reservation</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="signin.html" class="btn btn-outline">Sign In</a>
+        <a href="menu.html" class="btn btn-primary">Order Now</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul role="list">
+      <li><a href="menu.html" onclick="closeMenu()">Menu</a></li>
+      <li><a href="reservation.html" onclick="closeMenu()">Reservation</a></li>
+      <li><a href="about.html" onclick="closeMenu()">About us</a></li>
+      <li><a href="blog.html" onclick="closeMenu()">Blog</a></li>
+      <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="signin.html" class="btn btn-outline">Sign In</a>
+      <a href="menu.html" class="btn btn-primary">Order Now</a>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-bar">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">›</span>
+          <span class="breadcrumb-current">Vouchers</span>
+        </nav>
+      </div>
+    </div>
+
+    <!-- VOUCHERS -->
+    <section class="voucher-section" aria-labelledby="voucher-heading">
+      <div class="container">
+
+        <div class="voucher-header">
+          <div>
+            <h1 class="voucher-title" id="voucher-heading">
+              My Vouchers
+              <span class="voucher-count-badge" id="voucher-active-badge" style="display:none" aria-live="polite"></span>
+            </h1>
+            <p class="voucher-sub" id="voucher-sub">Your exclusive promo codes and discounts</p>
+          </div>
+        </div>
+
+        <!-- FILTER TABS -->
+        <div class="voucher-tabs" role="tablist" aria-label="Filter vouchers">
+          <button class="voucher-tab active" data-tab="all" role="tab" aria-selected="true">
+            All <span class="voucher-tab-count" id="tab-count-all">0</span>
+          </button>
+          <button class="voucher-tab" data-tab="active" role="tab" aria-selected="false">
+            Active <span class="voucher-tab-count" id="tab-count-active">0</span>
+          </button>
+          <button class="voucher-tab" data-tab="soon" role="tab" aria-selected="false">
+            Expiring Soon <span class="voucher-tab-count" id="tab-count-soon">0</span>
+          </button>
+          <button class="voucher-tab" data-tab="expired" role="tab" aria-selected="false">
+            Expired <span class="voucher-tab-count" id="tab-count-expired">0</span>
+          </button>
+        </div>
+
+        <!-- VOUCHER GRID -->
+        <div class="voucher-grid" id="voucher-grid" role="list"></div>
+
+        <!-- EMPTY STATE -->
+        <div class="voucher-empty" id="voucher-empty" style="display:none" role="status">
+          <div class="voucher-empty-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <h2 id="empty-title">No vouchers here</h2>
+          <p id="empty-msg">Place orders and explore the app to earn exclusive promo codes.</p>
+          <a href="menu.html" class="btn btn-primary" style="margin-top:20px">Browse Menu</a>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- COPY TOAST -->
+  <div class="copy-toast" id="copy-toast" role="alert" aria-live="polite">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+    Code copied to clipboard!
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="nav-logo" style="font-size:32px" aria-label="Eatz home"><span class="accent">E</span>atz<span class="dot" style="width:10px;height:10px" aria-hidden="true"></span></a>
+          <p class="footer-brand-desc">Eatz connects food lovers with the best local restaurants. Fresh ingredients, bold flavors, fast delivery — every single time.</p>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.2 8.2 0 0 0 4.81 1.54V6.79a4.85 4.85 0 0 1-1.04-.1z"/></svg></a>
+            <a href="#" aria-label="X (Twitter)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links"><li><a href="menu.html">Browse Menu</a></li><li><a href="index.html#featured">Today's Specials</a></li><li><a href="reservation.html">Book a Table</a></li><li><a href="blog.html">Food Stories</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links"><li><a href="about.html">About Eatz</a></li><li><a href="#">Careers</a></li><li><a href="#">Partner With Us</a></li><li><a href="blog.html">Blog</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links"><li><a href="index.html#faq">Help Center</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">Accessibility</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Eatz. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Auth guard ─────────────────────────────────────────────── */
+    (function () {
+      try {
+        var u = JSON.parse(localStorage.getItem('eatz_user'));
+        if (!u) window.location.replace('signin.html');
+      } catch (e) {
+        window.location.replace('signin.html');
+      }
+    })();
+
+    /* ── Voucher data ────────────────────────────────────────────
+       Status is derived at render time from expiry vs today.
+       expiry: ISO date string (end of that day)
+       soonThreshold: vouchers expiring within 7 days from today
+    ──────────────────────────────────────────────────────────── */
+    var TODAY = new Date();
+    TODAY.setHours(0, 0, 0, 0);
+    var SOON_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+    var VOUCHERS = [
+      {
+        id: 'v1',
+        code: 'EATZ20',
+        discount: '20% OFF',
+        name: 'First Order Discount',
+        description: 'Get 20% off your very first order',
+        minSpend: '₦2,500',
+        expiry: '2026-06-30',
+        usageLimit: 'Single use'
+      },
+      {
+        id: 'v2',
+        code: 'SAVE500',
+        discount: '₦500 OFF',
+        name: 'Weekend Special',
+        description: 'Flat ₦500 off on weekend orders',
+        minSpend: '₦3,000',
+        expiry: '2026-07-15',
+        usageLimit: 'Single use'
+      },
+      {
+        id: 'v3',
+        code: 'WELCOME10',
+        discount: '10% OFF',
+        name: 'Welcome Reward',
+        description: 'Thanks for joining Eatz! Enjoy 10% off',
+        minSpend: 'No minimum',
+        expiry: '2026-06-05',
+        usageLimit: 'Single use'
+      },
+      {
+        id: 'v4',
+        code: 'SUMMER15',
+        discount: '15% OFF',
+        name: 'Summer Promo',
+        description: '15% off all grilled & summer dishes',
+        minSpend: '₦4,000',
+        expiry: '2026-06-03',
+        usageLimit: 'Single use'
+      },
+      {
+        id: 'v5',
+        code: 'LAUNCH25',
+        discount: '25% OFF',
+        name: 'Launch Celebration',
+        description: 'Celebrate our launch with a big 25% off',
+        minSpend: '₦5,000',
+        expiry: '2026-05-20',
+        usageLimit: 'Single use'
+      },
+      {
+        id: 'v6',
+        code: 'FREESHIP',
+        discount: 'Free Delivery',
+        name: 'Free Delivery Week',
+        description: 'Zero delivery fee on any order',
+        minSpend: 'No minimum',
+        expiry: '2026-05-10',
+        usageLimit: '3 uses'
+      }
+    ];
+
+    function getStatus(voucher) {
+      var exp = new Date(voucher.expiry);
+      exp.setHours(23, 59, 59, 999);
+      if (exp < TODAY) return 'expired';
+      if ((exp - TODAY) <= SOON_MS) return 'soon';
+      return 'active';
+    }
+
+    function formatExpiry(voucher) {
+      var exp = new Date(voucher.expiry);
+      return exp.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function daysLeft(voucher) {
+      var exp = new Date(voucher.expiry);
+      exp.setHours(23, 59, 59, 999);
+      var diff = Math.ceil((exp - TODAY) / (1000 * 60 * 60 * 24));
+      return diff;
+    }
+
+    /* ── SVG helpers ─────────────────────────────────────────────── */
+    var ICON_TAG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>';
+    var ICON_CLOCK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    var ICON_SPEND = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+    var ICON_COPY = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    var ICON_CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ── Build card HTML ─────────────────────────────────────────── */
+    function buildCard(v) {
+      var status = getStatus(v);
+      var topCls = status === 'active' ? 'active-top' : status === 'soon' ? 'soon-top' : 'expired-top';
+      var iconCls = status === 'active' ? 'active-icon' : status === 'soon' ? 'soon-icon' : 'expired-icon';
+      var badgeCls = status === 'active' ? 'active-badge' : status === 'soon' ? 'soon-badge' : 'expired-badge';
+      var badgeLabel = status === 'active' ? 'Active' : status === 'soon' ? 'Expiring Soon' : 'Expired';
+      var cardExpiredCls = status === 'expired' ? ' expired' : '';
+      var days = daysLeft(v);
+      var expiryLabel = status === 'expired'
+        ? 'Expired ' + formatExpiry(v)
+        : 'Valid until ' + formatExpiry(v);
+      var expiryRowCls = status === 'soon' ? 'voucher-meta-row expiring-soon-text' : 'voucher-meta-row';
+      var daysNote = status === 'soon' ? ' (' + days + ' day' + (days !== 1 ? 's' : '') + ' left)' : '';
+      var copyDisabled = status === 'expired' ? ' disabled aria-disabled="true"' : '';
+
+      return (
+        '<div class="voucher-card' + cardExpiredCls + '" role="listitem" data-id="' + esc(v.id) + '">' +
+          '<div class="voucher-card-top ' + topCls + '" aria-hidden="true"></div>' +
+          '<div class="voucher-card-body">' +
+            '<div class="voucher-card-head">' +
+              '<div class="voucher-icon-wrap ' + iconCls + '">' + ICON_TAG + '</div>' +
+              '<span class="voucher-status ' + badgeCls + '">' + esc(badgeLabel) + '</span>' +
+            '</div>' +
+            '<div class="voucher-discount">' + esc(v.discount) + '</div>' +
+            '<div class="voucher-name">' + esc(v.name) + '</div>' +
+            '<div class="voucher-divider" aria-hidden="true"></div>' +
+            '<div class="voucher-code-row">' +
+              '<span class="voucher-code-label">Code</span>' +
+              '<span class="voucher-code" id="code-' + esc(v.id) + '">' + esc(v.code) + '</span>' +
+              '<button class="copy-btn" id="copybtn-' + esc(v.id) + '"' + copyDisabled +
+                ' onclick="copyCode(\'' + esc(v.id) + '\',\'' + esc(v.code) + '\',this)"' +
+                ' aria-label="Copy code ' + esc(v.code) + '">' +
+                ICON_COPY + 'Copy' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="voucher-card-footer">' +
+            '<div class="voucher-meta-row">' + ICON_SPEND + '<span>Min. spend: <strong>' + esc(v.minSpend) + '</strong></span></div>' +
+            '<div class="' + expiryRowCls + '">' + ICON_CLOCK + '<span>' + esc(expiryLabel) + esc(daysNote) + '</span></div>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    /* ── Active tab ──────────────────────────────────────────────── */
+    var activeTab = 'all';
+
+    /* ── Render ──────────────────────────────────────────────────── */
+    function render() {
+      var counts = { all: VOUCHERS.length, active: 0, soon: 0, expired: 0 };
+      VOUCHERS.forEach(function (v) { counts[getStatus(v)]++; });
+
+      /* Tab counts */
+      Object.keys(counts).forEach(function (t) {
+        var el = document.getElementById('tab-count-' + t);
+        if (el) el.textContent = counts[t];
+      });
+
+      /* Active badge */
+      var badge = document.getElementById('voucher-active-badge');
+      if (counts.active > 0) {
+        badge.textContent = counts.active + ' active';
+        badge.style.display = '';
+      } else {
+        badge.style.display = 'none';
+      }
+
+      /* Sub text */
+      document.getElementById('voucher-sub').textContent =
+        counts.all + ' voucher' + (counts.all !== 1 ? 's' : '') +
+        (counts.active > 0 ? ' · ' + counts.active + ' active' : '');
+
+      /* Filter */
+      var filtered = VOUCHERS.filter(function (v) {
+        if (activeTab === 'all') return true;
+        return getStatus(v) === activeTab;
+      });
+
+      var grid = document.getElementById('voucher-grid');
+      var empty = document.getElementById('voucher-empty');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = '';
+        var msgs = {
+          all:     ['No vouchers yet',     'Place orders and stay active to earn exclusive promo codes.'],
+          active:  ['No active vouchers',   'Check back soon — new deals are added regularly.'],
+          soon:    ['Nothing expiring soon','Your vouchers are in good shape. No urgency right now.'],
+          expired: ['No expired vouchers',  'Your vouchers are all current. Keep an eye on expiry dates.']
+        };
+        var m = msgs[activeTab] || msgs.all;
+        document.getElementById('empty-title').textContent = m[0];
+        document.getElementById('empty-msg').textContent   = m[1];
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.innerHTML = filtered.map(buildCard).join('');
+    }
+
+    /* ── Copy code ───────────────────────────────────────────────── */
+    var toastTimer = null;
+    function copyCode(id, code, btn) {
+      if (btn && btn.disabled) return;
+      navigator.clipboard.writeText(code).then(function () {
+        showToast();
+        if (btn) {
+          var orig = btn.innerHTML;
+          btn.innerHTML = ICON_CHECK + 'Copied';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.innerHTML = ICON_COPY + 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        }
+      }).catch(function () {
+        /* Fallback for older browsers */
+        var ta = document.createElement('textarea');
+        ta.value = code;
+        ta.style.cssText = 'position:fixed;top:-999px;left:-999px;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); showToast(); } catch (e) {}
+        document.body.removeChild(ta);
+      });
+    }
+
+    function showToast() {
+      var t = document.getElementById('copy-toast');
+      t.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2200);
+    }
+
+    /* ── Tab switching ───────────────────────────────────────────── */
+    document.querySelectorAll('.voucher-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.voucher-tab').forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        activeTab = btn.getAttribute('data-tab');
+        render();
+      });
+    });
+
+    /* ── Nav scroll + mobile menu ────────────────────────────────── */
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function () { nav.classList.toggle('scrolled', window.scrollY > 20); }, { passive: true });
+
+    var hamburger  = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen   = false;
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+    hamburger.addEventListener('click', function () {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', String(menuOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!menuOpen));
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuOpen) closeMenu(); });
+
+    /* ── Initial render ──────────────────────────────────────────── */
+    render();
+    lucide.createIcons();
+  </script>
+  <script src="nav.js"></script>
+  <script src="cookie-consent.js"></script>
+</body>
+</html>

@@ -153,7 +153,7 @@
             ddLink(IC.orders,   'Orders',     'orders.html') +
             (function(){var c=window.eatzNotify?window.eatzNotify.getUnreadCount():0;return '<a href="inbox.html" class="nav-dd-item" role="menuitem">'+IC.inbox+'Inbox'+(c>0?'<span class="nav-dd-badge">'+(c>99?'99+':c)+'</span>':'')+' </a>';})() +
             ddLink(IC.wishlist, 'Wishlist',    'wishlist.html') +
-            ddLink(IC.voucher,  'Voucher',     '#') +
+            ddLink(IC.voucher,  'Voucher',     'voucher.html') +
             '<div class="nav-dd-divider" aria-hidden="true"></div>' +
             '<button class="nav-dd-item nav-dd-logout" role="menuitem" onclick="eatzSignOut()">' +
               IC.logout + 'Logout' +
@@ -223,7 +223,7 @@
       list.appendChild(divLi);
 
       // Auth link items
-      [['My Account','#'],['Orders','orders.html'],['Inbox','inbox.html'],['Wishlist','wishlist.html'],['Voucher','#']].forEach(function (pair) {
+      [['My Account','#'],['Orders','orders.html'],['Inbox','inbox.html'],['Wishlist','wishlist.html'],['Voucher','voucher.html']].forEach(function (pair) {
         var al = document.createElement('li');
         al.setAttribute('data-mob-nav', '');
         var labelHtml = esc(pair[0]);
