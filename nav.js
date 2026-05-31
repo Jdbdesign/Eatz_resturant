@@ -44,6 +44,7 @@
     '.nav-dd-logout:hover{background:#fef2f2!important;color:#dc2626!important}',
     '.nav-dd-logout svg{color:#ef4444!important}',
     '.nav-dd-logout:hover svg{color:#dc2626!important}',
+    '.nav-dd-badge{margin-left:auto;background:#f66d09;color:#fff;font-size:11px;font-weight:800;padding:2px 8px;border-radius:9999px;min-width:20px;text-align:center;line-height:1.5;font-family:"Manrope",sans-serif;flex-shrink:0}',
     /* Sign In rectangle button (unauthenticated state) */
     '.nav-signin-btn{display:inline-flex;align-items:center;gap:7px;background:transparent;color:rgba(255,255,255,.85);',
       'border:2px solid rgba(255,255,255,.28);border-radius:8px;padding:9px 18px;',
@@ -150,7 +151,7 @@
             '</div>' +
             ddLink(IC.account,  'My Account', '#') +
             ddLink(IC.orders,   'Orders',     'orders.html') +
-            ddLink(IC.inbox,    'Inbox',       '#') +
+            (function(){var c=window.eatzNotify?window.eatzNotify.getUnreadCount():0;return '<a href="inbox.html" class="nav-dd-item" role="menuitem">'+IC.inbox+'Inbox'+(c>0?'<span class="nav-dd-badge">'+(c>99?'99+':c)+'</span>':'')+' </a>';})() +
             ddLink(IC.wishlist, 'Wishlist',    'wishlist.html') +
             ddLink(IC.voucher,  'Voucher',     '#') +
             '<div class="nav-dd-divider" aria-hidden="true"></div>' +
@@ -222,10 +223,17 @@
       list.appendChild(divLi);
 
       // Auth link items
-      [['My Account','#'],['Orders','orders.html'],['Inbox','#'],['Wishlist','wishlist.html'],['Voucher','#']].forEach(function (pair) {
+      [['My Account','#'],['Orders','orders.html'],['Inbox','inbox.html'],['Wishlist','wishlist.html'],['Voucher','#']].forEach(function (pair) {
         var al = document.createElement('li');
         al.setAttribute('data-mob-nav', '');
-        al.innerHTML = '<a href="' + esc(pair[1]) + '">' + esc(pair[0]) + '</a>';
+        var labelHtml = esc(pair[0]);
+        if (pair[0] === 'Inbox') {
+          var cnt = window.eatzNotify ? window.eatzNotify.getUnreadCount() : 0;
+          if (cnt > 0) {
+            labelHtml += '<span style="margin-left:8px;background:#f66d09;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:9999px;vertical-align:middle;line-height:1.6;display:inline-block">' + (cnt > 99 ? '99+' : cnt) + '</span>';
+          }
+        }
+        al.innerHTML = '<a href="' + esc(pair[1]) + '">' + labelHtml + '</a>';
         al.querySelector('a').addEventListener('click', tryClose);
         list.appendChild(al);
       });

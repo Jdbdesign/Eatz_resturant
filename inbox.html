@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inbox — Eatz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{
+      --primary:#f66d09;--primary-dark:#9e4300;--primary-light:#ffdbcb;
+      --surface:#fbf9f9;--surface-low:#f5f3f3;--surface-mid:#efeded;
+      --dark:#1b1c1c;--on-surface:#1b1c1c;--on-surface-v:#594236;
+      --outline:#8d7164;--outline-v:#e1c0b1;
+      --shadow-card:0 4px 20px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+      --shadow-brand:0 8px 30px rgba(246,109,9,.3);
+      --ease-spring:cubic-bezier(.34,1.56,.64,1);
+      --ease-out:cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',sans-serif;background:var(--surface);color:var(--on-surface);line-height:1.6;overflow-x:hidden}
+    .skip-link{position:absolute;top:-100%;left:1rem;background:var(--primary);color:#fff;padding:.5rem 1rem;border-radius:12px;z-index:1000;transition:top 150ms;font-weight:600;text-decoration:none}
+    .skip-link:focus{top:1rem}
+    :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+    :focus:not(:focus-visible){outline:none}
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px}
+    @media(min-width:1024px){.container{padding:0 40px}}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.06);transition:box-shadow 250ms}
+    .nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:32px}
+    .nav-logo{font-size:28px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:2px}
+    .nav-logo .accent{color:var(--primary)}
+    .nav-logo .dot{width:8px;height:8px;background:var(--primary);border-radius:50%;margin-left:2px;margin-bottom:4px;display:inline-block}
+    .nav-links{display:none;list-style:none;gap:32px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:15px;font-weight:500;transition:color 150ms;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);border-radius:2px;transition:width 250ms var(--ease-spring)}
+    .nav-links a:hover{color:#fff}
+    .nav-links a:hover::after{width:100%}
+    .nav-actions{display:none;align-items:center;gap:12px}
+    @media(min-width:768px){.nav-actions{display:flex}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;padding:10px 20px;border-radius:8px;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out);min-height:44px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .btn-outline{background:transparent;color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25)}
+    .btn-outline:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.4)}
+    .btn-ghost{background:transparent;color:var(--on-surface-v);border-color:var(--outline-v)}
+    .btn-ghost:hover{background:var(--surface-mid);border-color:var(--outline);color:var(--dark)}
+    .hamburger{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    @media(min-width:768px){.hamburger{display:none}}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all 250ms var(--ease-out)}
+    .mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--dark);padding:24px 16px;border-top:1px solid rgba(255,255,255,.06);z-index:99}
+    .mobile-menu.open{display:block}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .mobile-menu ul a{display:block;color:rgba(255,255,255,.8);text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:500;transition:all 150ms}
+    .mobile-menu ul a:hover{background:rgba(255,255,255,.06);color:#fff}
+    .mobile-actions{display:flex;gap:12px}
+    .mobile-actions .btn{flex:1}
+
+    /* PAGE */
+    .page-wrap{padding-top:72px;min-height:100vh}
+
+    /* BREADCRUMB */
+    .breadcrumb-bar{background:var(--dark);padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5)}
+    .breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none;transition:color 150ms}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb-sep{color:rgba(255,255,255,.25)}
+    .breadcrumb-current{color:#fff;font-weight:600}
+
+    /* INBOX SECTION */
+    .inbox-section{padding:48px 0 80px}
+    .inbox-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+    .inbox-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;margin-bottom:4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .inbox-unread-badge{font-size:13px;font-weight:800;background:var(--primary);color:#fff;padding:3px 10px;border-radius:9999px;letter-spacing:0}
+    .inbox-sub{font-size:15px;color:var(--outline);font-weight:500}
+
+    /* TABS */
+    .inbox-tabs{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap;background:var(--surface-low);border-radius:12px;padding:4px}
+    .inbox-tab{background:transparent;border:none;padding:9px 18px;border-radius:9px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;color:var(--outline);cursor:pointer;transition:all 150ms;white-space:nowrap;display:flex;align-items:center;gap:7px}
+    .inbox-tab:hover{background:rgba(246,109,9,.08);color:var(--primary)}
+    .inbox-tab.active{background:#fff;color:var(--dark);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    .inbox-tab-count{font-size:11px;font-weight:800;background:var(--surface-mid);color:var(--outline);padding:1px 7px;border-radius:9999px;line-height:1.6;transition:all 150ms}
+    .inbox-tab.active .inbox-tab-count{background:rgba(246,109,9,.12);color:var(--primary)}
+    .inbox-tab-count.has-unread{background:var(--primary)!important;color:#fff!important}
+
+    /* NOTIFICATION LIST */
+    .notif-list{display:flex;flex-direction:column;gap:10px;max-width:820px}
+
+    /* NOTIFICATION CARD */
+    .notif-card{background:#fff;border-radius:16px;border:1.5px solid var(--outline-v);box-shadow:var(--shadow-card);display:flex;align-items:flex-start;gap:16px;padding:18px 20px;cursor:pointer;transition:all 200ms var(--ease-out);text-decoration:none;color:inherit;position:relative}
+    .notif-card:hover{border-color:rgba(246,109,9,.35);box-shadow:0 8px 30px rgba(0,0,0,.1);transform:translateY(-2px)}
+    .notif-card:active{transform:translateY(0)}
+    .notif-card.unread{background:rgba(246,109,9,.03);border-color:rgba(246,109,9,.2)}
+    .notif-icon-wrap{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid transparent}
+    .notif-icon-order{background:rgba(246,109,9,.1);border-color:rgba(246,109,9,.2);color:var(--primary)}
+    .notif-icon-reservation{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2);color:#4f46e5}
+    .notif-icon-promo{background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.2);color:#16a34a}
+    .notif-body{flex:1;min-width:0}
+    .notif-title{font-size:15px;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:4px}
+    .notif-card.unread .notif-title{font-weight:800}
+    .notif-msg{font-size:13px;color:var(--on-surface-v);line-height:1.55}
+    .notif-time{font-size:12px;color:var(--outline);font-weight:500;margin-top:6px}
+    .notif-dot-wrap{display:flex;align-items:flex-start;padding-top:4px;flex-shrink:0}
+    .notif-dot{width:9px;height:9px;background:var(--primary);border-radius:50%;flex-shrink:0}
+
+    /* EMPTY STATE */
+    .inbox-empty{text-align:center;padding:72px 24px;max-width:420px;margin:0 auto}
+    .inbox-empty-icon{width:88px;height:88px;background:var(--surface-low);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;border:1px solid var(--outline-v);color:var(--outline)}
+    .inbox-empty h2{font-size:22px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:10px}
+    .inbox-empty p{color:var(--outline);font-size:15px;line-height:1.65}
+
+    /* FOOTER */
+    .footer{background:var(--dark);color:rgba(255,255,255,.6);padding:64px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:1fr;gap:48px;margin-bottom:48px}
+    @media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+    .footer-brand-desc{font-size:14px;line-height:1.7;max-width:300px;margin:16px 0 24px}
+    .footer-social{display:flex;gap:10px}
+    .footer-social a{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 150ms;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+    .footer-social a:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+    .footer-col-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:color 150ms}
+    .footer-links a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:13px}
+    .footer-legal{display:flex;gap:20px}
+    .footer-legal a{color:rgba(255,255,255,.4);text-decoration:none;transition:color 150ms}
+    .footer-legal a:hover{color:rgba(255,255,255,.7)}
+
+    [data-lucide]{display:inline-block;vertical-align:middle;flex-shrink:0}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Eatz home">
+        <span class="accent">E</span>atz<span class="dot" aria-hidden="true"></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Reservation</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="signin.html" class="btn btn-outline">Sign In</a>
+        <a href="menu.html" class="btn btn-primary">Order Now</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul role="list">
+      <li><a href="menu.html" onclick="closeMenu()">Menu</a></li>
+      <li><a href="reservation.html" onclick="closeMenu()">Reservation</a></li>
+      <li><a href="about.html" onclick="closeMenu()">About us</a></li>
+      <li><a href="blog.html" onclick="closeMenu()">Blog</a></li>
+      <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="signin.html" class="btn btn-outline">Sign In</a>
+      <a href="menu.html" class="btn btn-primary">Order Now</a>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-bar">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">›</span>
+          <span class="breadcrumb-current">Inbox</span>
+        </nav>
+      </div>
+    </div>
+
+    <!-- INBOX -->
+    <section class="inbox-section" aria-labelledby="inbox-heading">
+      <div class="container">
+
+        <div class="inbox-header">
+          <div>
+            <h1 class="inbox-title" id="inbox-heading">
+              Inbox
+              <span class="inbox-unread-badge" id="inbox-unread-badge" style="display:none" aria-live="polite"></span>
+            </h1>
+            <p class="inbox-sub" id="inbox-sub">Your notifications and offers</p>
+          </div>
+          <button class="btn btn-ghost" id="mark-all-btn" onclick="markAllRead()" style="display:none" aria-label="Mark all notifications as read">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Mark all read
+          </button>
+        </div>
+
+        <!-- FILTER TABS -->
+        <div class="inbox-tabs" role="tablist" aria-label="Filter notifications">
+          <button class="inbox-tab active" data-tab="all" role="tab" aria-selected="true">
+            All <span class="inbox-tab-count" id="tab-count-all">0</span>
+          </button>
+          <button class="inbox-tab" data-tab="order" role="tab" aria-selected="false">
+            Orders <span class="inbox-tab-count" id="tab-count-order">0</span>
+          </button>
+          <button class="inbox-tab" data-tab="reservation" role="tab" aria-selected="false">
+            Reservations <span class="inbox-tab-count" id="tab-count-reservation">0</span>
+          </button>
+          <button class="inbox-tab" data-tab="promo" role="tab" aria-selected="false">
+            Promos <span class="inbox-tab-count" id="tab-count-promo">0</span>
+          </button>
+        </div>
+
+        <!-- NOTIFICATION LIST -->
+        <div class="notif-list" id="notif-list" role="list" aria-live="polite"></div>
+
+        <!-- EMPTY STATE -->
+        <div class="inbox-empty" id="inbox-empty" style="display:none" role="status">
+          <div class="inbox-empty-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          </div>
+          <h2 id="empty-title">All caught up!</h2>
+          <p id="empty-msg">No notifications yet. Place an order or book a table and you'll see updates here.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="nav-logo" style="font-size:32px" aria-label="Eatz home"><span class="accent">E</span>atz<span class="dot" style="width:10px;height:10px" aria-hidden="true"></span></a>
+          <p class="footer-brand-desc">Eatz connects food lovers with the best local restaurants. Fresh ingredients, bold flavors, fast delivery — every single time.</p>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.2 8.2 0 0 0 4.81 1.54V6.79a4.85 4.85 0 0 1-1.04-.1z"/></svg></a>
+            <a href="#" aria-label="X (Twitter)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links"><li><a href="menu.html">Browse Menu</a></li><li><a href="index.html#featured">Today's Specials</a></li><li><a href="reservation.html">Book a Table</a></li><li><a href="blog.html">Food Stories</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links"><li><a href="about.html">About Eatz</a></li><li><a href="#">Careers</a></li><li><a href="#">Partner With Us</a></li><li><a href="blog.html">Blog</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links"><li><a href="index.html#faq">Help Center</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">Accessibility</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Eatz. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- notifications.js FIRST so eatzNotify is available when the inline script runs -->
+  <script src="notifications.js"></script>
+  <script>
+    /* ── Type icon SVGs ─────────────────────────────────────────── */
+    var TYPE_ICONS = {
+      order:       '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+      reservation: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+      promo:       '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'
+    };
+    var TYPE_ICON_CLASS = {
+      order:       'notif-icon-order',
+      reservation: 'notif-icon-reservation',
+      promo:       'notif-icon-promo'
+    };
+
+    /* ── Relative time formatter ─────────────────────────────────── */
+    function timeAgo(ts) {
+      var diff  = Math.max(0, Date.now() - ts);
+      var secs  = Math.floor(diff / 1000);
+      var mins  = Math.floor(secs / 60);
+      var hours = Math.floor(mins / 60);
+      var days  = Math.floor(hours / 24);
+      if (secs < 60)  return 'Just now';
+      if (mins < 60)  return mins  + ' min'  + (mins  !== 1 ? 's' : '') + ' ago';
+      if (hours < 24) return hours + ' hour' + (hours !== 1 ? 's' : '') + ' ago';
+      if (days === 1) return 'Yesterday';
+      if (days < 7)   return days  + ' days ago';
+      var d = new Date(ts);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) +
+             ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    var activeTab = 'all';
+
+    /* ── Main render ────────────────────────────────────────────── */
+    function render() {
+      var all = window.eatzNotify ? window.eatzNotify.getAll() : [];
+
+      /* Count per type */
+      var counts = { all: all.length, order: 0, reservation: 0, promo: 0 };
+      var unread = { all: 0, order: 0, reservation: 0, promo: 0 };
+      all.forEach(function (n) {
+        if (counts[n.type] !== undefined) counts[n.type]++;
+        if (!n.read) {
+          unread.all++;
+          if (unread[n.type] !== undefined) unread[n.type]++;
+        }
+      });
+
+      /* Tab count pips */
+      ['all','order','reservation','promo'].forEach(function (t) {
+        var el = document.getElementById('tab-count-' + t);
+        if (!el) return;
+        el.textContent = counts[t];
+        el.classList.toggle('has-unread', unread[t] > 0);
+      });
+
+      /* Heading badge */
+      var badge = document.getElementById('inbox-unread-badge');
+      badge.textContent = unread.all + ' unread';
+      badge.style.display = unread.all > 0 ? '' : 'none';
+
+      /* Mark all button */
+      document.getElementById('mark-all-btn').style.display = unread.all > 0 ? '' : 'none';
+
+      /* Sub-line */
+      var sub = all.length + ' notification' + (all.length !== 1 ? 's' : '');
+      if (unread.all > 0) sub += ' · ' + unread.all + ' unread';
+      document.getElementById('inbox-sub').textContent = sub || 'No notifications yet';
+
+      /* Filter */
+      var filtered = activeTab === 'all' ? all : all.filter(function (n) { return n.type === activeTab; });
+
+      var listEl  = document.getElementById('notif-list');
+      var emptyEl = document.getElementById('inbox-empty');
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = '';
+        emptyEl.style.display = '';
+        var msgs = {
+          all:         ['All caught up!',         'No notifications yet. Place an order or book a table and you\'ll see updates here.'],
+          order:       ['No order notifications',  'Order confirmations and status updates will appear here once you place an order.'],
+          reservation: ['No reservation updates',  'Book a table and your confirmation will show up here.'],
+          promo:       ['No promotions yet',       'Check back soon — exclusive deals and discount codes will be posted here.']
+        };
+        var m = msgs[activeTab] || msgs.all;
+        document.getElementById('empty-title').textContent = m[0];
+        document.getElementById('empty-msg').textContent   = m[1];
+        return;
+      }
+
+      emptyEl.style.display = 'none';
+      var html = '';
+      filtered.forEach(function (n) {
+        var iconCls = TYPE_ICON_CLASS[n.type] || 'notif-icon-promo';
+        var icon    = TYPE_ICONS[n.type]      || TYPE_ICONS.promo;
+        var unreadCls = n.read ? '' : ' unread';
+        html +=
+          '<a href="' + esc(n.href || '#') + '" class="notif-card' + unreadCls + '"' +
+            ' role="listitem" data-id="' + esc(n.id) + '" onclick="onCardClick(event,this)"' +
+            ' aria-label="' + esc(n.title) + (n.read ? '' : ' — unread') + '">' +
+            '<div class="notif-icon-wrap ' + iconCls + '">' + icon + '</div>' +
+            '<div class="notif-body">' +
+              '<div class="notif-title">' + esc(n.title) + '</div>' +
+              (n.body ? '<div class="notif-msg">' + esc(n.body) + '</div>' : '') +
+              '<div class="notif-time">' + timeAgo(n.timestamp) + '</div>' +
+            '</div>' +
+            (!n.read ? '<div class="notif-dot-wrap" aria-hidden="true"><span class="notif-dot"></span></div>' : '') +
+          '</a>';
+      });
+      listEl.innerHTML = html;
+    }
+
+    /* ── Card click → mark read then navigate ───────────────────── */
+    function onCardClick(e, el) {
+      var id   = el.getAttribute('data-id');
+      var href = el.getAttribute('href');
+      if (window.eatzNotify) window.eatzNotify.markRead(id);
+      el.classList.remove('unread');
+      var dot = el.querySelector('.notif-dot-wrap');
+      if (dot) dot.remove();
+      /* Refresh heading badge & button */
+      var remaining = window.eatzNotify ? window.eatzNotify.getUnreadCount() : 0;
+      var badge = document.getElementById('inbox-unread-badge');
+      badge.textContent = remaining + ' unread';
+      badge.style.display = remaining > 0 ? '' : 'none';
+      document.getElementById('mark-all-btn').style.display = remaining > 0 ? '' : 'none';
+      /* Refresh tab pips */
+      var all = window.eatzNotify ? window.eatzNotify.getAll() : [];
+      var uc = { all: 0, order: 0, reservation: 0, promo: 0 };
+      all.forEach(function (n) { if (!n.read) { uc.all++; if (uc[n.type] !== undefined) uc[n.type]++; } });
+      ['all','order','reservation','promo'].forEach(function (t) {
+        var cnt = document.getElementById('tab-count-' + t);
+        if (cnt) cnt.classList.toggle('has-unread', uc[t] > 0);
+      });
+      /* Navigate if real URL */
+      if (href && href !== '#') {
+        e.preventDefault();
+        window.location.href = href;
+      }
+    }
+
+    /* ── Mark all read (button click) ───────────────────────────── */
+    function markAllRead() {
+      if (window.eatzNotify) window.eatzNotify.markAllRead();
+      render();
+    }
+
+    /* ── Tab switching ──────────────────────────────────────────── */
+    document.querySelectorAll('.inbox-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.inbox-tab').forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        activeTab = btn.getAttribute('data-tab');
+        render();
+      });
+    });
+
+    /* ── Nav scroll + mobile menu ────────────────────────────────── */
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function () { nav.classList.toggle('scrolled', window.scrollY > 20); }, { passive: true });
+
+    var hamburger  = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen   = false;
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+    hamburger.addEventListener('click', function () {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', String(menuOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!menuOpen));
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuOpen) closeMenu(); });
+
+    /* ── Initial render ─────────────────────────────────────────── */
+    render();
+
+    /* Silently mark all as read after the user has seen the unread state for a moment */
+    setTimeout(function () {
+      if (window.eatzNotify) {
+        window.eatzNotify.markAllRead();
+        /* Hide the heading badge and button without re-rendering card styles */
+        var badge = document.getElementById('inbox-unread-badge');
+        if (badge) badge.style.display = 'none';
+        var markBtn = document.getElementById('mark-all-btn');
+        if (markBtn) markBtn.style.display = 'none';
+        ['all','order','reservation','promo'].forEach(function (t) {
+          var cnt = document.getElementById('tab-count-' + t);
+          if (cnt) cnt.classList.remove('has-unread');
+        });
+      }
+    }, 1500);
+
+    lucide.createIcons();
+  </script>
+  <script src="nav.js"></script>
+  <script src="cookie-consent.js"></script>
+</body>
+</html>

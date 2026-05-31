@@ -337,6 +337,8 @@
     </div>
   </footer>
 
+  <!-- Load notifications before the inline script so eatzNotify is available in init() -->
+  <script src="notifications.js"></script>
   <script>
     var ORDER_KEY = 'eatz_last_order';
 
@@ -394,6 +396,22 @@
       // Payment
       var payText = order.paymentMethod === 'cash' ? 'Cash on delivery' : 'Paid by card';
       document.getElementById('conf-payment-text').textContent = payText;
+
+      // Add inbox notification (once per order number to prevent duplicates on refresh)
+      if (window.eatzNotify && order.number) {
+        var notifFlag = 'eatz_notif_order_' + order.number;
+        if (!localStorage.getItem(notifFlag)) {
+          try { localStorage.setItem(notifFlag, '1'); } catch (e) {}
+          var firstName = order.delivery && order.delivery.name ? order.delivery.name.split(' ')[0] : '';
+          var itemCount = (order.items || []).reduce(function (s, i) { return s + (i.qty || 1); }, 0);
+          window.eatzNotify.add(
+            'order',
+            'Order #' + order.number + ' Confirmed!',
+            'Hi ' + (firstName || 'there') + '! Your order of ' + itemCount + ' item' + (itemCount !== 1 ? 's' : '') + ' ($' + order.total.toFixed(2) + ') is being prepared and will arrive in ~30 mins.',
+            'order-detail.html?id=' + order.number
+          );
+        }
+      }
     }
 
     // ── Download receipt ──────────────────────────────────────────

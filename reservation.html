@@ -532,6 +532,18 @@
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('res-success').classList.add('show');
         lucide.createIcons();
+
+        // Add inbox notification for the reservation
+        if (window.eatzNotify) {
+          var guestNum  = parseInt(guests) || 1;
+          var resBody   = name + ' · ' + dateFormatted + ' at ' + selectedTime + ' · ' + guestNum + ' guest' + (guestNum !== 1 ? 's' : '');
+          window.eatzNotify.add(
+            'reservation',
+            'Table Booking Confirmed!',
+            'Your reservation is confirmed. ' + resBody + '.',
+            'reservation.html'
+          );
+        }
       }, 1800);
     }
 
@@ -548,6 +560,7 @@
     lucide.createIcons();
   </script>
   <script src="cart.js"></script>
+  <script src="notifications.js"></script>
   <script src="nav.js"></script>
   <script src="cookie-consent.js"></script>
 </body>
