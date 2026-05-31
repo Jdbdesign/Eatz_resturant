@@ -480,8 +480,7 @@
           (deliveryHtml ? '<div class="delivery-box"><div class="delivery-box-title">Delivered To</div><p>' + deliveryHtml + '</p></div>' : '') +
           '<button class="print-btn" onclick="window.print()">🖨️ Print Receipt</button>' +
           '<div class="receipt-foot"><p>Thank you for ordering with Eatz!</p><p style="margin-top:4px">Questions? Contact us at support@eatz.com</p></div>' +
-          '  <script src="cookie-consent.js"></script>
-</body></html>';
+          '</body></html>';
 
         var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
         var url = URL.createObjectURL(blob);
