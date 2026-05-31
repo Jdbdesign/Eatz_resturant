@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed — Eatz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{
+      --primary:#f66d09;--primary-dark:#9e4300;--primary-light:#ffdbcb;
+      --surface:#fbf9f9;--surface-low:#f5f3f3;--surface-mid:#efeded;
+      --dark:#1b1c1c;--on-surface:#1b1c1c;--on-surface-v:#594236;
+      --outline:#8d7164;--outline-v:#e1c0b1;
+      --shadow-card:0 4px 20px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+      --shadow-brand:0 8px 30px rgba(246,109,9,.3);
+      --ease-spring:cubic-bezier(.34,1.56,.64,1);
+      --ease-out:cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',sans-serif;background:var(--surface);color:var(--on-surface);line-height:1.6;overflow-x:hidden}
+    .skip-link{position:absolute;top:-100%;left:1rem;background:var(--primary);color:#fff;padding:.5rem 1rem;border-radius:12px;z-index:1000;transition:top 150ms;font-weight:600;text-decoration:none}
+    .skip-link:focus{top:1rem}
+    :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+    :focus:not(:focus-visible){outline:none}
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px}
+    @media(min-width:1024px){.container{padding:0 40px}}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.06);transition:box-shadow 250ms}
+    .nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:32px}
+    .nav-logo{font-size:28px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:2px}
+    .nav-logo .accent{color:var(--primary)}
+    .nav-logo .dot{width:8px;height:8px;background:var(--primary);border-radius:50%;margin-left:2px;margin-bottom:4px;display:inline-block}
+    .nav-links{display:none;list-style:none;gap:32px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:15px;font-weight:500;transition:color 150ms;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);border-radius:2px;transition:width 250ms var(--ease-spring)}
+    .nav-links a:hover{color:#fff}
+    .nav-links a:hover::after{width:100%}
+    .nav-actions{display:none;align-items:center;gap:12px}
+    @media(min-width:768px){.nav-actions{display:flex}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;padding:10px 20px;border-radius:8px;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out);min-height:44px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .btn-ghost{background:transparent;color:var(--dark);border-color:var(--outline-v)}
+    .btn-ghost:hover{background:var(--surface-mid);border-color:var(--outline)}
+    .btn-outline-nav{background:transparent;color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25)}
+    .btn-outline-nav:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.4)}
+    .btn-lg{font-size:16px;padding:14px 28px;border-radius:12px;min-height:52px}
+    .hamburger{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    @media(min-width:768px){.hamburger{display:none}}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all 250ms var(--ease-out)}
+    .mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--dark);padding:24px 16px;border-top:1px solid rgba(255,255,255,.06);z-index:99}
+    .mobile-menu.open{display:block}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .mobile-menu ul a{display:block;color:rgba(255,255,255,.8);text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:500;transition:all 150ms}
+    .mobile-menu ul a:hover{background:rgba(255,255,255,.06);color:#fff}
+    .mobile-actions{display:flex;gap:12px}
+    .mobile-actions .btn{flex:1}
+
+    /* PAGE */
+    .page-wrap{padding-top:72px;min-height:100vh}
+
+    /* CONFIRMATION SECTION */
+    .conf-section{padding:48px 0 80px}
+    .conf-wrap{max-width:620px;margin:0 auto}
+
+    /* SUCCESS ANIMATION */
+    .success-anim{display:flex;justify-content:center;margin-bottom:28px}
+    @keyframes scaleIn{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+    @keyframes stroke{100%{stroke-dashoffset:0}}
+    .checkmark{width:80px;height:80px;border-radius:50%;display:block;stroke-width:3;stroke:#22c55e;stroke-miterlimit:10;animation:scaleIn 400ms cubic-bezier(.26,2,.58,.79) forwards}
+    .checkmark-circle{stroke-dasharray:166;stroke-dashoffset:166;stroke-width:3;stroke:#22c55e;fill:none;animation:stroke 600ms cubic-bezier(.65,0,.45,1) 150ms forwards}
+    .checkmark-check{transform-origin:50% 50%;stroke-dasharray:48;stroke-dashoffset:48;animation:stroke 350ms cubic-bezier(.65,0,.45,1) 650ms forwards}
+
+    /* CONF CARD */
+    .conf-header{text-align:center;margin-bottom:32px}
+    .conf-title{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;color:var(--dark);letter-spacing:-.04em;margin-bottom:8px}
+    .conf-subtitle{font-size:16px;color:var(--on-surface-v);font-weight:500}
+    .conf-subtitle span{color:var(--primary);font-weight:700}
+
+    /* ORDER META PILL ROW */
+    .order-meta-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:32px}
+    .meta-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;background:#fff;border:1px solid var(--outline-v);box-shadow:var(--shadow-card);color:var(--on-surface-v)}
+    .meta-pill .pill-icon{font-size:15px;line-height:1}
+    .meta-pill.highlight{background:rgba(246,109,9,.07);border-color:rgba(246,109,9,.25);color:var(--primary)}
+
+    /* ORDER DETAILS CARD */
+    .detail-card{background:#fff;border-radius:20px;box-shadow:var(--shadow-card);border:1px solid var(--outline-v);overflow:hidden;margin-bottom:16px}
+    .detail-card-header{background:var(--dark);padding:16px 24px;display:flex;align-items:center;gap:10px}
+    .detail-card-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:.03em;text-transform:uppercase}
+    .detail-card-body{padding:8px 24px}
+    .order-line{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--surface-mid)}
+    .order-line:last-child{border-bottom:none}
+    .order-line-name{font-size:14px;font-weight:600;color:var(--dark);flex:1;min-width:0}
+    .order-line-qty{font-size:12px;color:var(--outline);font-weight:500;margin-top:2px}
+    .order-line-price{font-size:14px;font-weight:700;color:var(--dark);flex-shrink:0}
+    .order-totals{background:var(--surface-low);padding:16px 24px;border-top:1px solid var(--outline-v)}
+    .tot-row{display:flex;justify-content:space-between;font-size:14px;color:var(--on-surface-v);font-weight:500;margin-bottom:7px}
+    .tot-row:last-child{margin-bottom:0}
+    .tot-divider{height:1px;background:var(--outline-v);margin:10px 0}
+    .tot-grand{display:flex;justify-content:space-between;font-size:19px;font-weight:800;color:var(--dark)}
+    .tot-grand-amount{color:var(--primary)}
+
+    /* DELIVERY CARD */
+    .delivery-info{display:flex;flex-direction:column;gap:5px;padding:20px 24px}
+    .delivery-info-name{font-size:16px;font-weight:700;color:var(--dark)}
+    .delivery-info-line{font-size:14px;color:var(--on-surface-v);font-weight:500}
+    .delivery-info-note{font-size:13px;color:var(--outline);font-style:italic;margin-top:4px}
+    .payment-badge{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:9999px;font-size:12px;font-weight:700;color:#16a34a}
+
+    /* ACTION BUTTONS */
+    .conf-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:28px 0 20px}
+    @media(max-width:480px){.conf-actions{grid-template-columns:1fr}}
+    .action-btn{display:flex;align-items:center;justify-content:center;gap:9px;padding:15px 20px;border-radius:14px;font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 150ms var(--ease-out);min-height:54px;border:2px solid transparent;letter-spacing:.01em}
+    .action-btn:active{transform:scale(.97)}
+    .action-btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .action-btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .action-btn-outline{background:#fff;color:var(--dark);border-color:var(--outline-v)}
+    .action-btn-outline:hover{background:var(--surface-mid);border-color:var(--outline)}
+    .continue-link{display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;color:var(--outline);text-decoration:none;transition:color 150ms}
+    .continue-link:hover{color:var(--primary)}
+
+    /* TRACK ORDER MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 250ms}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal-card{background:#fff;border-radius:24px;padding:36px 32px;max-width:420px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.2);transform:translateY(16px) scale(.97);transition:transform 300ms var(--ease-out);position:relative}
+    .modal-overlay.open .modal-card{transform:translateY(0) scale(1)}
+    .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;background:var(--surface-mid);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--outline);font-size:18px;line-height:1;transition:all 150ms}
+    .modal-close:hover{background:var(--outline-v);color:var(--dark)}
+    .modal-icon{font-size:48px;margin-bottom:16px;line-height:1}
+    .modal-title{font-size:20px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:10px}
+    .modal-body{font-size:15px;color:var(--on-surface-v);line-height:1.65;margin-bottom:24px}
+    .modal-actions{display:flex;flex-direction:column;gap:10px}
+    .modal-btn-primary{width:100%;background:var(--primary);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 150ms}
+    .modal-btn-primary:hover{background:var(--primary-dark)}
+    .modal-coming-soon{font-size:12px;color:var(--outline);font-weight:500;margin-top:4px}
+
+    /* FOOTER */
+    .footer{background:var(--dark);color:rgba(255,255,255,.6);padding:64px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:1fr;gap:48px;margin-bottom:48px}
+    @media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+    .footer-brand-desc{font-size:14px;line-height:1.7;max-width:300px;margin:16px 0 24px}
+    .footer-social{display:flex;gap:10px}
+    .footer-social a{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 150ms;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+    .footer-social a:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+    .footer-col-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:color 150ms}
+    .footer-links a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:13px}
+    .footer-legal{display:flex;gap:20px}
+    .footer-legal a{color:rgba(255,255,255,.4);text-decoration:none;transition:color 150ms}
+    .footer-legal a:hover{color:rgba(255,255,255,.7)}
+
+    [data-lucide]{display:inline-block;vertical-align:middle;flex-shrink:0}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Eatz home">
+        <span class="accent">E</span>atz<span class="dot" aria-hidden="true"></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Reservation</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="#" class="btn btn-outline-nav">Sign In</a>
+        <a href="menu.html" class="btn btn-primary">Order Now</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul role="list">
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="about.html">About us</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="#" class="btn btn-outline-nav">Sign In</a>
+      <a href="menu.html" class="btn btn-primary">Order Now</a>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+    <section class="conf-section">
+      <div class="container">
+        <div class="conf-wrap">
+
+          <!-- SUCCESS ANIMATION -->
+          <div class="success-anim" aria-hidden="true">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+              <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+              <path class="checkmark-check" fill="none" stroke="#22c55e" stroke-width="3" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+          </div>
+
+          <!-- HEADER -->
+          <div class="conf-header">
+            <h1 class="conf-title">Order Confirmed!</h1>
+            <p class="conf-subtitle" id="conf-subtitle">Thank you for your order. We're preparing your food right now!</p>
+          </div>
+
+          <!-- META PILLS -->
+          <div class="order-meta-row">
+            <div class="meta-pill">
+              <span class="pill-icon">🧾</span>
+              <span>Order <strong id="conf-order-num">#EZ---------</strong></span>
+            </div>
+            <div class="meta-pill">
+              <span class="pill-icon">🕐</span>
+              <span id="conf-time">Just now</span>
+            </div>
+            <div class="meta-pill highlight">
+              <span class="pill-icon">⚡</span>
+              <span>Est. 30–45 min delivery</span>
+            </div>
+          </div>
+
+          <!-- ORDER DETAILS -->
+          <div class="detail-card">
+            <div class="detail-card-header">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f66d09" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span class="detail-card-title">Order Details</span>
+            </div>
+            <div class="detail-card-body" id="conf-items" role="list"></div>
+            <div class="order-totals">
+              <div class="tot-row"><span>Subtotal</span><span id="conf-subtotal">$0.00</span></div>
+              <div class="tot-row"><span>Delivery Fee</span><span id="conf-delivery-fee">$3.99</span></div>
+              <div class="tot-divider" aria-hidden="true"></div>
+              <div class="tot-grand">
+                <span>Total Paid</span>
+                <span class="tot-grand-amount" id="conf-total">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- DELIVERY INFO -->
+          <div class="detail-card">
+            <div class="detail-card-header">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f66d09" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="detail-card-title">Delivering To</span>
+            </div>
+            <div class="delivery-info" id="conf-delivery">
+              <div class="delivery-info-name" id="conf-del-name"></div>
+              <div class="delivery-info-line" id="conf-del-address"></div>
+              <div class="delivery-info-line" id="conf-del-city"></div>
+              <div class="delivery-info-line" id="conf-del-phone"></div>
+              <div class="delivery-info-note" id="conf-del-instructions"></div>
+              <div class="payment-badge" id="conf-payment-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                <span id="conf-payment-text">Payment confirmed</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTION BUTTONS -->
+          <div class="conf-actions">
+            <button class="action-btn action-btn-primary" onclick="downloadReceipt()" id="download-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Receipt
+            </button>
+            <button class="action-btn action-btn-outline" onclick="openTrackModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Track Order
+            </button>
+          </div>
+
+          <a href="menu.html" class="continue-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            Continue Shopping
+          </a>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- TRACK ORDER MODAL -->
+  <div class="modal-overlay" id="track-modal" role="dialog" aria-modal="true" aria-label="Track order" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeTrackModal()" aria-label="Close">×</button>
+      <div class="modal-icon" aria-hidden="true">🔒</div>
+      <h2 class="modal-title">Sign In to Track Your Order</h2>
+      <p class="modal-body">
+        To track your delivery in real time, view your order history, and manage your account — you'll need to be signed in to Eatz.
+      </p>
+      <div class="modal-actions">
+        <button class="modal-btn-primary" onclick="closeTrackModal()">Got it</button>
+        <p class="modal-coming-soon">Account &amp; order tracking features coming soon!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="nav-logo" style="font-size:32px" aria-label="Eatz home"><span class="accent">E</span>atz<span class="dot" style="width:10px;height:10px" aria-hidden="true"></span></a>
+          <p class="footer-brand-desc">Eatz connects food lovers with the best local restaurants. Fresh ingredients, bold flavors, fast delivery — every single time.</p>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="TikTok"><i data-lucide="music-2"></i></a>
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links"><li><a href="menu.html">Browse Menu</a></li><li><a href="index.html#featured">Today's Specials</a></li><li><a href="blog.html">Food Stories</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links"><li><a href="about.html">About Eatz</a></li><li><a href="#">Careers</a></li><li><a href="#">Partner With Us</a></li><li><a href="blog.html">Blog</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links"><li><a href="index.html#faq">Help Center</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Refund Policy</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Eatz. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    var ORDER_KEY = 'eatz_last_order';
+
+    function getOrder() {
+      try { return JSON.parse(localStorage.getItem(ORDER_KEY)) || null; } catch(e) { return null; }
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // ── Render confirmation ───────────────────────────────────────
+    function init() {
+      var order = getOrder();
+      if (!order) {
+        document.querySelector('.conf-title').textContent = 'Order Received!';
+        document.getElementById('conf-subtitle').textContent = 'Thank you for your order with Eatz.';
+        document.getElementById('conf-items').innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--outline);font-size:14px">Order details not available.</div>';
+        return;
+      }
+
+      // Order number + time
+      document.getElementById('conf-order-num').textContent = '#' + order.number;
+      document.getElementById('conf-subtitle').innerHTML = 'Thank you for your order, <strong>' + esc(order.delivery.name.split(' ')[0]) + '</strong>! We\'re preparing your food right now.';
+
+      var d = new Date(order.timestamp);
+      document.getElementById('conf-time').textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      // Items
+      var itemsHtml = '';
+      order.items.forEach(function(item) {
+        itemsHtml += '<div class="order-line" role="listitem">' +
+          '<div><div class="order-line-name">' + esc(item.name) + '</div>' +
+            (item.qty > 1 ? '<div class="order-line-qty">× ' + item.qty + '</div>' : '') +
+          '</div>' +
+          '<div class="order-line-price">$' + (item.price * item.qty).toFixed(2) + '</div>' +
+        '</div>';
+      });
+      document.getElementById('conf-items').innerHTML = itemsHtml;
+
+      // Totals
+      document.getElementById('conf-subtotal').textContent = '$' + order.subtotal.toFixed(2);
+      document.getElementById('conf-delivery-fee').textContent = '$' + order.deliveryFee.toFixed(2);
+      document.getElementById('conf-total').textContent = '$' + order.total.toFixed(2);
+
+      // Delivery info
+      document.getElementById('conf-del-name').textContent = order.delivery.name;
+      document.getElementById('conf-del-address').textContent = order.delivery.address;
+      document.getElementById('conf-del-city').textContent = order.delivery.city + ', ' + order.delivery.postal;
+      document.getElementById('conf-del-phone').textContent = order.delivery.phone;
+      if (order.delivery.instructions) {
+        document.getElementById('conf-del-instructions').textContent = 'Note: ' + order.delivery.instructions;
+      }
+
+      // Payment
+      var payText = order.paymentMethod === 'cash' ? 'Cash on delivery' : 'Paid by card';
+      document.getElementById('conf-payment-text').textContent = payText;
+    }
+
+    // ── Download receipt ──────────────────────────────────────────
+    function downloadReceipt() {
+      var order = getOrder();
+      var btn = document.getElementById('download-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Preparing…';
+
+      setTimeout(function() {
+        var d = order ? new Date(order.timestamp) : new Date();
+        var dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        var timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        var orderNum = order ? order.number : 'N/A';
+
+        var itemsRows = '';
+        if (order && order.items) {
+          order.items.forEach(function(item) {
+            itemsRows += '<tr>' +
+              '<td style="padding:10px 0;border-bottom:1px solid #f5f3f3;font-size:14px">' +
+                escR(item.name) + (item.qty > 1 ? ' <span style="color:#8d7164">× ' + item.qty + '</span>' : '') +
+              '</td>' +
+              '<td style="padding:10px 0;border-bottom:1px solid #f5f3f3;text-align:right;font-size:14px;font-weight:700">$' + (item.price * item.qty).toFixed(2) + '</td>' +
+            '</tr>';
+          });
+        }
+
+        var deliveryHtml = '';
+        var payHtml = '';
+        if (order && order.delivery) {
+          var dl = order.delivery;
+          deliveryHtml = escR(dl.name) + '<br>' + escR(dl.address) + '<br>' + escR(dl.city) + ', ' + escR(dl.postal) + '<br>' + escR(dl.phone) +
+            (dl.instructions ? '<br><em style="color:#8d7164">Note: ' + escR(dl.instructions) + '</em>' : '');
+          payHtml = order.paymentMethod === 'cash' ? 'Cash on Delivery' : 'Credit / Debit Card';
+        }
+
+        var subtotalStr = order ? '$' + order.subtotal.toFixed(2) : '$0.00';
+        var feeStr = order ? '$' + order.deliveryFee.toFixed(2) : '$3.99';
+        var totalStr = order ? '$' + order.total.toFixed(2) : '$0.00';
+
+        var html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Eatz Receipt — ' + escR(orderNum) + '</title>' +
+          '<style>' +
+            'body{font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fff;color:#1b1c1c}' +
+            '.logo{font-size:30px;font-weight:900;color:#f66d09;letter-spacing:-.03em}' +
+            '.logo .dot{display:inline-block;width:8px;height:8px;background:#f66d09;border-radius:50%;margin-left:2px;margin-bottom:5px;vertical-align:middle}' +
+            '.receipt-head{text-align:center;padding-bottom:20px;border-bottom:2px dashed #e1c0b1;margin-bottom:20px}' +
+            '.receipt-head h2{font-size:18px;color:#594236;margin-top:8px;font-weight:600}' +
+            '.meta-box{background:#f5f3f3;border-radius:10px;padding:14px 16px;margin-bottom:20px}' +
+            '.meta-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}' +
+            '.meta-row:last-child{margin-bottom:0}' +
+            '.meta-label{color:#8d7164}' +
+            '.meta-value{font-weight:700}' +
+            'table{width:100%;border-collapse:collapse;margin-bottom:16px}' +
+            'th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#8d7164;border-bottom:1px solid #e1c0b1;padding-bottom:8px;font-weight:700}' +
+            'th:last-child{text-align:right}' +
+            '.totals{background:#f5f3f3;border-radius:10px;padding:14px 16px;margin-bottom:20px}' +
+            '.tot-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;color:#594236}' +
+            '.tot-row:last-child{margin-bottom:0}' +
+            '.tot-grand{display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:#f66d09;border-top:1px solid #e1c0b1;padding-top:10px;margin-top:8px}' +
+            '.delivery-box{border:1px solid #e1c0b1;border-radius:10px;padding:14px 16px;margin-bottom:20px}' +
+            '.delivery-box-title{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#8d7164;font-weight:700;margin-bottom:8px}' +
+            '.delivery-box p{font-size:13px;line-height:1.6;color:#1b1c1c}' +
+            '.receipt-foot{text-align:center;margin-top:24px;padding-top:20px;border-top:2px dashed #e1c0b1;font-size:13px;color:#8d7164}' +
+            '.print-btn{display:block;width:100%;padding:12px;background:#f66d09;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:20px;font-family:inherit}' +
+            '.print-btn:hover{background:#9e4300}' +
+            '@media print{.print-btn{display:none}}' +
+          '</style></head><body>' +
+          '<div class="receipt-head">' +
+            '<div class="logo">Eatz<span class="dot"></span></div>' +
+            '<h2>Order Receipt</h2>' +
+          '</div>' +
+          '<div class="meta-box">' +
+            '<div class="meta-row"><span class="meta-label">Order Number</span><span class="meta-value">' + escR(orderNum) + '</span></div>' +
+            '<div class="meta-row"><span class="meta-label">Date</span><span class="meta-value">' + dateStr + '</span></div>' +
+            '<div class="meta-row"><span class="meta-label">Time</span><span class="meta-value">' + timeStr + '</span></div>' +
+            '<div class="meta-row"><span class="meta-label">Payment</span><span class="meta-value">' + escR(payHtml) + '</span></div>' +
+          '</div>' +
+          '<table><thead><tr><th>Item</th><th style="text-align:right">Price</th></tr></thead><tbody>' + itemsRows + '</tbody></table>' +
+          '<div class="totals">' +
+            '<div class="tot-row"><span>Subtotal</span><span>' + subtotalStr + '</span></div>' +
+            '<div class="tot-row"><span>Delivery Fee</span><span>' + feeStr + '</span></div>' +
+            '<div class="tot-grand"><span>Total</span><span>' + totalStr + '</span></div>' +
+          '</div>' +
+          (deliveryHtml ? '<div class="delivery-box"><div class="delivery-box-title">Delivered To</div><p>' + deliveryHtml + '</p></div>' : '') +
+          '<button class="print-btn" onclick="window.print()">🖨️ Print Receipt</button>' +
+          '<div class="receipt-foot"><p>Thank you for ordering with Eatz!</p><p style="margin-top:4px">Questions? Contact us at support@eatz.com</p></div>' +
+          '</body></html>';
+
+        var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'Eatz-Receipt-' + escR(orderNum) + '.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Receipt';
+      }, 600);
+    }
+
+    function escR(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // ── Track order modal ─────────────────────────────────────────
+    function openTrackModal() {
+      var modal = document.getElementById('track-modal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTrackModal() {
+      var modal = document.getElementById('track-modal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('track-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeTrackModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeTrackModal();
+    });
+
+    // ── Nav scroll ────────────────────────────────────────────────
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 20); }, { passive: true });
+
+    // ── Mobile menu ───────────────────────────────────────────────
+    var hamburger = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen = false;
+    hamburger.addEventListener('click', function() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', String(menuOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!menuOpen));
+    });
+
+    init();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

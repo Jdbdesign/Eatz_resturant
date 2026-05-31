@@ -268,7 +268,8 @@
 
     // Checkout
     document.getElementById('cart-checkout-btn').addEventListener('click', function () {
-      alert('Checkout coming soon!');
+      closeCart();
+      window.location.href = 'checkout.html';
     });
 
     // Hook existing add buttons
