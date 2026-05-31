@@ -149,7 +149,7 @@
               '<div class="nav-dd-full-name">' + fullName + '</div>' +
               (email ? '<div class="nav-dd-email">' + email + '</div>' : '') +
             '</div>' +
-            ddLink(IC.account,  'My Account', '#') +
+            ddLink(IC.account,  'My Account', 'account.html') +
             ddLink(IC.orders,   'Orders',     'orders.html') +
             (function(){var c=window.eatzNotify?window.eatzNotify.getUnreadCount():0;return '<a href="inbox.html" class="nav-dd-item" role="menuitem">'+IC.inbox+'Inbox'+(c>0?'<span class="nav-dd-badge">'+(c>99?'99+':c)+'</span>':'')+' </a>';})() +
             ddLink(IC.wishlist, 'Wishlist',    'wishlist.html') +
@@ -223,7 +223,7 @@
       list.appendChild(divLi);
 
       // Auth link items
-      [['My Account','#'],['Orders','orders.html'],['Inbox','inbox.html'],['Wishlist','wishlist.html'],['Voucher','voucher.html']].forEach(function (pair) {
+      [['My Account','account.html'],['Orders','orders.html'],['Inbox','inbox.html'],['Wishlist','wishlist.html'],['Voucher','voucher.html']].forEach(function (pair) {
         var al = document.createElement('li');
         al.setAttribute('data-mob-nav', '');
         var labelHtml = esc(pair[0]);

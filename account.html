@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account — Eatz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{
+      --primary:#f66d09;--primary-dark:#9e4300;--primary-light:#ffdbcb;
+      --surface:#fbf9f9;--surface-low:#f5f3f3;--surface-mid:#efeded;
+      --dark:#1b1c1c;--on-surface:#1b1c1c;--on-surface-v:#594236;
+      --outline:#8d7164;--outline-v:#e1c0b1;
+      --shadow-card:0 4px 20px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+      --shadow-brand:0 8px 30px rgba(246,109,9,.3);
+      --ease-spring:cubic-bezier(.34,1.56,.64,1);
+      --ease-out:cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',sans-serif;background:var(--surface);color:var(--on-surface);line-height:1.6;overflow-x:hidden}
+    .skip-link{position:absolute;top:-100%;left:1rem;background:var(--primary);color:#fff;padding:.5rem 1rem;border-radius:12px;z-index:1000;transition:top 150ms;font-weight:600;text-decoration:none}
+    .skip-link:focus{top:1rem}
+    :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+    :focus:not(:focus-visible){outline:none}
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px}
+    @media(min-width:1024px){.container{padding:0 40px}}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.06);transition:box-shadow 250ms}
+    .nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:32px}
+    .nav-logo{font-size:28px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:2px}
+    .nav-logo .accent{color:var(--primary)}
+    .nav-logo .dot{width:8px;height:8px;background:var(--primary);border-radius:50%;margin-left:2px;margin-bottom:4px;display:inline-block}
+    .nav-links{display:none;list-style:none;gap:32px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:15px;font-weight:500;transition:color 150ms;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);border-radius:2px;transition:width 250ms var(--ease-spring)}
+    .nav-links a:hover{color:#fff}
+    .nav-links a:hover::after{width:100%}
+    .nav-actions{display:none;align-items:center;gap:12px}
+    @media(min-width:768px){.nav-actions{display:flex}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;padding:10px 20px;border-radius:8px;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:all 150ms var(--ease-out);min-height:44px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .btn-outline{background:transparent;color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25)}
+    .btn-outline:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.4)}
+    .btn-ghost{background:transparent;color:var(--on-surface-v);border-color:var(--outline-v)}
+    .btn-ghost:hover{background:var(--surface-mid);border-color:var(--outline);color:var(--dark)}
+    .btn-danger{background:#ef4444;color:#fff;border-color:#ef4444}
+    .btn-danger:hover{background:#dc2626;border-color:#dc2626;box-shadow:0 8px 24px rgba(239,68,68,.3)}
+    .btn-danger-outline{background:transparent;color:#ef4444;border-color:#fca5a5}
+    .btn-danger-outline:hover{background:#fef2f2;border-color:#ef4444}
+    .hamburger{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    @media(min-width:768px){.hamburger{display:none}}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all 250ms var(--ease-out)}
+    .mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:var(--dark);padding:24px 16px;border-top:1px solid rgba(255,255,255,.06);z-index:99}
+    .mobile-menu.open{display:block}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .mobile-menu ul a{display:block;color:rgba(255,255,255,.8);text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:500;transition:all 150ms}
+    .mobile-menu ul a:hover{background:rgba(255,255,255,.06);color:#fff}
+    .mobile-actions{display:flex;gap:12px}
+    .mobile-actions .btn{flex:1}
+
+    /* PAGE */
+    .page-wrap{padding-top:72px;min-height:100vh}
+
+    /* BREADCRUMB */
+    .breadcrumb-bar{background:var(--dark);padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5)}
+    .breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none;transition:color 150ms}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb-sep{color:rgba(255,255,255,.25)}
+    .breadcrumb-current{color:#fff;font-weight:600}
+
+    /* ACCOUNT LAYOUT */
+    .account-section{padding:40px 0 80px}
+    .account-layout{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}
+    @media(min-width:900px){.account-layout{grid-template-columns:268px 1fr;gap:28px}}
+
+    /* SIDEBAR */
+    .account-sidebar{display:flex;flex-direction:column;gap:16px}
+    @media(min-width:900px){.account-sidebar{position:sticky;top:92px}}
+
+    /* PROFILE CARD */
+    .profile-card{background:#fff;border-radius:20px;border:1.5px solid var(--outline-v);box-shadow:var(--shadow-card);padding:28px 24px 24px;text-align:center}
+    .profile-avatar-outer{position:relative;display:inline-block;margin-bottom:16px}
+    .profile-avatar{width:80px;height:80px;background:linear-gradient(135deg,var(--primary),#fb923c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;margin:0 auto;box-shadow:0 6px 24px rgba(246,109,9,.35);user-select:none;letter-spacing:0}
+    .profile-avatar-ring{position:absolute;inset:-4px;border-radius:50%;border:2px dashed rgba(246,109,9,.35)}
+    .profile-name{font-size:18px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:3px;line-height:1.2}
+    .profile-email-text{font-size:13px;color:var(--outline);font-weight:500;margin-bottom:12px;word-break:break-all}
+    .profile-since-pill{font-size:11px;font-weight:700;color:var(--on-surface-v);background:var(--surface-low);padding:4px 12px;border-radius:9999px;display:inline-block;margin-bottom:22px;border:1px solid var(--outline-v)}
+    .profile-stats{display:flex;border-top:1px solid var(--outline-v);padding-top:20px;gap:0}
+    .stat{flex:1;text-align:center;padding:0 4px}
+    .stat+.stat{border-left:1px solid var(--outline-v)}
+    .stat-num{font-size:22px;font-weight:800;color:var(--dark);letter-spacing:-.02em;line-height:1}
+    .stat-label{font-size:10px;font-weight:700;color:var(--outline);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+    /* SIDEBAR NAV */
+    .account-nav{background:#fff;border-radius:16px;border:1.5px solid var(--outline-v);box-shadow:var(--shadow-card);padding:8px;overflow:hidden}
+    .account-nav-item{display:flex;align-items:center;gap:11px;width:100%;padding:11px 14px;border-radius:10px;background:transparent;border:none;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;color:var(--on-surface-v);cursor:pointer;transition:all 150ms;text-align:left;line-height:1.3}
+    .account-nav-item:hover{background:var(--surface-low);color:var(--dark)}
+    .account-nav-item.active{background:rgba(246,109,9,.1);color:var(--primary)}
+    .account-nav-item.active .nav-ic{color:var(--primary)}
+    .nav-ic{color:var(--outline);transition:color 150ms;flex-shrink:0;display:flex;align-items:center}
+    .account-nav-item:hover .nav-ic{color:var(--dark)}
+    .account-nav-item.danger{color:#b91c1c}
+    .account-nav-item.danger .nav-ic{color:#ef4444}
+    .account-nav-item.danger:hover{background:#fef2f2;color:#dc2626}
+    .account-nav-item.danger:hover .nav-ic{color:#dc2626}
+    .account-nav-divider{height:1px;background:var(--outline-v);margin:6px 2px}
+    .nav-item-badge{margin-left:auto;background:var(--primary);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:9999px;line-height:1.5}
+
+    /* CONTENT PANELS */
+    .account-content{min-width:0}
+    .account-panel{display:none}
+    .account-panel.active{display:block}
+
+    /* PANEL CARD */
+    .panel-card{background:#fff;border-radius:20px;border:1.5px solid var(--outline-v);box-shadow:var(--shadow-card);padding:28px 28px 32px;margin-bottom:20px}
+    @media(max-width:600px){.panel-card{padding:22px 18px 24px}}
+    .panel-header{margin-bottom:26px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .panel-header-text{}
+    .panel-title{font-size:18px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:4px}
+    .panel-sub{font-size:13px;color:var(--outline);font-weight:500}
+    .panel-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--outline-v);background:var(--surface-low);color:var(--outline)}
+    .panel-icon.orange{background:rgba(246,109,9,.1);border-color:rgba(246,109,9,.2);color:var(--primary)}
+    .panel-icon.green{background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.2);color:#16a34a}
+    .panel-icon.purple{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2);color:#4f46e5}
+    .panel-icon.red{background:#fef2f2;border-color:#fca5a5;color:#ef4444}
+
+    /* FORM */
+    .form-stack{display:flex;flex-direction:column;gap:18px}
+    .form-row-2{display:grid;grid-template-columns:1fr;gap:18px}
+    @media(min-width:520px){.form-row-2{grid-template-columns:1fr 1fr}}
+    .form-group{display:flex;flex-direction:column;gap:7px}
+    .form-label{font-size:12px;font-weight:800;color:var(--dark);text-transform:uppercase;letter-spacing:.05em}
+    .form-input{font-family:'Manrope',sans-serif;font-size:14px;font-weight:500;color:var(--dark);background:var(--surface-low);border:1.5px solid var(--outline-v);border-radius:10px;padding:11px 14px;transition:border-color 150ms,box-shadow 150ms,background 150ms;width:100%}
+    .form-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(246,109,9,.12);background:#fff}
+    .form-input::placeholder{color:var(--outline-v);font-weight:400}
+    .form-input:disabled{opacity:.55;cursor:not-allowed}
+    .form-hint{font-size:12px;color:var(--outline);font-weight:500;line-height:1.5}
+    .form-input.error{border-color:#ef4444;background:#fff}
+    .form-input.error:focus{box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+    .field-error{font-size:12px;color:#ef4444;font-weight:600;display:none}
+    .form-actions{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:28px;padding-top:24px;border-top:1px solid var(--outline-v);flex-wrap:wrap}
+
+    /* PASSWORD STRENGTH */
+    .pwd-strength-bars{display:flex;gap:4px;margin-top:8px}
+    .pwd-bar{height:4px;flex:1;border-radius:2px;background:var(--surface-mid);transition:background 250ms}
+    .pwd-bar.weak{background:#ef4444}
+    .pwd-bar.fair{background:#f59e0b}
+    .pwd-bar.good{background:#3b82f6}
+    .pwd-bar.strong{background:#16a34a}
+    .pwd-strength-text{font-size:12px;font-weight:700;margin-top:5px;min-height:18px;transition:color 200ms}
+
+    /* TOGGLE SWITCH */
+    .toggle-list{display:flex;flex-direction:column}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--surface-low)}
+    .toggle-row:last-child{border-bottom:none;padding-bottom:0}
+    .toggle-row:first-child{padding-top:0}
+    .toggle-info{flex:1;min-width:0}
+    .toggle-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:2px}
+    .toggle-desc{font-size:12px;color:var(--outline);font-weight:500;line-height:1.5}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-track{position:absolute;inset:0;background:var(--surface-mid);border-radius:9999px;cursor:pointer;transition:background 200ms,border-color 200ms;border:1.5px solid var(--outline-v)}
+    .toggle-switch input:checked+.toggle-track{background:var(--primary);border-color:var(--primary)}
+    .toggle-track::after{content:'';position:absolute;width:16px;height:16px;left:3px;top:50%;transform:translateY(-50%);background:#fff;border-radius:50%;transition:left 200ms var(--ease-spring);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+    .toggle-switch input:checked+.toggle-track::after{left:21px}
+
+    /* ADDRESS CARDS */
+    .address-list{display:flex;flex-direction:column;gap:12px}
+    .address-card{border-radius:14px;border:1.5px solid var(--outline-v);padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:var(--surface-low);transition:all 150ms}
+    .address-card.is-default{border-color:var(--primary);background:rgba(246,109,9,.04)}
+    .address-card-body{flex:1;min-width:0}
+    .address-default-pill{font-size:10px;font-weight:800;color:var(--primary);background:rgba(246,109,9,.12);padding:2px 8px;border-radius:9999px;display:inline-block;margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}
+    .address-line{font-size:14px;font-weight:700;color:var(--dark);line-height:1.45}
+    .address-sub{font-size:12px;color:var(--outline);font-weight:500;margin-top:3px}
+    .address-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+    .address-btn{background:none;border:1px solid var(--outline-v);border-radius:8px;padding:6px 12px;font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;color:var(--outline);cursor:pointer;transition:all 150ms;white-space:nowrap}
+    .address-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(246,109,9,.06)}
+    .address-btn.set-default{border-color:var(--outline-v)}
+    .address-btn.remove-btn:hover{border-color:#ef4444;color:#ef4444;background:#fef2f2}
+    .address-empty{text-align:center;padding:40px 20px;color:var(--outline)}
+    .address-empty svg{margin:0 auto 12px;opacity:.4;display:block}
+    .address-empty p{font-size:14px;font-weight:600}
+
+    /* DANGER ZONE */
+    .danger-action{border-radius:14px;border:1.5px solid #fca5a5;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#fff}
+    .danger-action+.danger-action{margin-top:12px}
+    .danger-action-info{}
+    .danger-action-title{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:3px}
+    .danger-action-desc{font-size:13px;color:var(--outline);font-weight:500;line-height:1.5}
+
+    /* CONFIRM MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 200ms}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal-box{background:#fff;border-radius:20px;padding:32px;max-width:420px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.2);transform:scale(.95) translateY(8px);transition:transform 250ms var(--ease-spring);position:relative}
+    .modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
+    .modal-icon{width:52px;height:52px;background:#fef2f2;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:#ef4444}
+    .modal-title{font-size:18px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:8px}
+    .modal-msg{font-size:14px;color:var(--outline);font-weight:500;line-height:1.65;margin-bottom:24px}
+    .modal-confirm-input{width:100%;margin-bottom:20px}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;transition:transform 300ms var(--ease-spring),opacity 300ms;opacity:0;white-space:nowrap;pointer-events:none;display:flex;align-items:center;gap:9px;box-shadow:0 8px 32px rgba(0,0,0,.25);max-width:calc(100vw - 32px)}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    .toast.success .toast-ic{color:#4ade80}
+    .toast.error .toast-ic{color:#f87171}
+
+    /* SECTION DIVIDER */
+    .section-divider{height:1px;background:var(--outline-v);margin:28px 0}
+
+    /* STAT MINI BAR */
+    .stats-mini-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+    .stats-mini-card{flex:1;min-width:120px;background:#fff;border:1.5px solid var(--outline-v);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow-card)}
+    .stats-mini-val{font-size:24px;font-weight:800;color:var(--dark);letter-spacing:-.03em}
+    .stats-mini-lbl{font-size:11px;font-weight:700;color:var(--outline);text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+
+    /* ADDRESS FORM */
+    .addr-form-wrap{background:var(--surface-low);border-radius:14px;border:1.5px dashed var(--outline-v);padding:22px;margin-top:20px;display:none}
+    .addr-form-wrap.open{display:block;animation:addrFadeIn 180ms var(--ease-out)}
+    @keyframes addrFadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .addr-form-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .addr-form-heading{font-size:14px;font-weight:800;color:var(--dark);margin:0}
+    .addr-form-close{background:none;border:1px solid var(--outline-v);border-radius:8px;cursor:pointer;color:var(--outline);padding:6px;display:flex;align-items:center;transition:all 150ms}
+    .addr-form-close:hover{border-color:var(--outline);color:var(--dark);background:var(--surface-mid)}
+    .addr-add-btn{display:inline-flex;align-items:center;gap:7px;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 150ms;flex-shrink:0;line-height:1;min-height:40px}
+    .addr-add-btn:hover{background:var(--primary-dark);box-shadow:var(--shadow-brand)}
+    .addr-add-btn:active{transform:scale(.96)}
+
+    /* FOOTER */
+    .footer{background:var(--dark);color:rgba(255,255,255,.6);padding:64px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:1fr;gap:48px;margin-bottom:48px}
+    @media(min-width:640px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+    .footer-brand-desc{font-size:14px;line-height:1.7;max-width:300px;margin:16px 0 24px}
+    .footer-social{display:flex;gap:10px}
+    .footer-social a{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 150ms;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+    .footer-social a:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+    .footer-col-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:color 150ms}
+    .footer-links a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:13px}
+    .footer-legal{display:flex;gap:20px}
+    .footer-legal a{color:rgba(255,255,255,.4);text-decoration:none;transition:color 150ms}
+    .footer-legal a:hover{color:rgba(255,255,255,.7)}
+
+    [data-lucide]{display:inline-block;vertical-align:middle;flex-shrink:0}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Eatz home">
+        <span class="accent">E</span>atz<span class="dot" aria-hidden="true"></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Reservation</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="signin.html" class="btn btn-outline">Sign In</a>
+        <a href="menu.html" class="btn btn-primary">Order Now</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul role="list">
+      <li><a href="menu.html" onclick="closeMenu()">Menu</a></li>
+      <li><a href="reservation.html" onclick="closeMenu()">Reservation</a></li>
+      <li><a href="about.html" onclick="closeMenu()">About us</a></li>
+      <li><a href="blog.html" onclick="closeMenu()">Blog</a></li>
+      <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="signin.html" class="btn btn-outline">Sign In</a>
+      <a href="menu.html" class="btn btn-primary">Order Now</a>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-bar">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">›</span>
+          <span class="breadcrumb-current">My Account</span>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <section class="account-section" aria-labelledby="account-heading">
+      <div class="container">
+        <div class="account-layout">
+
+          <!-- ── SIDEBAR ───────────────────────────────────────── -->
+          <aside class="account-sidebar" aria-label="Account navigation">
+
+            <!-- Profile card -->
+            <div class="profile-card">
+              <div class="profile-avatar-outer">
+                <div class="profile-avatar" id="profile-avatar" aria-hidden="true">?</div>
+                <div class="profile-avatar-ring" aria-hidden="true"></div>
+              </div>
+              <div class="profile-name" id="profile-name">Loading…</div>
+              <div class="profile-email-text" id="profile-email-text"></div>
+              <div class="profile-since-pill" id="profile-since">Member</div>
+              <div class="profile-stats" role="list">
+                <div class="stat" role="listitem">
+                  <div class="stat-num" id="stat-orders">—</div>
+                  <div class="stat-label">Orders</div>
+                </div>
+                <div class="stat" role="listitem">
+                  <div class="stat-num" id="stat-wishlist">—</div>
+                  <div class="stat-label">Saved</div>
+                </div>
+                <div class="stat" role="listitem">
+                  <div class="stat-num">6</div>
+                  <div class="stat-label">Vouchers</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab navigation -->
+            <nav class="account-nav" aria-label="Account sections">
+              <button class="account-nav-item active" data-panel="profile" aria-current="true">
+                <span class="nav-ic">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+                Profile
+              </button>
+              <button class="account-nav-item" data-panel="security">
+                <span class="nav-ic">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
+                Security
+              </button>
+              <button class="account-nav-item" data-panel="notifications">
+                <span class="nav-ic">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </span>
+                Notifications
+              </button>
+              <button class="account-nav-item" data-panel="addresses">
+                <span class="nav-ic">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                Saved Addresses
+              </button>
+              <button class="account-nav-item" data-panel="preferences">
+                <span class="nav-ic">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="6" y1="18" x2="18" y2="18"/></svg>
+                </span>
+                Preferences
+              </button>
+              <div class="account-nav-divider" aria-hidden="true"></div>
+              <button class="account-nav-item danger" data-panel="danger">
+                <span class="nav-ic">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </span>
+                Danger Zone
+              </button>
+            </nav>
+          </aside>
+
+          <!-- ── CONTENT ─────────────────────────────────────────── -->
+          <div class="account-content" id="main-content-area">
+
+            <!-- ── PROFILE PANEL ─────────────────────────────────── -->
+            <div class="account-panel active" id="panel-profile" role="region" aria-labelledby="profile-panel-title">
+              <div class="panel-card">
+                <div class="panel-header">
+                  <div class="panel-header-text">
+                    <h2 class="panel-title" id="profile-panel-title">Personal Information</h2>
+                    <p class="panel-sub">Update your name, email address and contact details</p>
+                  </div>
+                  <div class="panel-icon orange" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                </div>
+
+                <form id="profile-form" novalidate>
+                  <div class="form-stack">
+                    <div class="form-row-2">
+                      <div class="form-group">
+                        <label class="form-label" for="pf-first">First Name</label>
+                        <input class="form-input" id="pf-first" type="text" placeholder="First name" autocomplete="given-name" required>
+                        <span class="field-error" id="err-first">Please enter your first name</span>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label" for="pf-last">Last Name</label>
+                        <input class="form-input" id="pf-last" type="text" placeholder="Last name" autocomplete="family-name">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="pf-email">Email Address</label>
+                      <input class="form-input" id="pf-email" type="email" placeholder="you@example.com" autocomplete="email" required>
+                      <span class="field-error" id="err-email">Please enter a valid email address</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="pf-phone">Phone Number</label>
+                      <input class="form-input" id="pf-phone" type="tel" placeholder="+234 800 000 0000" autocomplete="tel">
+                      <span class="form-hint">Used for delivery coordination and account recovery</span>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="button" class="btn btn-ghost" onclick="resetProfileForm()">Discard</button>
+                    <button type="submit" class="btn btn-primary" id="profile-save-btn">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Quick links row -->
+              <div class="panel-card" style="padding:20px 28px">
+                <p class="panel-sub" style="margin-bottom:14px;font-weight:700;color:var(--dark)">Quick access</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <a href="orders.html" class="btn btn-ghost" style="font-size:13px;padding:8px 16px;min-height:38px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    My Orders
+                  </a>
+                  <a href="wishlist.html" class="btn btn-ghost" style="font-size:13px;padding:8px 16px;min-height:38px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    Wishlist
+                  </a>
+                  <a href="voucher.html" class="btn btn-ghost" style="font-size:13px;padding:8px 16px;min-height:38px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    Vouchers
+                  </a>
+                  <a href="inbox.html" class="btn btn-ghost" style="font-size:13px;padding:8px 16px;min-height:38px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                    Inbox
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── SECURITY PANEL ─────────────────────────────────── -->
+            <div class="account-panel" id="panel-security" role="region" aria-labelledby="security-panel-title">
+              <div class="panel-card">
+                <div class="panel-header">
+                  <div class="panel-header-text">
+                    <h2 class="panel-title" id="security-panel-title">Password &amp; Security</h2>
+                    <p class="panel-sub">Change your password to keep your account secure</p>
+                  </div>
+                  <div class="panel-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  </div>
+                </div>
+
+                <form id="security-form" novalidate>
+                  <div class="form-stack">
+                    <div class="form-group">
+                      <label class="form-label" for="sec-current">Current Password</label>
+                      <input class="form-input" id="sec-current" type="password" placeholder="Enter current password" autocomplete="current-password" required>
+                      <span class="field-error" id="err-current">Please enter your current password</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="sec-new">New Password</label>
+                      <input class="form-input" id="sec-new" type="password" placeholder="Min. 8 characters" autocomplete="new-password" required oninput="updateStrength(this.value)">
+                      <div class="pwd-strength-bars" aria-hidden="true">
+                        <div class="pwd-bar" id="bar1"></div>
+                        <div class="pwd-bar" id="bar2"></div>
+                        <div class="pwd-bar" id="bar3"></div>
+                        <div class="pwd-bar" id="bar4"></div>
+                      </div>
+                      <div class="pwd-strength-text" id="pwd-label" style="color:var(--outline)"></div>
+                      <span class="field-error" id="err-new">Password must be at least 8 characters</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="sec-confirm">Confirm New Password</label>
+                      <input class="form-input" id="sec-confirm" type="password" placeholder="Re-enter new password" autocomplete="new-password" required>
+                      <span class="field-error" id="err-confirm">Passwords do not match</span>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-ghost">Clear</button>
+                    <button type="submit" class="btn btn-primary">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                      Update Password
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Security tips -->
+              <div class="panel-card" style="background:rgba(246,109,9,.04);border-color:rgba(246,109,9,.2)">
+                <p style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Security tips
+                </p>
+                <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+                  <li style="font-size:13px;color:var(--on-surface-v);font-weight:500;display:flex;gap:8px;align-items:flex-start">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                    Use at least 8 characters with a mix of letters, numbers and symbols
+                  </li>
+                  <li style="font-size:13px;color:var(--on-surface-v);font-weight:500;display:flex;gap:8px;align-items:flex-start">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                    Never reuse a password you've used on another site
+                  </li>
+                  <li style="font-size:13px;color:var(--on-surface-v);font-weight:500;display:flex;gap:8px;align-items:flex-start">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                    Avoid using personal details like your name or birthday
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- ── NOTIFICATIONS PANEL ────────────────────────────── -->
+            <div class="account-panel" id="panel-notifications" role="region" aria-labelledby="notif-panel-title">
+              <div class="panel-card">
+                <div class="panel-header">
+                  <div class="panel-header-text">
+                    <h2 class="panel-title" id="notif-panel-title">Notification Preferences</h2>
+                    <p class="panel-sub">Choose which updates you'd like to receive</p>
+                  </div>
+                  <div class="panel-icon purple" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  </div>
+                </div>
+
+                <div class="toggle-list" id="notif-toggles">
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Order Updates</div>
+                      <div class="toggle-desc">Confirmations, status changes and delivery notifications</div>
+                    </div>
+                    <label class="toggle-switch" aria-label="Order updates toggle">
+                      <input type="checkbox" id="notif-orders" onchange="saveNotifPrefs()">
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Promos &amp; Offers</div>
+                      <div class="toggle-desc">Exclusive discount codes, flash sales and seasonal deals</div>
+                    </div>
+                    <label class="toggle-switch" aria-label="Promos and offers toggle">
+                      <input type="checkbox" id="notif-promos" onchange="saveNotifPrefs()">
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Reservation Reminders</div>
+                      <div class="toggle-desc">Reminders and updates about your table bookings</div>
+                    </div>
+                    <label class="toggle-switch" aria-label="Reservation reminders toggle">
+                      <input type="checkbox" id="notif-reservations" onchange="saveNotifPrefs()">
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">New Menu Items</div>
+                      <div class="toggle-desc">Be the first to know when we add new dishes</div>
+                    </div>
+                    <label class="toggle-switch" aria-label="New menu items toggle">
+                      <input type="checkbox" id="notif-menu" onchange="saveNotifPrefs()">
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">App &amp; Account Updates</div>
+                      <div class="toggle-desc">Security alerts, feature announcements and policy changes</div>
+                    </div>
+                    <label class="toggle-switch" aria-label="App and account updates toggle">
+                      <input type="checkbox" id="notif-updates" onchange="saveNotifPrefs()">
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── ADDRESSES PANEL ───────────────────────────────── -->
+            <div class="account-panel" id="panel-addresses" role="region" aria-labelledby="addr-panel-title">
+              <div class="panel-card">
+                <div class="panel-header" style="align-items:center">
+                  <div class="panel-header-text">
+                    <h2 class="panel-title" id="addr-panel-title">Saved Addresses</h2>
+                    <p class="panel-sub">Reusable delivery addresses for checkout</p>
+                  </div>
+                  <button class="addr-add-btn" onclick="openAddressForm()" aria-label="Add new address">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Address
+                  </button>
+                </div>
+
+                <!-- Address list -->
+                <div class="address-list" id="address-list" role="list"></div>
+
+                <!-- Add / Edit form (hidden by default) -->
+                <div class="addr-form-wrap" id="addr-form-wrap" aria-live="polite">
+                  <div class="addr-form-title-row">
+                    <h3 class="addr-form-heading" id="addr-form-title-text">Add New Address</h3>
+                    <button class="addr-form-close" onclick="closeAddressForm()" aria-label="Close address form">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                  <form id="addr-form" novalidate>
+                    <div class="form-stack">
+                      <div class="form-row-2">
+                        <div class="form-group">
+                          <label class="form-label" for="af-name">Full Name</label>
+                          <input class="form-input" id="af-name" type="text" placeholder="Recipient name" autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="af-phone">Phone Number</label>
+                          <input class="form-input" id="af-phone" type="tel" placeholder="+234 800 000 0000" autocomplete="tel">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label" for="af-address">Street Address <span style="color:#ef4444">*</span></label>
+                        <input class="form-input" id="af-address" type="text" placeholder="House number and street name" autocomplete="street-address" required>
+                        <span class="field-error" id="err-af-address" style="display:none">Street address is required</span>
+                      </div>
+                      <div class="form-row-2">
+                        <div class="form-group">
+                          <label class="form-label" for="af-city">City <span style="color:#ef4444">*</span></label>
+                          <input class="form-input" id="af-city" type="text" placeholder="e.g. Lagos" autocomplete="address-level2" required>
+                          <span class="field-error" id="err-af-city" style="display:none">City is required</span>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="af-postal">Postal Code</label>
+                          <input class="form-input" id="af-postal" type="text" placeholder="e.g. 100001" autocomplete="postal-code">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions" style="margin-top:20px;padding-top:16px">
+                      <button type="button" class="btn btn-ghost" onclick="closeAddressForm()">Cancel</button>
+                      <button type="submit" class="btn btn-primary" id="addr-save-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save Address
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── PREFERENCES PANEL ─────────────────────────────── -->
+            <div class="account-panel" id="panel-preferences" role="region" aria-labelledby="pref-panel-title">
+              <div class="panel-card">
+                <div class="panel-header">
+                  <div class="panel-header-text">
+                    <h2 class="panel-title" id="pref-panel-title">Food Preferences</h2>
+                    <p class="panel-sub">Help us personalise your experience and recommendations</p>
+                  </div>
+                  <div class="panel-icon orange" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="6" y1="18" x2="18" y2="18"/></svg>
+                  </div>
+                </div>
+
+                <div class="form-stack">
+                  <div class="form-group">
+                    <label class="form-label" for="pref-diet">Dietary Preference</label>
+                    <select class="form-input" id="pref-diet" onchange="savePreferences()">
+                      <option value="">No preference</option>
+                      <option value="vegetarian">Vegetarian</option>
+                      <option value="vegan">Vegan</option>
+                      <option value="pescatarian">Pescatarian</option>
+                      <option value="halal">Halal</option>
+                      <option value="gluten-free">Gluten-Free</option>
+                      <option value="keto">Keto / Low-carb</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="pref-spice">Spice Level</label>
+                    <select class="form-input" id="pref-spice" onchange="savePreferences()">
+                      <option value="">No preference</option>
+                      <option value="mild">Mild — keep it easy</option>
+                      <option value="medium">Medium — some heat is nice</option>
+                      <option value="hot">Hot — bring the fire</option>
+                      <option value="extra">Extra Hot — challenge accepted</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="pref-allergy">Allergies / Intolerances</label>
+                    <input class="form-input" id="pref-allergy" type="text" placeholder="e.g. nuts, dairy, shellfish" oninput="savePreferences()">
+                    <span class="form-hint">We'll flag menu items that may contain these ingredients</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="pref-fav">Favourite Cuisine</label>
+                    <select class="form-input" id="pref-fav" onchange="savePreferences()">
+                      <option value="">No preference</option>
+                      <option value="nigerian">Nigerian</option>
+                      <option value="continental">Continental</option>
+                      <option value="chinese">Chinese</option>
+                      <option value="italian">Italian</option>
+                      <option value="american">American</option>
+                      <option value="mediterranean">Mediterranean</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <p style="font-size:12px;color:var(--outline);font-weight:500;margin-right:auto">Preferences save automatically</p>
+                  <a href="menu.html" class="btn btn-primary" style="text-decoration:none">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Browse Menu
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── DANGER ZONE PANEL ──────────────────────────────── -->
+            <div class="account-panel" id="panel-danger" role="region" aria-labelledby="danger-panel-title">
+              <div class="panel-card" style="border-color:#fca5a5">
+                <div class="panel-header">
+                  <div class="panel-header-text">
+                    <h2 class="panel-title" id="danger-panel-title" style="color:#b91c1c">Danger Zone</h2>
+                    <p class="panel-sub">These actions are permanent and cannot be undone</p>
+                  </div>
+                  <div class="panel-icon red" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  </div>
+                </div>
+
+                <div class="danger-action">
+                  <div class="danger-action-info">
+                    <div class="danger-action-title">Clear Order History</div>
+                    <div class="danger-action-desc">Permanently delete all your past orders. This will not cancel active deliveries.</div>
+                  </div>
+                  <button class="btn btn-danger-outline" onclick="openModal('clear-orders')">Clear History</button>
+                </div>
+
+                <div class="danger-action" style="margin-top:12px">
+                  <div class="danger-action-info">
+                    <div class="danger-action-title">Clear Wishlist</div>
+                    <div class="danger-action-desc">Remove all saved items from your wishlist at once.</div>
+                  </div>
+                  <button class="btn btn-danger-outline" onclick="openModal('clear-wishlist')">Clear Wishlist</button>
+                </div>
+
+                <div class="danger-action" style="margin-top:12px;border-color:#ef4444;background:#fef2f2">
+                  <div class="danger-action-info">
+                    <div class="danger-action-title" style="color:#b91c1c">Delete Account</div>
+                    <div class="danger-action-desc">Permanently delete your account and all associated data. You will be signed out immediately.</div>
+                  </div>
+                  <button class="btn btn-danger" onclick="openModal('delete-account')">Delete Account</button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /account-content -->
+        </div><!-- /account-layout -->
+      </div>
+    </section>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="alert" aria-live="polite">
+    <span class="toast-ic" id="toast-ic" aria-hidden="true"></span>
+    <span id="toast-msg"></span>
+  </div>
+
+  <!-- CONFIRM MODAL -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+      <div class="modal-icon" id="modal-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h3 class="modal-title" id="modal-title">Are you sure?</h3>
+      <p class="modal-msg" id="modal-msg">This action cannot be undone.</p>
+      <div id="modal-confirm-wrap" style="display:none">
+        <label class="form-label" for="modal-confirm-input" style="margin-bottom:7px;display:block" id="modal-confirm-label">Type DELETE to confirm</label>
+        <input class="form-input modal-confirm-input" id="modal-confirm-input" type="text" placeholder="DELETE" oninput="checkModalConfirm()">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-danger" id="modal-confirm-btn" onclick="executeModalAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="nav-logo" style="font-size:32px" aria-label="Eatz home"><span class="accent">E</span>atz<span class="dot" style="width:10px;height:10px" aria-hidden="true"></span></a>
+          <p class="footer-brand-desc">Eatz connects food lovers with the best local restaurants. Fresh ingredients, bold flavors, fast delivery — every single time.</p>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.2 8.2 0 0 0 4.81 1.54V6.79a4.85 4.85 0 0 1-1.04-.1z"/></svg></a>
+            <a href="#" aria-label="X (Twitter)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links"><li><a href="menu.html">Browse Menu</a></li><li><a href="index.html#featured">Today's Specials</a></li><li><a href="reservation.html">Book a Table</a></li><li><a href="blog.html">Food Stories</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links"><li><a href="about.html">About Eatz</a></li><li><a href="#">Careers</a></li><li><a href="#">Partner With Us</a></li><li><a href="blog.html">Blog</a></li></ul>
+        </div>
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links"><li><a href="index.html#faq">Help Center</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">Accessibility</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Eatz. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="notifications.js"></script>
+  <script>
+    /* ── Constants ───────────────────────────────────────────────── */
+    var USER_KEY  = 'eatz_user';
+    var PREFS_KEY = 'eatz_notif_prefs';
+    var FOOD_KEY  = 'eatz_food_prefs';
+    var ADDR_KEY  = 'eatz_saved_addresses';
+
+    /* ── Helpers ─────────────────────────────────────────────────── */
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem(USER_KEY)) || null; } catch (e) { return null; }
+    }
+    function saveUser(u) {
+      try { localStorage.setItem(USER_KEY, JSON.stringify(u)); } catch (e) {}
+    }
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ── Auth guard ──────────────────────────────────────────────── */
+    var _user = getUser();
+    if (!_user) { window.location.replace('signin.html'); }
+
+    /* ── Populate sidebar profile card ──────────────────────────── */
+    function populateSidebar() {
+      var u = getUser();
+      if (!u) return;
+      var initials = ((u.firstName||'').charAt(0) + (u.lastName||'').charAt(0)).toUpperCase() || '?';
+      document.getElementById('profile-avatar').textContent = initials;
+      var fullName = ((u.firstName||'') + ' ' + (u.lastName||'')).trim() || 'User';
+      document.getElementById('profile-name').textContent = fullName;
+      document.getElementById('profile-email-text').textContent = u.email || '';
+      /* Member since */
+      var since = u.memberSince ? new Date(u.memberSince) : new Date();
+      document.getElementById('profile-since').textContent =
+        'Member since ' + since.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+      /* Stats */
+      try {
+        var orders   = JSON.parse(localStorage.getItem('eatz_orders'))  || [];
+        var wishlist = JSON.parse(localStorage.getItem('eatz_wishlist')) || [];
+        document.getElementById('stat-orders').textContent   = orders.length;
+        document.getElementById('stat-wishlist').textContent = wishlist.length;
+      } catch (e) {}
+    }
+
+    /* ── Populate profile form ───────────────────────────────────── */
+    function populateProfileForm() {
+      var u = getUser();
+      if (!u) return;
+      document.getElementById('pf-first').value = u.firstName || '';
+      document.getElementById('pf-last').value  = u.lastName  || '';
+      document.getElementById('pf-email').value  = u.email     || '';
+      document.getElementById('pf-phone').value  = u.phone     || '';
+    }
+
+    function resetProfileForm() { populateProfileForm(); }
+
+    /* ── Profile form submit ─────────────────────────────────────── */
+    document.getElementById('profile-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var first = document.getElementById('pf-first').value.trim();
+      var email = document.getElementById('pf-email').value.trim();
+      var valid = true;
+
+      if (!first) {
+        showFieldError('err-first', 'pf-first'); valid = false;
+      } else { clearFieldError('err-first', 'pf-first'); }
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldError('err-email', 'pf-email'); valid = false;
+      } else { clearFieldError('err-email', 'pf-email'); }
+
+      if (!valid) return;
+
+      var u = getUser() || {};
+      u.firstName = capitalize(first);
+      u.lastName  = capitalize(document.getElementById('pf-last').value.trim());
+      u.email     = email;
+      u.phone     = document.getElementById('pf-phone').value.trim();
+      if (!u.memberSince) u.memberSince = new Date().toISOString();
+      saveUser(u);
+      populateSidebar();
+      showToast('Profile updated successfully', 'success');
+    });
+
+    /* ── Security form submit ────────────────────────────────────── */
+    document.getElementById('security-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var curr    = document.getElementById('sec-current').value;
+      var nw      = document.getElementById('sec-new').value;
+      var confirm = document.getElementById('sec-confirm').value;
+      var valid   = true;
+
+      if (!curr) { showFieldError('err-current', 'sec-current'); valid = false; }
+      else { clearFieldError('err-current', 'sec-current'); }
+
+      if (!nw || nw.length < 8) { showFieldError('err-new', 'sec-new'); valid = false; }
+      else { clearFieldError('err-new', 'sec-new'); }
+
+      if (nw !== confirm) { showFieldError('err-confirm', 'sec-confirm'); valid = false; }
+      else { clearFieldError('err-confirm', 'sec-confirm'); }
+
+      if (!valid) return;
+
+      /* Simulate password update — no real backend */
+      showToast('Password updated successfully', 'success');
+      document.getElementById('security-form').reset();
+      updateStrength('');
+    });
+
+    /* ── Password strength meter ─────────────────────────────────── */
+    function updateStrength(val) {
+      var bars  = ['bar1','bar2','bar3','bar4'];
+      var label = document.getElementById('pwd-label');
+      if (!val) {
+        bars.forEach(function (b) { var el = document.getElementById(b); el.className = 'pwd-bar'; });
+        label.textContent = ''; label.style.color = 'var(--outline)';
+        return;
+      }
+      var score = 0;
+      if (val.length >= 8)  score++;
+      if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      var cls   = ['','weak','fair','good','strong'][score] || 'weak';
+      var texts = { weak:'Weak', fair:'Fair', good:'Good', strong:'Strong' };
+      var colors = { weak:'#ef4444', fair:'#f59e0b', good:'#3b82f6', strong:'#16a34a' };
+      bars.forEach(function (b, i) {
+        var el = document.getElementById(b);
+        el.className = 'pwd-bar' + (i < score ? ' ' + cls : '');
+      });
+      label.textContent = texts[cls] || '';
+      label.style.color = colors[cls] || 'var(--outline)';
+    }
+
+    /* ── Notification preferences ────────────────────────────────── */
+    var DEFAULT_NOTIF_PREFS = {
+      orders: true, promos: true, reservations: true, menu: false, updates: true
+    };
+    function loadNotifPrefs() {
+      var prefs = DEFAULT_NOTIF_PREFS;
+      try { prefs = JSON.parse(localStorage.getItem(PREFS_KEY)) || DEFAULT_NOTIF_PREFS; } catch (e) {}
+      document.getElementById('notif-orders').checked       = !!prefs.orders;
+      document.getElementById('notif-promos').checked       = !!prefs.promos;
+      document.getElementById('notif-reservations').checked = !!prefs.reservations;
+      document.getElementById('notif-menu').checked         = !!prefs.menu;
+      document.getElementById('notif-updates').checked      = !!prefs.updates;
+    }
+    function saveNotifPrefs() {
+      var prefs = {
+        orders:       document.getElementById('notif-orders').checked,
+        promos:       document.getElementById('notif-promos').checked,
+        reservations: document.getElementById('notif-reservations').checked,
+        menu:         document.getElementById('notif-menu').checked,
+        updates:      document.getElementById('notif-updates').checked
+      };
+      try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {}
+      showToast('Notification preferences saved', 'success');
+    }
+
+    /* ── Addresses (full CRUD) ───────────────────────────────────── */
+    var _editingAddrId = null;
+
+    function genId() {
+      return Math.random().toString(36).slice(2, 11) + Date.now().toString(36);
+    }
+
+    function getSavedAddresses() {
+      try { return JSON.parse(localStorage.getItem(ADDR_KEY)) || []; } catch (e) { return []; }
+    }
+
+    function persistAddresses(arr) {
+      try { localStorage.setItem(ADDR_KEY, JSON.stringify(arr)); } catch (e) {}
+    }
+
+    /* Import unique addresses from past orders into saved list (runs once per session) */
+    function importOrderAddresses() {
+      var existing = getSavedAddresses();
+      var seenKeys = {};
+      existing.forEach(function (a) {
+        seenKeys[(a.address + ',' + (a.city || '')).toLowerCase().replace(/\s+/g,' ').trim()] = true;
+      });
+      var orders = [];
+      try { orders = JSON.parse(localStorage.getItem('eatz_orders')) || []; } catch (e) {}
+      orders.slice().reverse().forEach(function (o) {
+        if (!o.delivery || !o.delivery.address) return;
+        var k = (o.delivery.address + ',' + (o.delivery.city || '')).toLowerCase().replace(/\s+/g,' ').trim();
+        if (!seenKeys[k]) {
+          seenKeys[k] = true;
+          existing.push({
+            id: genId(),
+            name: o.delivery.name || '',
+            phone: o.delivery.phone || '',
+            address: o.delivery.address,
+            city: o.delivery.city || '',
+            postal: o.delivery.postal || '',
+            isDefault: existing.length === 0
+          });
+        }
+      });
+      persistAddresses(existing);
+    }
+
+    function loadAddresses() {
+      importOrderAddresses();
+      renderAddressList();
+    }
+
+    function renderAddressList() {
+      var addresses = getSavedAddresses();
+      var listEl = document.getElementById('address-list');
+
+      if (addresses.length === 0) {
+        listEl.innerHTML =
+          '<div class="address-empty" role="status">' +
+            '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+            '<p>No saved addresses yet.<br>Click <strong>Add Address</strong> to save your first one.</p>' +
+          '</div>';
+        return;
+      }
+
+      /* Ensure exactly one default */
+      var hasDefault = addresses.some(function (a) { return a.isDefault; });
+      if (!hasDefault) { addresses[0].isDefault = true; persistAddresses(addresses); }
+
+      var canDelete = addresses.length >= 2;
+
+      listEl.innerHTML = addresses.map(function (a) {
+        return (
+          '<div class="address-card' + (a.isDefault ? ' is-default' : '') + '" role="listitem" data-addr-id="' + esc(a.id) + '">' +
+            '<div class="address-card-body">' +
+              (a.isDefault ? '<span class="address-default-pill">Default</span>' : '') +
+              '<div class="address-line">' +
+                esc(a.address) +
+                (a.city   ? ', ' + esc(a.city)   : '') +
+                (a.postal ? ' '  + esc(a.postal)  : '') +
+              '</div>' +
+              '<div class="address-sub">' +
+                (a.name  ? esc(a.name)           : '') +
+                (a.phone ? ' · ' + esc(a.phone)  : '') +
+              '</div>' +
+            '</div>' +
+            '<div class="address-actions">' +
+              '<button class="address-btn" onclick="openAddressForm(\'' + esc(a.id) + '\')">Edit</button>' +
+              (!a.isDefault
+                ? '<button class="address-btn set-default" onclick="setDefaultAddress(\'' + esc(a.id) + '\')">Set default</button>'
+                : '') +
+              (canDelete
+                ? '<button class="address-btn remove-btn" onclick="deleteAddress(\'' + esc(a.id) + '\')">Remove</button>'
+                : '') +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    function openAddressForm(id) {
+      _editingAddrId = id || null;
+      var titleEl   = document.getElementById('addr-form-title-text');
+      var saveBtnEl = document.getElementById('addr-save-btn');
+
+      /* Clear validation state */
+      ['af-address','af-city'].forEach(function (fId) {
+        document.getElementById(fId).classList.remove('error');
+      });
+      document.getElementById('err-af-address').style.display = 'none';
+      document.getElementById('err-af-city').style.display    = 'none';
+
+      if (id) {
+        /* Edit mode — populate form with existing data */
+        var addr = getSavedAddresses().find(function (a) { return a.id === id; });
+        if (!addr) return;
+        document.getElementById('af-name').value    = addr.name    || '';
+        document.getElementById('af-phone').value   = addr.phone   || '';
+        document.getElementById('af-address').value = addr.address || '';
+        document.getElementById('af-city').value    = addr.city    || '';
+        document.getElementById('af-postal').value  = addr.postal  || '';
+        titleEl.textContent   = 'Edit Address';
+        saveBtnEl.innerHTML   = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Update Address';
+      } else {
+        /* Add mode — pre-fill name & phone from profile */
+        document.getElementById('addr-form').reset();
+        var u = getUser();
+        if (u) {
+          document.getElementById('af-name').value  = ((u.firstName || '') + ' ' + (u.lastName || '')).trim();
+          document.getElementById('af-phone').value = u.phone || '';
+        }
+        titleEl.textContent  = 'Add New Address';
+        saveBtnEl.innerHTML  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Address';
+      }
+
+      var wrap = document.getElementById('addr-form-wrap');
+      wrap.classList.add('open');
+      setTimeout(function () {
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        document.getElementById('af-address').focus();
+      }, 50);
+    }
+
+    function closeAddressForm() {
+      _editingAddrId = null;
+      document.getElementById('addr-form-wrap').classList.remove('open');
+      document.getElementById('addr-form').reset();
+    }
+
+    /* Address form submit */
+    document.getElementById('addr-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var addrVal  = document.getElementById('af-address').value.trim();
+      var cityVal  = document.getElementById('af-city').value.trim();
+      var valid    = true;
+
+      if (!addrVal) {
+        document.getElementById('af-address').classList.add('error');
+        document.getElementById('err-af-address').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('af-address').classList.remove('error');
+        document.getElementById('err-af-address').style.display = 'none';
+      }
+      if (!cityVal) {
+        document.getElementById('af-city').classList.add('error');
+        document.getElementById('err-af-city').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('af-city').classList.remove('error');
+        document.getElementById('err-af-city').style.display = 'none';
+      }
+      if (!valid) return;
+
+      var addresses = getSavedAddresses();
+
+      if (_editingAddrId) {
+        /* Update existing entry */
+        addresses = addresses.map(function (a) {
+          if (a.id !== _editingAddrId) return a;
+          return {
+            id:        a.id,
+            name:      document.getElementById('af-name').value.trim(),
+            phone:     document.getElementById('af-phone').value.trim(),
+            address:   addrVal,
+            city:      cityVal,
+            postal:    document.getElementById('af-postal').value.trim(),
+            isDefault: a.isDefault
+          };
+        });
+        persistAddresses(addresses);
+        closeAddressForm();
+        renderAddressList();
+        showToast('Address updated', 'success');
+      } else {
+        /* Add new entry */
+        var isFirst = addresses.length === 0;
+        addresses.push({
+          id:        genId(),
+          name:      document.getElementById('af-name').value.trim(),
+          phone:     document.getElementById('af-phone').value.trim(),
+          address:   addrVal,
+          city:      cityVal,
+          postal:    document.getElementById('af-postal').value.trim(),
+          isDefault: isFirst
+        });
+        persistAddresses(addresses);
+        closeAddressForm();
+        renderAddressList();
+        showToast('Address saved', 'success');
+      }
+    });
+
+    function setDefaultAddress(id) {
+      var addresses = getSavedAddresses().map(function (a) {
+        return Object.assign({}, a, { isDefault: a.id === id });
+      });
+      persistAddresses(addresses);
+      renderAddressList();
+      showToast('Default address updated', 'success');
+    }
+
+    function deleteAddress(id) {
+      var addresses = getSavedAddresses();
+      if (addresses.length < 2) return; /* safety — button is hidden, but guard anyway */
+
+      var wasDefault = (addresses.find(function (a) { return a.id === id; }) || {}).isDefault;
+      addresses = addresses.filter(function (a) { return a.id !== id; });
+
+      /* If the deleted address was the default, promote the first remaining one */
+      if (wasDefault) {
+        addresses[0].isDefault = true;
+      }
+
+      persistAddresses(addresses);
+      renderAddressList();
+      showToast('Address removed', 'success');
+    }
+
+    /* ── Food preferences ────────────────────────────────────────── */
+    function loadFoodPrefs() {
+      var p = {};
+      try { p = JSON.parse(localStorage.getItem(FOOD_KEY)) || {}; } catch (e) {}
+      if (p.diet)    document.getElementById('pref-diet').value    = p.diet;
+      if (p.spice)   document.getElementById('pref-spice').value   = p.spice;
+      if (p.allergy) document.getElementById('pref-allergy').value = p.allergy;
+      if (p.fav)     document.getElementById('pref-fav').value     = p.fav;
+    }
+
+    var _prefDebounce = null;
+    function savePreferences() {
+      clearTimeout(_prefDebounce);
+      _prefDebounce = setTimeout(function () {
+        var p = {
+          diet:    document.getElementById('pref-diet').value,
+          spice:   document.getElementById('pref-spice').value,
+          allergy: document.getElementById('pref-allergy').value,
+          fav:     document.getElementById('pref-fav').value
+        };
+        try { localStorage.setItem(FOOD_KEY, JSON.stringify(p)); } catch (e) {}
+        showToast('Preferences saved', 'success');
+      }, 600);
+    }
+
+    /* ── Tab switching ───────────────────────────────────────────── */
+    document.querySelectorAll('.account-nav-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var panel = btn.getAttribute('data-panel');
+        if (!panel) return;
+        document.querySelectorAll('.account-nav-item').forEach(function (b) {
+          b.classList.remove('active');
+          b.removeAttribute('aria-current');
+        });
+        document.querySelectorAll('.account-panel').forEach(function (p) {
+          p.classList.remove('active');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-current', 'true');
+        var panelEl = document.getElementById('panel-' + panel);
+        if (panelEl) panelEl.classList.add('active');
+        /* Lazy-load data for certain panels */
+        if (panel === 'addresses') loadAddresses();
+        if (panel === 'notifications') loadNotifPrefs();
+      });
+    });
+
+    /* ── Field error helpers ─────────────────────────────────────── */
+    function showFieldError(errId, inputId) {
+      var e = document.getElementById(errId);
+      var i = document.getElementById(inputId);
+      if (e) e.style.display = 'block';
+      if (i) i.classList.add('error');
+    }
+    function clearFieldError(errId, inputId) {
+      var e = document.getElementById(errId);
+      var i = document.getElementById(inputId);
+      if (e) e.style.display = 'none';
+      if (i) i.classList.remove('error');
+    }
+
+    /* ── Toast ───────────────────────────────────────────────────── */
+    var _toastTimer = null;
+    var IC_OK  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+    var IC_ERR = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    function showToast(msg, type) {
+      var t  = document.getElementById('toast');
+      var ic = document.getElementById('toast-ic');
+      var m  = document.getElementById('toast-msg');
+      t.className = 'toast ' + (type || 'success');
+      ic.innerHTML = type === 'error' ? IC_ERR : IC_OK;
+      m.textContent = msg;
+      t.classList.add('show');
+      if (_toastTimer) clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2800);
+    }
+
+    /* ── Modal ───────────────────────────────────────────────────── */
+    var _modalAction = null;
+    var MODAL_CONFIGS = {
+      'clear-orders': {
+        title: 'Clear order history?',
+        msg:   'All your past orders will be permanently deleted. This will not affect active deliveries.',
+        confirm: false,
+        btnLabel: 'Yes, clear history'
+      },
+      'clear-wishlist': {
+        title: 'Clear wishlist?',
+        msg:   'All saved items will be removed from your wishlist. You can re-add them anytime.',
+        confirm: false,
+        btnLabel: 'Yes, clear wishlist'
+      },
+      'delete-account': {
+        title: 'Delete your account?',
+        msg:   'This will permanently delete your account, orders, wishlist and all data. You will be signed out immediately. Type DELETE to confirm.',
+        confirm: true,
+        btnLabel: 'Delete My Account'
+      }
+    };
+
+    function openModal(action) {
+      _modalAction = action;
+      var cfg = MODAL_CONFIGS[action];
+      if (!cfg) return;
+      document.getElementById('modal-title').textContent = cfg.title;
+      document.getElementById('modal-msg').textContent   = cfg.msg;
+      document.getElementById('modal-confirm-btn').textContent = cfg.btnLabel;
+      var wrap = document.getElementById('modal-confirm-wrap');
+      var inp  = document.getElementById('modal-confirm-input');
+      inp.value = '';
+      if (cfg.confirm) {
+        wrap.style.display = '';
+        document.getElementById('modal-confirm-btn').disabled = true;
+      } else {
+        wrap.style.display = 'none';
+        document.getElementById('modal-confirm-btn').disabled = false;
+      }
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      _modalAction = null;
+    }
+
+    function checkModalConfirm() {
+      var val = document.getElementById('modal-confirm-input').value;
+      document.getElementById('modal-confirm-btn').disabled = (val !== 'DELETE');
+    }
+
+    function executeModalAction() {
+      closeModal();
+      switch (_modalAction) {
+        case 'clear-orders':
+          try { localStorage.removeItem('eatz_orders'); } catch (e) {}
+          document.getElementById('stat-orders').textContent = '0';
+          showToast('Order history cleared', 'success');
+          break;
+        case 'clear-wishlist':
+          try { localStorage.removeItem('eatz_wishlist'); } catch (e) {}
+          document.getElementById('stat-wishlist').textContent = '0';
+          showToast('Wishlist cleared', 'success');
+          break;
+        case 'delete-account':
+          ['eatz_user','eatz_orders','eatz_cart','eatz_wishlist',
+           'eatz_notifications','eatz_notif_seeded_v1',PREFS_KEY,FOOD_KEY,ADDR_KEY].forEach(function (k) {
+            try { localStorage.removeItem(k); } catch (e) {}
+          });
+          window.location.replace('index.html');
+          break;
+      }
+    }
+
+    /* Close modal on overlay click */
+    document.getElementById('modal-overlay').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && document.getElementById('modal-overlay').classList.contains('open')) closeModal();
+    });
+
+    /* ── Utility ─────────────────────────────────────────────────── */
+    function capitalize(s) {
+      return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+    }
+
+    /* ── Nav scroll + mobile menu ────────────────────────────────── */
+    var navEl = document.getElementById('nav');
+    window.addEventListener('scroll', function () {
+      navEl.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    var hamburger  = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen   = false;
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+    hamburger.addEventListener('click', function () {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', String(menuOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!menuOpen));
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menuOpen) closeMenu();
+    });
+
+    /* ── Init ────────────────────────────────────────────────────── */
+    populateSidebar();
+    populateProfileForm();
+    loadFoodPrefs();
+
+    /* Ensure memberSince is set on first visit */
+    (function () {
+      var u = getUser();
+      if (u && !u.memberSince) {
+        u.memberSince = new Date().toISOString();
+        saveUser(u);
+      }
+    })();
+
+    lucide.createIcons();
+  </script>
+  <script src="nav.js"></script>
+  <script src="cookie-consent.js"></script>
+</body>
+</html>

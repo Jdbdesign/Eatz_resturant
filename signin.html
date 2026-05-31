@@ -319,8 +319,16 @@
       btn.innerHTML = '<div class="spinner"></div> Signing in…';
 
       setTimeout(function () {
-        var email = document.getElementById('email').value.trim();
-        var user  = nameFromEmail(email);
+        var email    = document.getElementById('email').value.trim();
+        var derived  = nameFromEmail(email);
+
+        /* Preserve name the user already set in their profile — only use
+           the email-derived name when there is no existing record at all. */
+        var existing = null;
+        try { existing = JSON.parse(localStorage.getItem(USER_KEY)); } catch (ex) {}
+        var user = (existing && existing.email === email)
+          ? Object.assign({}, existing, { email: email })
+          : derived;
 
         try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (ex) {}
 
