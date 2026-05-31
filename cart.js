@@ -282,6 +282,9 @@
 
     // Sync badge on load
     refreshUI(false);
+
+    // Expose addItem for pages that can't use .food-add buttons (e.g. food-detail.html)
+    window.__eatzCartAdd = addItem;
   }
 
   if (document.readyState === 'loading') {

@@ -929,37 +929,5 @@
   </script>
 
   <script src="cart.js"></script>
-  <script>
-    // Expose cart addItem to detail page after cart.js loads
-    // cart.js is an IIFE, so we hook it via the food-add button approach
-    // Instead, we intercept by re-exporting addItem via a hidden button trick
-    (function() {
-      function waitForCart() {
-        var fab = document.getElementById('cart-fab');
-        if (!fab) { setTimeout(waitForCart, 50); return; }
-        // cart.js is loaded; hook addItem by simulating food card clicks
-        // We'll use a hidden dummy food card approach
-        window.__eatzCartAdd = function(name, price) {
-          // Inject a temporary food card, click its add button, then remove it
-          var dummy = document.createElement('article');
-          dummy.className = 'food-card';
-          dummy.style.display = 'none';
-          dummy.innerHTML =
-            '<div class="food-body">' +
-              '<h3 class="food-name">' + name + '</h3>' +
-              '<div class="food-price">$' + price.toFixed(2) + '</div>' +
-              '<button class="food-add">+</button>' +
-            '</div>';
-          document.body.appendChild(dummy);
-          // hook fires on next RAF
-          requestAnimationFrame(function() {
-            dummy.querySelector('.food-add').click();
-            document.body.removeChild(dummy);
-          });
-        };
-      }
-      waitForCart();
-    })();
-  </script>
 </body>
 </html>
