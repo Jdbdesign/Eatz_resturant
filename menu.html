@@ -1123,13 +1123,23 @@
       });
     }
 
-    // Wishlist toggle
+    // Wishlist toggle — requires sign-in
+    function eatzGetUser() {
+      try { return JSON.parse(localStorage.getItem('eatz_user')) || null; } catch(e) { return null; }
+    }
+    function toggleWish(btn) {
+      if (!eatzGetUser()) {
+        window.location.href = 'signin.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+      const liked = btn.dataset.liked === 'true';
+      btn.dataset.liked = liked ? 'false' : 'true';
+      btn.classList.toggle('liked', !liked);
+    }
     document.querySelectorAll('.food-wish').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
-        const liked = btn.dataset.liked === 'true';
-        btn.dataset.liked = liked ? 'false' : 'true';
-        btn.classList.toggle('liked', !liked);
+        toggleWish(btn);
       });
     });
 
@@ -1157,9 +1167,7 @@
           if (wishBtn) {
             wishBtn.addEventListener('click', function(e) {
               e.stopPropagation();
-              var liked = wishBtn.dataset.liked === 'true';
-              wishBtn.dataset.liked = liked ? 'false' : 'true';
-              wishBtn.classList.toggle('liked', !liked);
+              toggleWish(wishBtn);
             });
           }
           var addBtn = card.querySelector('.food-add');

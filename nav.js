@@ -44,6 +44,13 @@
     '.nav-dd-logout:hover{background:#fef2f2!important;color:#dc2626!important}',
     '.nav-dd-logout svg{color:#ef4444!important}',
     '.nav-dd-logout:hover svg{color:#dc2626!important}',
+    /* Sign In rectangle button (unauthenticated state) */
+    '.nav-signin-btn{display:inline-flex;align-items:center;gap:7px;background:transparent;color:rgba(255,255,255,.85);',
+      'border:2px solid rgba(255,255,255,.28);border-radius:8px;padding:9px 18px;',
+      'font-family:"Manrope",sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;',
+      'text-decoration:none;cursor:pointer;transition:all 150ms cubic-bezier(.16,1,.3,1);min-height:44px}',
+    '.nav-signin-btn:hover{background:rgba(255,255,255,.09);color:#fff;border-color:rgba(255,255,255,.45)}',
+    '.nav-signin-btn:active{transform:scale(.97)}',
     /* Mobile user bar */
     '.mob-user-bar{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:4px;',
       'display:flex;align-items:center;gap:12px}',
@@ -55,7 +62,14 @@
     '.mob-logout-btn{display:block;width:100%;text-align:left;color:#ef4444;background:none;border:none;',
       'font-family:"Manrope",sans-serif;font-size:15px;font-weight:500;padding:12px 16px;',
       'border-radius:8px;cursor:pointer;transition:background 150ms}',
-    '.mob-logout-btn:hover{background:rgba(239,68,68,.1)}'
+    '.mob-logout-btn:hover{background:rgba(239,68,68,.1)}',
+    /* Mobile sign-in button */
+    'a.mob-signin-btn{display:flex!important;align-items:center;justify-content:center;',
+      'width:calc(100% - 32px);margin:8px 16px;padding:13px 20px!important;',
+      'background:transparent!important;color:rgba(255,255,255,.85)!important;border:2px solid rgba(255,255,255,.28);',
+      'border-radius:10px!important;font-family:"Manrope",sans-serif;font-size:15px;font-weight:600;',
+      'text-decoration:none;letter-spacing:.01em;transition:all 150ms}',
+    'a.mob-signin-btn:hover{background:rgba(255,255,255,.08)!important;color:#fff!important;border-color:rgba(255,255,255,.45)}'
   ].join('');
 
   function injectStyles() {
@@ -106,14 +120,13 @@
     }
 
     if (!user) {
-      // Hide actions div (nothing to show there), put Sign In in nav-links
-      navActions.style.display = 'none';
-      if (navLinks) {
-        var li = document.createElement('li');
-        li.setAttribute('data-nav-signin', '');
-        li.innerHTML = '<a href="signin.html">Sign In</a>';
-        navLinks.appendChild(li);
-      }
+      // Show Sign In as a rectangle button in nav-actions
+      navActions.style.display = 'flex';
+      navActions.innerHTML =
+        '<a href="signin.html" class="nav-signin-btn" aria-label="Sign in to your account">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
+          'Sign In' +
+        '</a>';
     } else {
       // Show avatar + dropdown in nav-actions
       navActions.style.display = 'flex';
@@ -185,7 +198,7 @@
     if (!user) {
       var li = document.createElement('li');
       li.setAttribute('data-mob-nav', '');
-      li.innerHTML = '<a href="signin.html">Sign In</a>';
+      li.innerHTML = '<a href="signin.html" class="mob-signin-btn">Sign In</a>';
       li.querySelector('a').addEventListener('click', tryClose);
       list.appendChild(li);
     } else {

@@ -364,7 +364,7 @@
         <li><a href="contact.html">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <a href="#" class="btn btn-outline">Sign In</a>
+        <a href="signin.html" class="btn btn-outline">Sign In</a>
         <a href="#" class="btn btn-primary">Order Now</a>
       </div>
       <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
@@ -384,7 +384,7 @@
       <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
     </ul>
     <div class="mobile-actions">
-      <a href="#" class="btn btn-outline">Sign In</a>
+      <a href="signin.html" class="btn btn-outline">Sign In</a>
       <a href="#" class="btn btn-primary">Order Now</a>
     </div>
   </div>
@@ -979,10 +979,17 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Wishlist toggle
+    // Wishlist toggle — requires sign-in
+    function eatzGetUser() {
+      try { return JSON.parse(localStorage.getItem('eatz_user')) || null; } catch(e) { return null; }
+    }
     document.querySelectorAll('.food-wish').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
+        if (!eatzGetUser()) {
+          window.location.href = 'signin.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+          return;
+        }
         const liked = btn.dataset.liked === 'true';
         btn.dataset.liked = liked ? 'false' : 'true';
         btn.classList.toggle('liked', !liked);
