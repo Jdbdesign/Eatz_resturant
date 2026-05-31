@@ -192,9 +192,6 @@
     .stat-label{font-size:14px;font-weight:600;color:rgba(255,255,255,.75)}
 
     /* CATERING */
-    .catering-grid{display:grid;grid-template-columns:1fr;gap:20px}
-    @media(min-width:640px){.catering-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(min-width:1024px){.catering-grid{grid-template-columns:repeat(3,1fr)}}
     .catering-card{border-radius:24px;overflow:hidden;position:relative;min-height:280px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer}
     .catering-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 400ms var(--ease-out)}
     .catering-card:hover img{transform:scale(1.06)}
@@ -203,6 +200,12 @@
     .catering-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:9999px;background:var(--primary);color:#fff;margin-bottom:8px}
     .catering-name{font-size:20px;font-weight:800;margin-bottom:8px;letter-spacing:-.02em}
     .catering-desc{font-size:13px;color:rgba(255,255,255,.7);line-height:1.5}
+    .catering-scroll-wrap{overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%);mask-image:linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%)}
+    .catering-track{display:flex;gap:20px;width:max-content;animation:catering-scroll 28s linear infinite}
+    .catering-track:hover{animation-play-state:paused}
+    .catering-track .catering-card{width:340px;flex-shrink:0}
+    @media(min-width:768px){.catering-track .catering-card{width:400px}}
+    @keyframes catering-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
     /* CHEFS */
     .chefs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
@@ -575,15 +578,17 @@
     <!-- CATERING -->
     <section class="section section-dark" id="catering" aria-labelledby="catering-h2">
       <div class="container">
-        <div class="sec-header">
+        <div class="sec-header" style="margin-bottom:40px">
           <div>
             <div class="section-tag">Services</div>
             <h2 class="section-title light" id="catering-h2">Catering Coverage For<br>Every Celebration</h2>
           </div>
-          <a href="#" class="btn btn-dark-ghost" style="font-size:14px;padding:10px 20px;min-height:44px;border-radius:8px">All Services →</a>
         </div>
-        <div class="catering-grid">
-          <article class="catering-card reveal">
+      </div>
+      <div class="catering-scroll-wrap" aria-label="Catering services">
+        <div class="catering-track">
+          <!-- Original 5 cards -->
+          <article class="catering-card">
             <img src="Home_images/Corporate Events.jpg" alt="Corporate event catering">
             <div class="catering-overlay" aria-hidden="true"></div>
             <div class="catering-content">
@@ -592,7 +597,7 @@
               <p class="catering-desc">Premium buffet & plated dinners for your team and clients.</p>
             </div>
           </article>
-          <article class="catering-card reveal" style="transition-delay:80ms">
+          <article class="catering-card">
             <img src="Home_images/Weddings & Galas.jpg" alt="Wedding catering">
             <div class="catering-overlay" aria-hidden="true"></div>
             <div class="catering-content">
@@ -601,13 +606,77 @@
               <p class="catering-desc">Elegant multi-course menus that make your day unforgettable.</p>
             </div>
           </article>
-          <article class="catering-card reveal" style="transition-delay:160ms">
+          <article class="catering-card">
             <img src="Home_images/birthdayparrry.jpg" alt="Birthday party catering">
             <div class="catering-overlay" aria-hidden="true"></div>
             <div class="catering-content">
               <span class="catering-tag">Fun Vibes</span>
               <h3 class="catering-name">Birthday Parties</h3>
               <p class="catering-desc">Customizable menus and dessert stations for every age.</p>
+            </div>
+          </article>
+          <article class="catering-card">
+            <img src="Home_images/Chef's Special.jpg" alt="Private dining catering">
+            <div class="catering-overlay" aria-hidden="true"></div>
+            <div class="catering-content">
+              <span class="catering-tag">Exclusive</span>
+              <h3 class="catering-name">Private Dining</h3>
+              <p class="catering-desc">Intimate chef-led experiences tailored to your occasion.</p>
+            </div>
+          </article>
+          <article class="catering-card">
+            <img src="Home_images/7 Catering Mistakes to Avoid at Your Next Big Event.jpg" alt="Social gatherings catering">
+            <div class="catering-overlay" aria-hidden="true"></div>
+            <div class="catering-content">
+              <span class="catering-tag">Social</span>
+              <h3 class="catering-name">Social Gatherings</h3>
+              <p class="catering-desc">Relaxed, crowd-pleasing spreads for reunions and get-togethers.</p>
+            </div>
+          </article>
+          <!-- Duplicate set for seamless infinite loop -->
+          <article class="catering-card" aria-hidden="true">
+            <img src="Home_images/Corporate Events.jpg" alt="">
+            <div class="catering-overlay" aria-hidden="true"></div>
+            <div class="catering-content">
+              <span class="catering-tag">Popular</span>
+              <h3 class="catering-name">Corporate Events</h3>
+              <p class="catering-desc">Premium buffet & plated dinners for your team and clients.</p>
+            </div>
+          </article>
+          <article class="catering-card" aria-hidden="true">
+            <img src="Home_images/Weddings & Galas.jpg" alt="">
+            <div class="catering-overlay" aria-hidden="true"></div>
+            <div class="catering-content">
+              <span class="catering-tag">Top Choice</span>
+              <h3 class="catering-name">Weddings & Galas</h3>
+              <p class="catering-desc">Elegant multi-course menus that make your day unforgettable.</p>
+            </div>
+          </article>
+          <article class="catering-card" aria-hidden="true">
+            <img src="Home_images/birthdayparrry.jpg" alt="">
+            <div class="catering-overlay" aria-hidden="true"></div>
+            <div class="catering-content">
+              <span class="catering-tag">Fun Vibes</span>
+              <h3 class="catering-name">Birthday Parties</h3>
+              <p class="catering-desc">Customizable menus and dessert stations for every age.</p>
+            </div>
+          </article>
+          <article class="catering-card" aria-hidden="true">
+            <img src="Home_images/Chef's Special.jpg" alt="">
+            <div class="catering-overlay" aria-hidden="true"></div>
+            <div class="catering-content">
+              <span class="catering-tag">Exclusive</span>
+              <h3 class="catering-name">Private Dining</h3>
+              <p class="catering-desc">Intimate chef-led experiences tailored to your occasion.</p>
+            </div>
+          </article>
+          <article class="catering-card" aria-hidden="true">
+            <img src="Home_images/7 Catering Mistakes to Avoid at Your Next Big Event.jpg" alt="">
+            <div class="catering-overlay" aria-hidden="true"></div>
+            <div class="catering-content">
+              <span class="catering-tag">Social</span>
+              <h3 class="catering-name">Social Gatherings</h3>
+              <p class="catering-desc">Relaxed, crowd-pleasing spreads for reunions and get-togethers.</p>
             </div>
           </article>
         </div>
