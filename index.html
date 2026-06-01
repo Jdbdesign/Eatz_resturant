@@ -434,6 +434,49 @@
       .food-add{display:flex;width:36px;height:36px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;align-items:center;justify-content:center;transition:background 150ms,transform 150ms;flex-shrink:0}
       .food-add:active{transform:scale(.95);opacity:.85}
     }
+
+    /* FOOD ITEMS SECTION */
+    .fi-section{background:#fff;border-bottom:1px solid var(--surface-mid)}
+    .fi-inner{display:grid;grid-template-columns:340px 1fr;gap:64px;align-items:start}
+    @media(max-width:1100px){.fi-inner{grid-template-columns:1fr 1.3fr;gap:40px}}
+    @media(max-width:860px){.fi-inner{grid-template-columns:1fr;gap:40px}}
+    .fi-left{display:flex;flex-direction:column;gap:28px}
+    .fi-stat-row{display:flex;align-items:center;gap:18px}
+    .fi-icon-ring{width:56px;height:56px;border-radius:50%;border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--primary)}
+    .fi-num{font-size:2.6rem;font-weight:800;color:var(--dark);letter-spacing:-.04em;line-height:1;display:block}
+    .fi-num span{color:var(--primary)}
+    .fi-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);margin-top:4px;display:block}
+    .fi-img-box{border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hover);line-height:0;display:block;text-decoration:none}
+    .fi-img-box img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform 500ms var(--ease-out)}
+    .fi-img-box:hover img{transform:scale(1.05)}
+    .fi-bento-grid{display:flex;flex-direction:column;gap:10px}
+    .fi-bento-main{border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hover);line-height:0;display:block;text-decoration:none}
+    .fi-bento-main img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;transition:transform 500ms var(--ease-out)}
+    .fi-bento-main:hover img{transform:scale(1.05)}
+    .fi-bento-sub{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .fi-bento-cell{border-radius:16px;overflow:hidden;box-shadow:var(--shadow-card);line-height:0;display:block;text-decoration:none}
+    .fi-bento-cell img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;transition:transform 500ms var(--ease-out)}
+    .fi-bento-cell:hover img{transform:scale(1.05)}
+    .fi-heading{font-size:clamp(1.5rem,2.5vw,2.1rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;line-height:1.2;margin-bottom:28px}
+    .fi-tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+    .fi-tab{background:transparent;border:1.5px solid var(--outline-v);color:var(--on-surface-v);padding:9px 22px;border-radius:9999px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 180ms var(--ease-out);line-height:1}
+    .fi-tab:hover{border-color:var(--primary);color:var(--primary)}
+    .fi-tab.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 4px 14px rgba(246,109,9,.28)}
+    .fi-panel{display:none}
+    .fi-panel.active{display:block}
+    .fi-list-hd{display:flex;align-items:center;justify-content:flex-end;padding-bottom:10px;border-bottom:1.5px solid var(--surface-mid)}
+    .fi-col-labels{display:flex;gap:40px;flex-shrink:0}
+    .fi-col-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--outline);min-width:58px;text-align:right}
+    .fi-list{display:flex;flex-direction:column}
+    .fi-item{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--surface-mid)}
+    .fi-item:last-child{border-bottom:none}
+    .fi-item-info{flex:1;min-width:0}
+    .fi-item-name{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:2px}
+    .fi-item-sub{font-size:12px;color:var(--outline);font-weight:500}
+    .fi-item-bonus{font-size:11px;font-weight:600;color:var(--primary);margin-top:3px}
+    .fi-prices{display:flex;gap:40px;flex-shrink:0}
+    .fi-price{font-size:15px;font-weight:700;color:var(--dark);min-width:58px;text-align:right}
+    .fi-price.hi{color:var(--primary)}
   </style>
   <link rel="stylesheet" href="shine.css">
   <link rel="stylesheet" href="hero-animations.css">
@@ -528,6 +571,92 @@
             <div>
               <div class="fct">Express Delivery</div>
               <div class="fcs">Arriving in 25 mins</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOD ITEMS -->
+    <section class="section fi-section" id="food-items" aria-labelledby="fi-heading">
+      <div class="container">
+        <div class="fi-inner">
+          <!-- Left: stat + food photo -->
+          <div class="fi-left reveal">
+            <div class="fi-stat-row">
+              <div class="fi-icon-ring" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+              </div>
+              <div>
+                <span class="fi-num">500<span>+</span></span>
+                <span class="fi-label">Menu and Dishes</span>
+              </div>
+            </div>
+            <div class="fi-bento-grid">
+              <a href="menu.html" class="fi-bento-main">
+                <img src="Home_images/Chef's Special.jpg" alt="A selection of our signature dishes">
+              </a>
+              <div class="fi-bento-sub">
+                <a href="menu.html" class="fi-bento-cell">
+                  <img src="Home_images/Wood-Fired Margherita.jpg" alt="Wood-Fired Margherita pizza">
+                </a>
+                <a href="menu.html" class="fi-bento-cell">
+                  <img src="Home_images/Spicy Tuna Roll.jpg" alt="Spicy Tuna Roll">
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- Right: tabs + menu list -->
+          <div class="reveal" style="transition-delay:100ms">
+            <div class="section-tag">Food Items</div>
+            <h2 class="fi-heading" id="fi-heading">Explore Our<br>All&#8209;Day Menu</h2>
+            <div class="fi-tabs" role="tablist" aria-label="Menu category">
+              <button class="fi-tab active" role="tab" aria-selected="true" aria-controls="fi-breakfast" data-fi-tab="breakfast">Breakfast</button>
+              <button class="fi-tab" role="tab" aria-selected="false" aria-controls="fi-lunch" data-fi-tab="lunch">Lunch</button>
+              <button class="fi-tab" role="tab" aria-selected="false" aria-controls="fi-dinner" data-fi-tab="dinner">Dinner</button>
+              <button class="fi-tab" role="tab" aria-selected="false" aria-controls="fi-drinks" data-fi-tab="drinks">Drinks</button>
+            </div>
+            <div class="fi-list-hd" aria-hidden="true">
+              <div class="fi-col-labels">
+                <span class="fi-col-label">Half</span>
+                <span class="fi-col-label">Full</span>
+              </div>
+            </div>
+            <!-- Breakfast -->
+            <div class="fi-panel active" id="fi-breakfast" role="tabpanel" aria-label="Breakfast menu">
+              <div class="fi-list">
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Avocado Toast</div><div class="fi-item-sub">Sourdough / Poached Egg / Cherry Tomato</div><div class="fi-item-bonus">Free Juice Included</div></div><div class="fi-prices"><span class="fi-price">$8.50</span><span class="fi-price hi">$14.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Eggs Benedict</div><div class="fi-item-sub">English Muffin / Hollandaise / Ham</div><div class="fi-item-bonus">Free Juice Included</div></div><div class="fi-prices"><span class="fi-price">$10.00</span><span class="fi-price hi">$17.50</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Pancake Stack</div><div class="fi-item-sub">Maple Syrup / Fresh Berries / Whipped Cream</div><div class="fi-item-bonus">Free Juice Included</div></div><div class="fi-prices"><span class="fi-price">$7.50</span><span class="fi-price hi">$12.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">French Toast</div><div class="fi-item-sub">Brioche / Powdered Sugar / Berry Compote</div><div class="fi-item-bonus">Free Juice Included</div></div><div class="fi-prices"><span class="fi-price">$8.00</span><span class="fi-price hi">$13.50</span></div></div>
+              </div>
+            </div>
+            <!-- Lunch -->
+            <div class="fi-panel" id="fi-lunch" role="tabpanel" aria-label="Lunch menu" hidden>
+              <div class="fi-list">
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Caesar Salad</div><div class="fi-item-sub">Romaine / Parmesan / Croutons</div><div class="fi-item-bonus">Free Bread Roll</div></div><div class="fi-prices"><span class="fi-price">$9.00</span><span class="fi-price hi">$15.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Club Sandwich</div><div class="fi-item-sub">Turkey / Bacon / Avocado / Lettuce</div><div class="fi-item-bonus">Free Bread Roll</div></div><div class="fi-prices"><span class="fi-price">$11.00</span><span class="fi-price hi">$18.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Tomato Bisque</div><div class="fi-item-sub">Cream / Fresh Basil / Garlic Oil</div><div class="fi-item-bonus">Free Bread Roll</div></div><div class="fi-prices"><span class="fi-price">$7.00</span><span class="fi-price hi">$12.50</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Grilled Chicken</div><div class="fi-item-sub">Lemon Herb / Garlic Rice / Garden Salad</div><div class="fi-item-bonus">Free Bread Roll</div></div><div class="fi-prices"><span class="fi-price">$12.00</span><span class="fi-price hi">$21.00</span></div></div>
+              </div>
+            </div>
+            <!-- Dinner -->
+            <div class="fi-panel" id="fi-dinner" role="tabpanel" aria-label="Dinner menu" hidden>
+              <div class="fi-list">
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Salmon Fry</div><div class="fi-item-sub">Butter / Olive Oil / Salt</div><div class="fi-item-bonus">Extra Free Juice</div></div><div class="fi-prices"><span class="fi-price">$45.00</span><span class="fi-price hi">$81.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Prawns Fry</div><div class="fi-item-sub">Butter / Olive Oil / Salt</div><div class="fi-item-bonus">Extra Free Juice</div></div><div class="fi-prices"><span class="fi-price">$17.00</span><span class="fi-price hi">$31.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Pangasius Rosa</div><div class="fi-item-sub">Butter / Olive Oil / Salt</div><div class="fi-item-bonus">Extra Free Juice</div></div><div class="fi-prices"><span class="fi-price">$29.00</span><span class="fi-price hi">$47.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Fish Tacos</div><div class="fi-item-sub">Butter / Olive Oil / Salt</div><div class="fi-item-bonus">Extra Free Juice</div></div><div class="fi-prices"><span class="fi-price">$17.00</span><span class="fi-price hi">$32.00</span></div></div>
+              </div>
+            </div>
+            <!-- Drinks -->
+            <div class="fi-panel" id="fi-drinks" role="tabpanel" aria-label="Drinks menu" hidden>
+              <div class="fi-list">
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Fresh Lemonade</div><div class="fi-item-sub">Mint / Honey / Ice</div><div class="fi-item-bonus">Free Refill Included</div></div><div class="fi-prices"><span class="fi-price">$4.50</span><span class="fi-price hi">$7.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Mango Smoothie</div><div class="fi-item-sub">Fresh Mango / Yogurt / Honey</div><div class="fi-item-bonus">Free Refill Included</div></div><div class="fi-prices"><span class="fi-price">$5.50</span><span class="fi-price hi">$9.00</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Cold Brew Coffee</div><div class="fi-item-sub">Dark Roast / Oat Milk / Ice</div><div class="fi-item-bonus">Free Refill Included</div></div><div class="fi-prices"><span class="fi-price">$5.00</span><span class="fi-price hi">$8.50</span></div></div>
+                <div class="fi-item"><div class="fi-item-info"><div class="fi-item-name">Berry Mocktail</div><div class="fi-item-sub">Mixed Berries / Soda / Fresh Mint</div><div class="fi-item-bonus">Free Refill Included</div></div><div class="fi-prices"><span class="fi-price">$4.00</span><span class="fi-price hi">$7.50</span></div></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1412,6 +1541,23 @@
       }
 
       startTimer();
+    })();
+
+    // Food Items tab switching
+    (function(){
+      var fiTabs = document.querySelectorAll('.fi-tab');
+      var fiPanels = document.querySelectorAll('.fi-panel');
+      fiTabs.forEach(function(tab){
+        tab.addEventListener('click', function(){
+          var target = tab.dataset.fiTab;
+          fiTabs.forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+          fiPanels.forEach(function(p){ p.classList.remove('active'); p.hidden = true; });
+          tab.classList.add('active');
+          tab.setAttribute('aria-selected','true');
+          var panel = document.getElementById('fi-' + target);
+          if(panel){ panel.classList.add('active'); panel.hidden = false; }
+        });
+      });
     })();
 
     // Init all Lucide icons
