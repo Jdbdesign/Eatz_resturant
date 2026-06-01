@@ -1,0 +1,132 @@
+/* ====================================================
+   Hero Page-Load Animations
+   Plays once on every page reload — no JS required.
+   animation-fill-mode:both = element starts at "from"
+   state during delay and holds "to" state after end.
+   ==================================================== */
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroSlideDown {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroScaleIn {
+  from { opacity: 0; transform: scale(0.86); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── NAV — slides in from above on every page ── */
+.nav {
+  animation: heroSlideDown 0.7s cubic-bezier(.16,1,.3,1) both;
+}
+
+/* ── INDEX HOMEPAGE HERO — staggered children ── */
+.hero .hero-badge {
+  animation: heroFadeUp 0.55s cubic-bezier(.16,1,.3,1) 0.10s both;
+}
+.hero .hero-title {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.25s both;
+}
+.hero .hero-desc {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.40s both;
+}
+.hero .hero-ctas {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.55s both;
+}
+.hero .hero-stats {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.70s both;
+}
+.hero .hero-img-wrap {
+  animation: heroFadeUp 0.80s cubic-bezier(.16,1,.3,1) 0.30s both;
+}
+.hero .float-card.top {
+  animation: heroScaleIn 0.50s cubic-bezier(.34,1.56,.64,1) 0.90s both;
+}
+.hero .float-card.bottom {
+  animation: heroScaleIn 0.50s cubic-bezier(.34,1.56,.64,1) 1.05s both;
+}
+
+/* ── MENU HERO — staggered children ── */
+.menu-hero .hero-badge {
+  animation: heroFadeUp 0.55s cubic-bezier(.16,1,.3,1) 0.10s both;
+}
+.menu-hero .menu-hero-title {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.25s both;
+}
+.menu-hero .menu-hero-desc {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.40s both;
+}
+.menu-hero .menu-search-wrap {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.55s both;
+}
+.menu-hero .menu-hero-stats {
+  animation: heroFadeUp 0.65s cubic-bezier(.16,1,.3,1) 0.70s both;
+}
+.menu-hero .menu-hero-img-wrap {
+  animation: heroFadeUp 0.80s cubic-bezier(.16,1,.3,1) 0.30s both;
+}
+
+/* ── ABOUT HERO ──
+   .about-hero-inner has .reveal (opacity:0).
+   CSS animation overrides the static opacity:0 while running,
+   so the element fades in correctly. ── */
+.about-hero-inner {
+  animation: heroFadeUp 0.70s cubic-bezier(.16,1,.3,1) 0.15s both;
+}
+
+/* ── BLOG HERO ──
+   .blog-hero-inner has .reveal — same override approach. ── */
+.blog-hero-inner {
+  animation: heroFadeUp 0.70s cubic-bezier(.16,1,.3,1) 0.15s both;
+}
+
+/* ── CONTACT HERO ──
+   .contact-hero-inner has .reveal — same override approach. ── */
+.contact-hero-inner {
+  animation: heroFadeUp 0.70s cubic-bezier(.16,1,.3,1) 0.15s both;
+}
+
+/* ── RESERVATION HERO ──
+   .res-left has .reveal — animate left and right sides. ── */
+.res-hero .res-left {
+  animation: heroFadeUp 0.75s cubic-bezier(.16,1,.3,1) 0.15s both;
+}
+.res-hero .res-right {
+  animation: heroFadeUp 0.75s cubic-bezier(.16,1,.3,1) 0.35s both;
+}
+
+/* ── BLOG POST HERO ── */
+.post-hero {
+  animation: heroFadeUp 0.75s cubic-bezier(.16,1,.3,1) 0.10s both;
+}
+
+/* ── ACCESSIBILITY: respect reduced-motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+  .nav,
+  .hero .hero-badge,
+  .hero .hero-title,
+  .hero .hero-desc,
+  .hero .hero-ctas,
+  .hero .hero-stats,
+  .hero .hero-img-wrap,
+  .hero .float-card,
+  .menu-hero .hero-badge,
+  .menu-hero .menu-hero-title,
+  .menu-hero .menu-hero-desc,
+  .menu-hero .menu-search-wrap,
+  .menu-hero .menu-hero-stats,
+  .menu-hero .menu-hero-img-wrap,
+  .about-hero-inner,
+  .blog-hero-inner,
+  .contact-hero-inner,
+  .res-hero .res-left,
+  .res-hero .res-right,
+  .post-hero {
+    animation: none !important;
+  }
+}
