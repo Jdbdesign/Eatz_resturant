@@ -277,6 +277,24 @@
     .faq-icon .lucide{width:14px;height:14px;display:block}
     .footer-social a .lucide{width:18px;height:18px;display:block;color:rgba(255,255,255,.65);transition:color 150ms}
     .footer-social a:hover .lucide{color:#fff}
+
+    /* FOOD CARD REVEAL OVERLAY */
+    .food-add{display:none}
+    .food-card{position:relative}
+    .food-wish{z-index:10}
+    .food-reveal{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,16,12,.97) 0%,rgba(20,16,12,.94) 46%,rgba(20,16,12,.4) 70%,transparent 92%);display:flex;flex-direction:column;justify-content:flex-end;padding:18px 18px 20px;z-index:5;transform:translateY(102%);transition:transform 430ms cubic-bezier(.16,1,.3,1);pointer-events:none}
+    .food-card:hover .food-reveal{transform:translateY(0);pointer-events:auto}
+    .food-reveal-name{font-size:16px;font-weight:800;color:#fff;line-height:1.25;letter-spacing:-.02em;opacity:0;transform:translateY(14px)}
+    .food-card:hover .food-reveal-name{opacity:1;transform:translateY(0);transition:opacity 300ms 80ms var(--ease-out),transform 300ms 80ms var(--ease-out)}
+    .food-reveal-price{font-size:21px;font-weight:800;color:var(--primary);letter-spacing:-.02em;margin:3px 0 9px;opacity:0;transform:translateY(14px)}
+    .food-card:hover .food-reveal-price{opacity:1;transform:translateY(0);transition:opacity 300ms 120ms var(--ease-out),transform 300ms 120ms var(--ease-out)}
+    .food-reveal-desc{font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.5;margin-bottom:14px;opacity:0;transform:translateY(14px)}
+    .food-card:hover .food-reveal-desc{opacity:1;transform:translateY(0);transition:opacity 300ms 160ms var(--ease-out),transform 300ms 160ms var(--ease-out)}
+    .food-reveal-cta{width:100%;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-family:'Manrope',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;letter-spacing:.01em;box-shadow:0 4px 16px rgba(246,109,9,.45);opacity:0;transform:translateY(14px)}
+    .food-card:hover .food-reveal-cta{opacity:1;transform:translateY(0);transition:opacity 300ms 210ms var(--ease-out),transform 300ms 210ms var(--ease-out),background 150ms,box-shadow 150ms}
+    .food-reveal-cta:hover{background:var(--primary-dark);box-shadow:0 8px 22px rgba(246,109,9,.55)}
+    .food-reveal-cta:active{opacity:.85}
+    .food-reveal-cta.added{background:#22c55e;box-shadow:0 4px 16px rgba(34,197,94,.4)}
   </style>
   <link rel="stylesheet" href="shine.css">
 </head>
@@ -1253,6 +1271,41 @@
     if (menuGrid2) {
       new MutationObserver(function() { hookCardClicks(); }).observe(menuGrid2, { childList: true });
     }
+
+    // Inject reveal overlays into all food cards (incl. hidden batch-2)
+    (function() {
+      var cartSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>';
+      var checkSVG2 = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      document.querySelectorAll('.food-card').forEach(function(card) {
+        var nameEl = card.querySelector('.food-name');
+        var priceEl = card.querySelector('.food-price');
+        var descEl = card.querySelector('.food-desc');
+        if (!nameEl || !priceEl || !descEl) return;
+        var name = nameEl.textContent.trim();
+        var price = parseFloat(card.dataset.price) || 0;
+        var desc = descEl.textContent.trim();
+        var overlay = document.createElement('div');
+        overlay.className = 'food-reveal';
+        overlay.setAttribute('aria-hidden', 'true');
+        overlay.innerHTML =
+          '<p class="food-reveal-name">' + name + '</p>' +
+          '<p class="food-reveal-price"><span style="color:var(--primary);font-size:14px">$</span>' + price.toFixed(2) + '</p>' +
+          '<p class="food-reveal-desc">' + desc + '</p>' +
+          '<button class="food-reveal-cta" type="button">' + cartSVG + ' Add to Cart</button>';
+        card.appendChild(overlay);
+        var cta = overlay.querySelector('.food-reveal-cta');
+        cta.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (window.__eatzCartAdd) window.__eatzCartAdd(name, price);
+          cta.innerHTML = checkSVG2 + ' Added!';
+          cta.classList.add('added');
+          setTimeout(function() {
+            cta.innerHTML = cartSVG + ' Add to Cart';
+            cta.classList.remove('added');
+          }, 1400);
+        });
+      });
+    })();
   </script>
   <script src="wishlist.js"></script>
   <script src="cart.js"></script>
