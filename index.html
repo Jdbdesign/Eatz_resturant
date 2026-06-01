@@ -242,16 +242,42 @@
     .chef-social a:hover{background:var(--primary)}
 
     /* TESTIMONIALS */
-    .testi-grid{display:grid;grid-template-columns:1fr;gap:24px}
-    @media(min-width:768px){.testi-grid{grid-template-columns:repeat(3,1fr)}}
-    .testi-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:28px;transition:all 250ms var(--ease-out)}
-    .testi-card:hover{background:rgba(255,255,255,.08);transform:translateY(-4px)}
-    .testi-stars{color:#f59e0b;font-size:16px;margin-bottom:16px}
-    .testi-text{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:20px}
-    .testi-author{display:flex;align-items:center;gap:12px}
-    .testi-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(246,109,9,.3)}
-    .testi-name{font-size:14px;font-weight:700;color:#fff}
-    .testi-loc{font-size:12px;color:rgba(255,255,255,.45);font-weight:500}
+    .tc-wrap{display:grid;grid-template-columns:55% 45%;border-radius:28px;overflow:hidden;min-height:480px}
+    @media(max-width:900px){.tc-wrap{grid-template-columns:1fr}}
+    .tc-left{padding:52px 48px;display:flex;flex-direction:column;gap:0}
+    .tc-headline{font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.2;margin-bottom:12px}
+    .tc-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:36px;max-width:400px}
+    .tc-quotes-area{position:relative;flex:1;overflow:hidden;min-height:210px}
+    .tc-slide{position:absolute;top:0;left:0;right:0;transition:opacity 380ms ease,transform 380ms cubic-bezier(.4,0,.2,1)}
+    .tc-slide.active{opacity:1;transform:translateX(0);z-index:2}
+    .tc-slide.hidden-right{opacity:0;transform:translateX(64px);z-index:1;pointer-events:none}
+    .tc-slide.hidden-left{opacity:0;transform:translateX(-64px);z-index:1;pointer-events:none}
+    .tc-qmark{font-size:68px;color:var(--primary);line-height:.85;margin-bottom:10px;font-family:Georgia,'Times New Roman',serif}
+    .tc-text{font-size:15px;color:rgba(255,255,255,.82);line-height:1.75;font-style:italic;margin-bottom:20px}
+    .tc-stars{display:flex;gap:6px;margin-bottom:20px}
+    .tc-star{width:9px;height:9px;border-radius:50%;background:var(--primary);flex-shrink:0}
+    .tc-author{display:flex;align-items:center;gap:12px}
+    .tc-avatar{width:46px;height:46px;border-radius:50%;border:2px solid rgba(246,109,9,.35);object-fit:cover;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff}
+    .tc-name{font-size:14px;font-weight:700;color:#fff}
+    .tc-loc{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
+    .tc-controls{display:flex;align-items:center;gap:14px;margin-top:36px}
+    .tc-arrow{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 180ms var(--ease-out);flex-shrink:0}
+    .tc-arrow:hover{background:var(--primary);border-color:var(--primary);transform:scale(1.06)}
+    .tc-dots{display:flex;gap:6px;align-items:center;margin-left:4px}
+    .tc-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);transition:all 220ms;cursor:pointer;border:none;padding:0;flex-shrink:0}
+    .tc-dot.active{background:var(--primary);width:20px;border-radius:4px}
+    .tc-right{position:relative;overflow:hidden}
+    @media(max-width:900px){.tc-right{height:300px}}
+    .tc-img-slide{position:absolute;inset:0;transition:opacity 480ms ease}
+    .tc-img-slide.active{opacity:1;z-index:1}
+    .tc-img-slide.hidden{opacity:0;z-index:0}
+    .tc-img-slide img{width:100%;height:100%;object-fit:cover;display:block}
+    .tc-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.05) 55%,transparent 100%)}
+    .tc-img-info{position:absolute;bottom:28px;left:28px;right:28px;z-index:2}
+    .tc-dish-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+    .tc-dish-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:16px;line-height:1.2}
+    .tc-order-btn{display:inline-flex;align-items:center;gap:6px;background:var(--primary);color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:9999px;text-decoration:none;transition:background 180ms var(--ease-out),transform 150ms}
+    .tc-order-btn:hover{background:#d85c00;transform:scale(1.03)}
 
     /* FAQ */
     .faq-list{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
@@ -843,35 +869,113 @@
     <!-- TESTIMONIALS -->
     <section class="section section-dark" id="testimonials" aria-labelledby="testi-h2">
       <div class="container">
-        <div style="text-align:center;margin-bottom:48px">
-          <div class="section-tag center">Reviews</div>
-          <h2 class="section-title light" id="testi-h2">Taste Through the Lens<br>of Our Customers</h2>
-        </div>
-        <div class="testi-grid">
-          <article class="testi-card reveal">
-            <div class="testi-stars" aria-label="5 stars">★★★★★</div>
-            <p class="testi-text">"The smash burger is an absolute game changer. I've tried burgers all over the city and nothing comes close — the sauce is pure magic."</p>
-            <div class="testi-author">
-              <div class="testi-avatar" style="background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff" aria-hidden="true">J</div>
-              <div><div class="testi-name">James Okonkwo</div><div class="testi-loc"><i data-lucide="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:3px"></i>Lagos, Nigeria</div></div>
+        <div class="tc-wrap">
+
+          <!-- LEFT: Content -->
+          <div class="tc-left">
+            <div>
+              <div class="section-tag" style="color:rgba(255,255,255,.65);margin-bottom:16px">Reviews</div>
+              <h2 class="tc-headline" id="testi-h2">What Our Happy<br>Customers Are Saying</h2>
+              <p class="tc-sub">Our customers consistently share how easy, fast, and enjoyable their food experience has been with Eatz.</p>
             </div>
-          </article>
-          <article class="testi-card reveal" style="transition-delay:80ms">
-            <div class="testi-stars" aria-label="5 stars">★★★★★</div>
-            <p class="testi-text">"Ordered for our office party and the catering team went above and beyond. Every dish was hot, fresh, and beautifully presented. 10/10!"</p>
-            <div class="testi-author">
-              <div class="testi-avatar" style="background:#9e4300;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff" aria-hidden="true">S</div>
-              <div><div class="testi-name">Sarah Mitchell</div><div class="testi-loc"><i data-lucide="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:3px"></i>New York, USA</div></div>
+
+            <!-- Slides -->
+            <div class="tc-quotes-area" aria-live="polite">
+
+              <div class="tc-slide active" data-index="0">
+                <div class="tc-qmark" aria-hidden="true">"</div>
+                <p class="tc-text">The smash burger is an absolute game changer. I've tried burgers all over the city and nothing comes close — the sauce is pure magic.</p>
+                <div class="tc-stars" aria-label="5 out of 5 stars">
+                  <span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span>
+                </div>
+                <div class="tc-author">
+                  <div class="tc-avatar" style="background:var(--primary)" aria-hidden="true">J</div>
+                  <div>
+                    <div class="tc-name">James Okonkwo</div>
+                    <div class="tc-loc">Lagos, Nigeria</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tc-slide hidden-right" data-index="1">
+                <div class="tc-qmark" aria-hidden="true">"</div>
+                <p class="tc-text">Ordered for our office party and the catering team went above and beyond. Every dish was hot, fresh, and beautifully presented. 10/10!</p>
+                <div class="tc-stars" aria-label="5 out of 5 stars">
+                  <span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span>
+                </div>
+                <div class="tc-author">
+                  <div class="tc-avatar" style="background:#9e4300" aria-hidden="true">S</div>
+                  <div>
+                    <div class="tc-name">Sarah Mitchell</div>
+                    <div class="tc-loc">New York, USA</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tc-slide hidden-right" data-index="2">
+                <div class="tc-qmark" aria-hidden="true">"</div>
+                <p class="tc-text">The sushi platters are legitimately restaurant-quality. My family couldn't believe it came from a delivery service. Eatz is our weekly go-to now.</p>
+                <div class="tc-stars" aria-label="5 out of 5 stars">
+                  <span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span><span class="tc-star"></span>
+                </div>
+                <div class="tc-author">
+                  <div class="tc-avatar" style="background:#635d57" aria-hidden="true">Y</div>
+                  <div>
+                    <div class="tc-name">Yuki Tanaka</div>
+                    <div class="tc-loc">Tokyo, Japan</div>
+                  </div>
+                </div>
+              </div>
+
             </div>
-          </article>
-          <article class="testi-card reveal" style="transition-delay:160ms">
-            <div class="testi-stars" aria-label="5 stars">★★★★★</div>
-            <p class="testi-text">"The sushi platters are legitimately restaurant-quality. My family couldn't believe it came from a delivery service. Eatz is our weekly go-to now."</p>
-            <div class="testi-author">
-              <div class="testi-avatar" style="background:#635d57;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff" aria-hidden="true">Y</div>
-              <div><div class="testi-name">Yuki Tanaka</div><div class="testi-loc"><i data-lucide="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:3px"></i>Tokyo, Japan</div></div>
+
+            <!-- Arrows + dots -->
+            <div class="tc-controls">
+              <button class="tc-arrow" id="tc-prev" aria-label="Previous review">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="tc-arrow" id="tc-next" aria-label="Next review">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <div class="tc-dots" role="tablist" aria-label="Reviews">
+                <button class="tc-dot active" data-dot="0" role="tab" aria-selected="true" aria-label="Review 1"></button>
+                <button class="tc-dot" data-dot="1" role="tab" aria-selected="false" aria-label="Review 2"></button>
+                <button class="tc-dot" data-dot="2" role="tab" aria-selected="false" aria-label="Review 3"></button>
+              </div>
             </div>
-          </article>
+          </div>
+
+          <!-- RIGHT: Food image panel -->
+          <div class="tc-right" aria-hidden="true">
+            <div class="tc-img-slide active" data-img="0">
+              <img src="Home_images/Classic Smash Burger.jpg" alt="Classic Smash Burger">
+              <div class="tc-img-overlay"></div>
+              <div class="tc-img-info">
+                <div class="tc-dish-label">Featured Dish</div>
+                <div class="tc-dish-title">Classic Smash Burger</div>
+                <a href="menu.html" class="tc-order-btn" aria-hidden="false" tabindex="0">Order Now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+              </div>
+            </div>
+            <div class="tc-img-slide hidden" data-img="1">
+              <img src="Home_images/Chef's Special.jpg" alt="Chef's Special">
+              <div class="tc-img-overlay"></div>
+              <div class="tc-img-info">
+                <div class="tc-dish-label">Featured Dish</div>
+                <div class="tc-dish-title">Chef's Special</div>
+                <a href="menu.html" class="tc-order-btn" tabindex="-1">Order Now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+              </div>
+            </div>
+            <div class="tc-img-slide hidden" data-img="2">
+              <img src="Home_images/Spicy Tuna Roll.jpg" alt="Spicy Tuna Roll">
+              <div class="tc-img-overlay"></div>
+              <div class="tc-img-info">
+                <div class="tc-dish-label">Featured Dish</div>
+                <div class="tc-dish-title">Spicy Tuna Roll</div>
+                <a href="menu.html" class="tc-order-btn" tabindex="-1">Order Now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -1241,6 +1345,74 @@
         lucide.createIcons({ nodes: [btn] });
       }, 3000);
     }
+
+    // Testimonials carousel
+    (function(){
+      const slides = document.querySelectorAll('#testimonials .tc-slide');
+      const imgs   = document.querySelectorAll('#testimonials .tc-img-slide');
+      const dots   = document.querySelectorAll('#testimonials .tc-dot');
+      const prevBtn = document.getElementById('tc-prev');
+      const nextBtn = document.getElementById('tc-next');
+      if(!slides.length) return;
+      let current = 0;
+      const total = slides.length;
+      let timer;
+
+      function goTo(idx, dir) {
+        if(idx === current) return;
+        const old = current;
+        current = (idx + total) % total;
+
+        // Animate text
+        slides[old].classList.remove('active');
+        slides[old].classList.add(dir === 'next' ? 'hidden-left' : 'hidden-right');
+        slides[current].classList.remove('hidden-left','hidden-right');
+        slides[current].classList.add('active');
+
+        // Reset stale slide after transition completes
+        setTimeout(() => {
+          slides[old].classList.remove('hidden-left','hidden-right');
+          slides[old].classList.add(dir === 'next' ? 'hidden-right' : 'hidden-left');
+        }, 420);
+
+        // Crossfade image
+        imgs[old].classList.remove('active'); imgs[old].classList.add('hidden');
+        imgs[current].classList.remove('hidden'); imgs[current].classList.add('active');
+
+        // Update "Order Now" tabindex so only visible button is focusable
+        imgs.forEach((im,i) => {
+          const btn = im.querySelector('.tc-order-btn');
+          if(btn) btn.tabIndex = i === current ? 0 : -1;
+        });
+
+        // Update dots
+        dots.forEach((d,i) => {
+          d.classList.toggle('active', i === current);
+          d.setAttribute('aria-selected', String(i === current));
+        });
+      }
+
+      function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo((current + 1) % total, 'next'), 5000);
+      }
+
+      prevBtn && prevBtn.addEventListener('click', () => { goTo((current - 1 + total) % total, 'prev'); startTimer(); });
+      nextBtn && nextBtn.addEventListener('click', () => { goTo((current + 1) % total, 'next'); startTimer(); });
+      dots.forEach(d => d.addEventListener('click', () => {
+        const idx = parseInt(d.dataset.dot);
+        goTo(idx, idx > current ? 'next' : 'prev');
+        startTimer();
+      }));
+
+      const wrap = document.querySelector('#testimonials .tc-wrap');
+      if(wrap) {
+        wrap.addEventListener('mouseenter', () => clearInterval(timer));
+        wrap.addEventListener('mouseleave', startTimer);
+      }
+
+      startTimer();
+    })();
 
     // Init all Lucide icons
     lucide.createIcons();
