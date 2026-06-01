@@ -1,0 +1,65 @@
+/* Shine sweep hover — applied to primary interactive buttons only.
+   Excluded: icon-only controls (wish, qty, addon, hamburger, back),
+   category filter pills, address management buttons, danger buttons. */
+
+.btn-primary,
+.btn-outline,
+.btn-ghost,
+.btn-dark-ghost,
+.newsletter-btn,
+.place-order-btn,
+.add-single-btn,
+.btn-load {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before,
+.btn-outline::before,
+.btn-ghost::before,
+.btn-dark-ghost::before,
+.newsletter-btn::before,
+.place-order-btn::before,
+.add-single-btn::before,
+.btn-load::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.65) 50%,
+    transparent 75%
+  );
+  background-size: 250% 250%;
+  background-position: 200% 0;
+  background-repeat: no-repeat;
+  transition: background-position 1000ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.btn-primary:hover::before,
+.btn-outline:hover::before,
+.btn-ghost:hover::before,
+.btn-dark-ghost:hover::before,
+.newsletter-btn:hover::before,
+.place-order-btn:hover::before,
+.add-single-btn:hover::before,
+.btn-load:hover::before {
+  background-position: -100% 0;
+}
+
+/* Keep button children above the shine layer */
+.btn-primary > *,
+.btn-outline > *,
+.btn-ghost > *,
+.btn-dark-ghost > *,
+.newsletter-btn > *,
+.place-order-btn > *,
+.add-single-btn > *,
+.btn-load > * {
+  position: relative;
+  z-index: 1;
+}
