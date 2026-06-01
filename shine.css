@@ -51,6 +51,17 @@
   background-position: -100% 0;
 }
 
+/* Social media icon scale-up on hover — footer & chef cards */
+.footer-social a,
+.chef-social a {
+  transition: transform 300ms ease, background 300ms ease, color 300ms ease, border-color 300ms ease;
+}
+
+.footer-social a:hover,
+.chef-social a:hover {
+  transform: scale(1.2);
+}
+
 /* Keep button children above the shine layer */
 .btn-primary > *,
 .btn-outline > *,
