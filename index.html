@@ -1144,17 +1144,6 @@
             cta.classList.remove('added');
           }, 1400);
         });
-        var addBtn = card.querySelector('.food-add');
-        if (addBtn) {
-          var origAddHTML = addBtn.innerHTML;
-          addBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (window.__eatzCartAdd) window.__eatzCartAdd(name, price);
-            addBtn.innerHTML = checkSVG2;
-            addBtn.style.background = '#22c55e';
-            setTimeout(function() { addBtn.innerHTML = origAddHTML; addBtn.style.background = ''; }, 1400);
-          });
-        }
       });
     })();
   </script>
