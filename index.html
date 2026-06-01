@@ -181,15 +181,32 @@
     .btn-dark-ghost:hover{background:rgba(255,255,255,.1)}
 
     /* STATS */
-    .stats-section{background:var(--primary);position:relative;overflow:hidden}
-    .stats-section::before{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.08)}
-    .stats-section::after{content:'';position:absolute;bottom:-30%;left:-5%;width:300px;height:300px;border-radius:50%;background:rgba(0,0,0,.08)}
-    .stats-header{text-align:center;margin-bottom:40px;position:relative;z-index:1}
-    .stats-header h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.2}
-    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;position:relative;z-index:1;text-align:center}
-    @media(min-width:768px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
-    .stat-num{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:8px}
-    .stat-label{font-size:14px;font-weight:600;color:rgba(255,255,255,.75)}
+    /* ---- OUR STORY ---- */
+    .os-section{background:#fff}
+    .os-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+    .os-tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);display:inline-block;margin-bottom:16px}
+    .os-headline{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:800;color:var(--dark);line-height:1.2;letter-spacing:-.03em;margin-bottom:18px}
+    .os-desc{font-size:15px;color:var(--on-surface-v);line-height:1.75;margin-bottom:32px}
+    .os-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:24px 0;border-top:1px solid var(--surface-mid);border-bottom:1px solid var(--surface-mid);margin-bottom:32px}
+    .os-stat-num{font-size:1.7rem;font-weight:800;color:var(--dark);letter-spacing:-.04em;line-height:1}
+    .os-stat-num span{color:var(--primary)}
+    .os-stat-label{font-size:12px;color:var(--on-surface-v);font-weight:500;margin-top:5px;line-height:1.3}
+    .os-actions{display:flex;align-items:center;gap:20px}
+    .os-avatars{display:flex}
+    .os-avatars img{width:38px;height:38px;border-radius:50%;border:2.5px solid #fff;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.14);margin-left:-10px}
+    .os-avatars img:first-child{margin-left:0}
+    .os-watch-btn{display:inline-flex;align-items:center;gap:10px;background:var(--dark);color:#fff;font-size:13px;font-weight:700;padding:11px 22px 11px 14px;border-radius:9999px;text-decoration:none;letter-spacing:.02em;transition:background 200ms var(--ease-out)}
+    .os-watch-btn:hover{background:var(--primary)}
+    .os-play-icon{width:30px;height:30px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .os-imgs{position:relative;height:460px}
+    .os-img-a{position:absolute;top:0;right:0;width:68%;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.14)}
+    .os-img-a img{width:100%;height:280px;object-fit:cover;display:block;transition:transform 500ms var(--ease-out)}
+    .os-img-a:hover img{transform:scale(1.04)}
+    .os-img-b{position:absolute;bottom:0;left:0;width:60%;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.14)}
+    .os-img-b img{width:100%;height:230px;object-fit:cover;display:block;transition:transform 500ms var(--ease-out)}
+    .os-img-b:hover img{transform:scale(1.04)}
+    @media(max-width:900px){.os-inner{grid-template-columns:1fr;gap:48px}.os-imgs{height:380px}.os-img-a{width:65%}.os-img-b{width:58%}}
+    @media(max-width:600px){.os-stats{grid-template-columns:repeat(2,1fr);gap:20px}.os-imgs{height:320px}}
 
     /* CATERING */
     .catering-card{border-radius:24px;overflow:hidden;position:relative;min-height:280px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer}
@@ -289,6 +306,24 @@
     .app-phone{width:100%;max-width:300px;aspect-ratio:9/19;background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.02) 100%);border:1px solid rgba(255,255,255,.1);border-radius:40px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;box-shadow:0 40px 80px rgba(0,0,0,.5)}
     .app-phone-screen{width:85%;height:90%;border-radius:28px;overflow:hidden}
     .app-phone-screen img{width:100%;height:100%;object-fit:cover}
+
+    /* MAP LOCATIONS */
+    .map-section{background:#f9f9f9}
+    .map-hd{text-align:center;margin-bottom:48px}
+    .map-hd h2{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;color:var(--dark);letter-spacing:-.03em;margin-bottom:12px}
+    .map-hd p{font-size:15px;color:var(--on-surface-v);max-width:540px;margin:0 auto;line-height:1.7}
+    .map-wrap{position:relative;max-width:1040px;margin:0 auto;padding:0 40px}
+    .map-bg{width:100%;height:auto;display:block;filter:brightness(1.05) saturate(0.45) opacity(0.65)}
+    .map-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;z-index:2;background:none;border:none;padding:0;line-height:0}
+    .map-pin-icon{display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.28));transition:transform 220ms var(--ease-out),filter 220ms var(--ease-out)}
+    .map-pin:hover .map-pin-icon,.map-pin:focus-visible .map-pin-icon{transform:scale(1.25) translateY(-5px);filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))}
+    .map-tooltip{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(8px);background:#fff;border-radius:14px;padding:14px 18px;box-shadow:0 12px 40px rgba(0,0,0,.14);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 180ms ease,transform 180ms ease;z-index:20}
+    .map-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#fff}
+    .map-pin:hover .map-tooltip,.map-pin:focus-visible .map-tooltip{opacity:1;transform:translateX(-50%) translateY(0)}
+    .map-tooltip-city{font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+    .map-tooltip-city::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--primary);flex-shrink:0}
+    .map-tooltip-addr{font-size:12px;color:var(--on-surface-v);line-height:1.55;padding-left:13px}
+    @media(max-width:640px){.map-wrap{padding:0 12px}.map-pin-icon{width:18px;height:24px}}
 
     /* NEWSLETTER */
     .newsletter-section{background:url('Home_images/Footer section background.png') center/cover no-repeat;position:relative;overflow:hidden}
@@ -586,18 +621,54 @@
       </div>
     </section>
 
-    <!-- STATS -->
-    <section class="section stats-section" aria-label="Eatz by the numbers">
+    <!-- OUR STORY -->
+    <section class="section os-section" id="our-story" aria-label="Our story">
       <div class="container">
-        <div class="stats-header">
-          <div class="section-tag center" style="color:rgba(255,255,255,.8)">Our Story</div>
-          <h2>More Than Just Food —<br>It's a Flavor Story</h2>
-        </div>
-        <div class="stats-grid">
-          <div><div class="stat-num">500+</div><div class="stat-label">Curated Dishes</div></div>
-          <div><div class="stat-num">50k+</div><div class="stat-label">Happy Customers</div></div>
-          <div><div class="stat-num">200+</div><div class="stat-label">Partner Restaurants</div></div>
-          <div><div class="stat-num">15</div><div class="stat-label">Cities Covered</div></div>
+        <div class="os-inner">
+          <!-- Left: Content -->
+          <div class="os-content reveal">
+            <span class="os-tag">Our Story</span>
+            <h2 class="os-headline">Crafted with love, spiced with passion, and made to satisfy every bite.</h2>
+            <p class="os-desc">At Eatz, every dish is crafted with love and spiced with passion. From our kitchen to your plate, we create flavors that delight, satisfy, and bring joy in every bite. That's the Eatz promise.</p>
+            <div class="os-stats">
+              <div class="os-stat">
+                <div class="os-stat-num">500<span>+</span></div>
+                <div class="os-stat-label">Curated Dishes</div>
+              </div>
+              <div class="os-stat">
+                <div class="os-stat-num">50<span>k+</span></div>
+                <div class="os-stat-label">Happy Customers</div>
+              </div>
+              <div class="os-stat">
+                <div class="os-stat-num">200<span>+</span></div>
+                <div class="os-stat-label">Partner Restaurants</div>
+              </div>
+              <div class="os-stat">
+                <div class="os-stat-num">15<span>+</span></div>
+                <div class="os-stat-label">Cities Covered</div>
+              </div>
+            </div>
+            <div class="os-actions">
+              <div class="os-avatars">
+                <img src="Home_images/Marco Rodriguez.jpg" alt="Chef Marco">
+                <img src="Home_images/Aisha Thompson.jpg" alt="Chef Aisha">
+                <img src="Home_images/Kenji Watanabe.jpg" alt="Chef Kenji">
+              </div>
+              <a href="#" class="os-watch-btn" aria-label="Watch intro video">
+                <span class="os-play-icon"><i data-lucide="play" style="width:12px;height:12px;fill:#fff;color:#fff"></i></span>
+                Watch Intro
+              </a>
+            </div>
+          </div>
+          <!-- Right: Image collage -->
+          <div class="os-imgs reveal" style="transition-delay:140ms">
+            <div class="os-img-a">
+              <img src="Home_images/Chef's Special.jpg" alt="Chef's special dish">
+            </div>
+            <div class="os-img-b">
+              <img src="Home_images/Classic Smash Burger.jpg" alt="Classic smash burger">
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -946,6 +1017,87 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- MAP LOCATIONS -->
+    <section class="section map-section" id="locations" aria-label="Our branch locations">
+      <div class="container">
+        <div class="map-hd reveal">
+          <div class="section-tag center">Our Locations</div>
+          <h2>Find Us Around<br>the World</h2>
+          <p>From vibrant city streets to global hubs — Eatz branches bring bold, fresh flavors to communities everywhere.</p>
+        </div>
+      </div>
+      <div class="map-wrap">
+        <img src="Map.svg" alt="World map showing Eatz branch locations" class="map-bg">
+
+        <!-- New York, USA -->
+        <div class="map-pin" style="left:18.5%;top:36%" tabindex="0" role="button" aria-label="New York branch">
+          <svg class="map-pin-icon" width="24" height="32" viewBox="0 0 28 36" fill="none" aria-hidden="true">
+            <path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22S28 23.63 28 14C28 6.27 21.73 0 14 0zm0 19a5 5 0 110-10 5 5 0 010 10z" fill="#1b1c1c"/>
+          </svg>
+          <div class="map-tooltip" role="tooltip">
+            <div class="map-tooltip-city">New York, USA</div>
+            <div class="map-tooltip-addr">230 5th Avenue, Midtown<br>New York, NY 10001</div>
+          </div>
+        </div>
+
+        <!-- London, UK -->
+        <div class="map-pin" style="left:46%;top:23%" tabindex="0" role="button" aria-label="London branch">
+          <svg class="map-pin-icon" width="24" height="32" viewBox="0 0 28 36" fill="none" aria-hidden="true">
+            <path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22S28 23.63 28 14C28 6.27 21.73 0 14 0zm0 19a5 5 0 110-10 5 5 0 010 10z" fill="#1b1c1c"/>
+          </svg>
+          <div class="map-tooltip" role="tooltip">
+            <div class="map-tooltip-city">London, UK</div>
+            <div class="map-tooltip-addr">45 Oxford Street<br>London W1D 2DZ</div>
+          </div>
+        </div>
+
+        <!-- Lagos, Nigeria -->
+        <div class="map-pin" style="left:48%;top:54%" tabindex="0" role="button" aria-label="Lagos branch">
+          <svg class="map-pin-icon" width="24" height="32" viewBox="0 0 28 36" fill="none" aria-hidden="true">
+            <path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22S28 23.63 28 14C28 6.27 21.73 0 14 0zm0 19a5 5 0 110-10 5 5 0 010 10z" fill="#1b1c1c"/>
+          </svg>
+          <div class="map-tooltip" role="tooltip">
+            <div class="map-tooltip-city">Lagos, Nigeria</div>
+            <div class="map-tooltip-addr">15 Marina Street, Lagos Island<br>Lagos 101001</div>
+          </div>
+        </div>
+
+        <!-- Dubai, UAE -->
+        <div class="map-pin" style="left:61%;top:39%" tabindex="0" role="button" aria-label="Dubai branch">
+          <svg class="map-pin-icon" width="24" height="32" viewBox="0 0 28 36" fill="none" aria-hidden="true">
+            <path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22S28 23.63 28 14C28 6.27 21.73 0 14 0zm0 19a5 5 0 110-10 5 5 0 010 10z" fill="#1b1c1c"/>
+          </svg>
+          <div class="map-tooltip" role="tooltip">
+            <div class="map-tooltip-city">Dubai, UAE</div>
+            <div class="map-tooltip-addr">Sheikh Zayed Road<br>Business Bay, Dubai</div>
+          </div>
+        </div>
+
+        <!-- São Paulo, Brazil -->
+        <div class="map-pin" style="left:28%;top:66%" tabindex="0" role="button" aria-label="São Paulo branch">
+          <svg class="map-pin-icon" width="24" height="32" viewBox="0 0 28 36" fill="none" aria-hidden="true">
+            <path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22S28 23.63 28 14C28 6.27 21.73 0 14 0zm0 19a5 5 0 110-10 5 5 0 010 10z" fill="#1b1c1c"/>
+          </svg>
+          <div class="map-tooltip" role="tooltip">
+            <div class="map-tooltip-city">São Paulo, Brazil</div>
+            <div class="map-tooltip-addr">Av. Paulista 1374, Bela Vista<br>São Paulo, SP 01310-100</div>
+          </div>
+        </div>
+
+        <!-- Sydney, Australia -->
+        <div class="map-pin" style="left:83%;top:70%" tabindex="0" role="button" aria-label="Sydney branch">
+          <svg class="map-pin-icon" width="24" height="32" viewBox="0 0 28 36" fill="none" aria-hidden="true">
+            <path d="M14 0C6.27 0 0 6.27 0 14c0 9.63 14 22 14 22S28 23.63 28 14C28 6.27 21.73 0 14 0zm0 19a5 5 0 110-10 5 5 0 010 10z" fill="#1b1c1c"/>
+          </svg>
+          <div class="map-tooltip" role="tooltip">
+            <div class="map-tooltip-city">Sydney, Australia</div>
+            <div class="map-tooltip-addr">25 Market Street<br>Sydney NSW 2000</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
