@@ -354,44 +354,63 @@
     // ── Render confirmation ───────────────────────────────────────
     function init() {
       var order = getOrder();
+
       if (!order) {
         document.querySelector('.conf-title').textContent = 'Order Received!';
-        document.getElementById('conf-subtitle').textContent = 'Thank you for your order with Eatz.';
+        document.getElementById('conf-subtitle').textContent = 'Thank you for ordering from Eatz. Check your email for details.';
         document.getElementById('conf-items').innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--outline);font-size:14px">Order details not available.</div>';
+        document.querySelector('.order-meta-row').style.display = 'none';
+        document.querySelector('.order-totals').style.display = 'none';
+        document.getElementById('conf-delivery').closest('.detail-card').style.display = 'none';
         return;
       }
 
-      // Order number + time
-      document.getElementById('conf-order-num').textContent = '#' + order.number;
-      document.getElementById('conf-subtitle').innerHTML = 'Thank you for your order, <strong>' + esc(order.delivery.name.split(' ')[0]) + '</strong>! We\'re preparing your food right now.';
+      var delivery = order.delivery || {};
+      var firstName = delivery.name ? delivery.name.split(' ')[0] : '';
 
-      var d = new Date(order.timestamp);
-      document.getElementById('conf-time').textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      // Order number + time
+      document.getElementById('conf-order-num').textContent = '#' + (order.number || '---');
+      document.getElementById('conf-subtitle').innerHTML = firstName
+        ? 'Thank you, <strong>' + esc(firstName) + '</strong>! We\'re preparing your food right now.'
+        : 'Thank you for your order! We\'re preparing your food right now.';
+
+      try {
+        var d = new Date(order.timestamp);
+        document.getElementById('conf-time').textContent =
+          d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) +
+          ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      } catch(e) {
+        document.getElementById('conf-time').textContent = 'Just now';
+      }
 
       // Items
       var itemsHtml = '';
-      order.items.forEach(function(item) {
-        itemsHtml += '<div class="order-line" role="listitem">' +
-          '<div><div class="order-line-name">' + esc(item.name) + '</div>' +
-            (item.qty > 1 ? '<div class="order-line-qty">× ' + item.qty + '</div>' : '') +
-          '</div>' +
-          '<div class="order-line-price">$' + (item.price * item.qty).toFixed(2) + '</div>' +
-        '</div>';
-      });
+      if (order.items && order.items.length) {
+        order.items.forEach(function(item) {
+          itemsHtml += '<div class="order-line" role="listitem">' +
+            '<div><div class="order-line-name">' + esc(item.name || 'Item') + '</div>' +
+              (item.qty > 1 ? '<div class="order-line-qty">× ' + item.qty + '</div>' : '') +
+            '</div>' +
+            '<div class="order-line-price">$' + ((item.price || 0) * (item.qty || 1)).toFixed(2) + '</div>' +
+          '</div>';
+        });
+      } else {
+        itemsHtml = '<div style="padding:20px 0;text-align:center;color:var(--outline);font-size:14px">No items in this order.</div>';
+      }
       document.getElementById('conf-items').innerHTML = itemsHtml;
 
       // Totals
-      document.getElementById('conf-subtotal').textContent = '$' + order.subtotal.toFixed(2);
-      document.getElementById('conf-delivery-fee').textContent = '$' + order.deliveryFee.toFixed(2);
-      document.getElementById('conf-total').textContent = '$' + order.total.toFixed(2);
+      document.getElementById('conf-subtotal').textContent = '$' + (order.subtotal || 0).toFixed(2);
+      document.getElementById('conf-delivery-fee').textContent = '$' + (order.deliveryFee || 0).toFixed(2);
+      document.getElementById('conf-total').textContent = '$' + (order.total || 0).toFixed(2);
 
       // Delivery info
-      document.getElementById('conf-del-name').textContent = order.delivery.name;
-      document.getElementById('conf-del-address').textContent = order.delivery.address;
-      document.getElementById('conf-del-city').textContent = order.delivery.city + ', ' + order.delivery.postal;
-      document.getElementById('conf-del-phone').textContent = order.delivery.phone;
-      if (order.delivery.instructions) {
-        document.getElementById('conf-del-instructions').textContent = 'Note: ' + order.delivery.instructions;
+      document.getElementById('conf-del-name').textContent = delivery.name || '';
+      document.getElementById('conf-del-address').textContent = delivery.address || '';
+      document.getElementById('conf-del-city').textContent = [delivery.city, delivery.postal].filter(Boolean).join(', ');
+      document.getElementById('conf-del-phone').textContent = delivery.phone || '';
+      if (delivery.instructions) {
+        document.getElementById('conf-del-instructions').textContent = 'Note: ' + delivery.instructions;
       }
 
       // Payment
@@ -403,12 +422,11 @@
         var notifFlag = 'eatz_notif_order_' + order.number;
         if (!localStorage.getItem(notifFlag)) {
           try { localStorage.setItem(notifFlag, '1'); } catch (e) {}
-          var firstName = order.delivery && order.delivery.name ? order.delivery.name.split(' ')[0] : '';
-          var itemCount = (order.items || []).reduce(function (s, i) { return s + (i.qty || 1); }, 0);
+          var itemCount = (order.items || []).reduce(function(s, i) { return s + (i.qty || 1); }, 0);
           window.eatzNotify.add(
             'order',
             'Order #' + order.number + ' Confirmed!',
-            'Hi ' + (firstName || 'there') + '! Your order of ' + itemCount + ' item' + (itemCount !== 1 ? 's' : '') + ' ($' + order.total.toFixed(2) + ') is being prepared and will arrive in ~30 mins.',
+            'Hi ' + (firstName || 'there') + '! Your order of ' + itemCount + ' item' + (itemCount !== 1 ? 's' : '') + ' ($' + (order.total || 0).toFixed(2) + ') is being prepared and will arrive in ~30 mins.',
             'order-detail.html?id=' + order.number
           );
         }
@@ -479,8 +497,7 @@
             '.print-btn{display:block;width:100%;padding:12px;background:#f66d09;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:20px;font-family:inherit}' +
             '.print-btn:hover{background:#9e4300}' +
             '@media print{.print-btn{display:none}}' +
-          '</style>  <link rel="stylesheet" href="shine.css">
-</head><body>' +
+          '</style></head><body>' +
           '<div class="receipt-head">' +
             '<div class="logo">Eatz<span class="dot"></span></div>' +
             '<h2>Order Receipt</h2>' +
