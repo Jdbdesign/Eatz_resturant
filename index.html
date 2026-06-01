@@ -366,6 +366,13 @@
     .food-reveal-cta:hover{background:var(--primary-dark);box-shadow:0 8px 22px rgba(246,109,9,.55)}
     .food-reveal-cta:active{opacity:.85}
     .food-reveal-cta.added{background:#22c55e;box-shadow:0 4px 16px rgba(34,197,94,.4)}
+    @media (max-width:1023px) {
+      .food-card:hover{transform:none;box-shadow:var(--shadow-card)}
+      .food-card:hover .food-img-wrap img,.food-card:hover .food-img-ph{transform:none}
+      .food-card:hover .food-reveal{transform:translateY(102%);pointer-events:none}
+      .food-add{display:flex;width:36px;height:36px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;align-items:center;justify-content:center;transition:background 150ms,transform 150ms;flex-shrink:0}
+      .food-add:active{transform:scale(.95);opacity:.85}
+    }
   </style>
   <link rel="stylesheet" href="shine.css">
   <link rel="stylesheet" href="hero-animations.css">
@@ -1137,6 +1144,17 @@
             cta.classList.remove('added');
           }, 1400);
         });
+        var addBtn = card.querySelector('.food-add');
+        if (addBtn) {
+          var origAddHTML = addBtn.innerHTML;
+          addBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (window.__eatzCartAdd) window.__eatzCartAdd(name, price);
+            addBtn.innerHTML = checkSVG2;
+            addBtn.style.background = '#22c55e';
+            setTimeout(function() { addBtn.innerHTML = origAddHTML; addBtn.style.background = ''; }, 1400);
+          });
+        }
       });
     })();
   </script>
